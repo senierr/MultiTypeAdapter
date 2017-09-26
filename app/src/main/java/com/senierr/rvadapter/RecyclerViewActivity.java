@@ -60,8 +60,8 @@ public class RecyclerViewActivity extends AppCompatActivity {
         // 设置布局类型
         int orientation = OrientationHelper.VERTICAL;
 //        int orientation = OrientationHelper.HORIZONTAL;
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, orientation, false));
-//        recyclerView.setLayoutManager(new GridLayoutManager(this, 4, orientation, false));
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this, orientation, false));
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 4, orientation, false));
 //        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(4, orientation));
         // 每个Item确定高度，设置提高性能
         recyclerView.setHasFixedSize(true);
