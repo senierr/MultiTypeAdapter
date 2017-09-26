@@ -5,16 +5,17 @@
 
 ## 导入架包
 
-#### 1. 添加仓库：
-
+1. 添加仓库：
 ```java
 maven { url 'https://jitpack.io' }
 ```
 
-#### 2. 添加依赖：
-
+2. 添加依赖：
 ```java
-compile 'com.github.senierr:RVAdapter:lastest.version'
+compile 'com.android.support:support-annotations:VERSION'
+compile 'com.android.support:recyclerview-v7:VERSION'
+
+compile 'com.github.senierr:RVAdapter:VERSION'
 ```
 ## 使用
 
@@ -66,13 +67,4 @@ rvAdapter.setOnItemClickListener(new OnItemClickListener() {
 });
 // 设置适配器
 recyclerView.setAdapter(rvAdapter);
-```
-
-## 注意
-
-> 内部依赖了：
-
-```java
-compile 'com.android.support:support-annotations:25.3.1'
-compile 'com.android.support:recyclerview-v7:25.3.1'
 ```
