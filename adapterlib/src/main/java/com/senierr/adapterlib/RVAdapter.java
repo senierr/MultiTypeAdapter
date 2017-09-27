@@ -41,7 +41,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
     public final RVHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ViewWrapper<?> viewWrapper = linkedViewTypeMap.getViewWrapper(viewType);
         final RVHolder holder = viewWrapper.onCreateViewHolder(parent);
-        if (holder!= null && onItemClickListener != null) {
+        if (onItemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

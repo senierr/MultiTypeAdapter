@@ -55,13 +55,13 @@ rvAdapter.register(NormalBean.class)
 // 设置点击事件
 rvAdapter.setOnItemClickListener(new OnItemClickListener() {
     @Override
-    public void onItemClick(RVHolder viewHolder, int position) {
-        showToast("onItemClick: " + position);
+    public void onClick(RVHolder viewHolder, int position) {
+        showToast("onClick: " + position);
     }
 
     @Override
-    public boolean onItemLongClick(RVHolder viewHolder, int position) {
-        showToast("onItemLongClick: " + position);
+    public boolean onLongClick(RVHolder viewHolder, int position) {
+        showToast("onLongClick: " + position);
         return true;
     }
 });

@@ -92,12 +92,12 @@ public class SelectionActivity extends AppCompatActivity {
         rvAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(RVHolder viewHolder, int position) {
-                showToast("onItemClick: " + position);
+                showToast("onClick: " + position);
             }
 
             @Override
             public boolean onItemLongClick(RVHolder viewHolder, int position) {
-                showToast("onItemLongClick: " + position);
+                showToast("onLongClick: " + position);
                 return true;
             }
         });

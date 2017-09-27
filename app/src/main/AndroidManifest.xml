@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".RecyclerViewActivity" >
+        <activity android:name=".MainActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -17,6 +17,12 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".NormalActivity" />
+        <activity android:name=".EmptyAndErrorActivity" />
+        <activity android:name=".HeaderFooterActivity" />
+        <activity android:name=".ItemClickActivity" />
+        <activity android:name=".LoadMoreActivity" />
+        <activity android:name=".SelectionActivity" />
 
     </application>
 

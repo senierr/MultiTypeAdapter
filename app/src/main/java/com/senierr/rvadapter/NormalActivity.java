@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class RecyclerViewActivity extends AppCompatActivity {
+public class NormalActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private RVAdapter rvAdapter;
@@ -94,12 +94,12 @@ public class RecyclerViewActivity extends AppCompatActivity {
         rvAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(RVHolder viewHolder, int position) {
-                showToast("onItemClick: " + position);
+                showToast("onClick: " + position);
             }
 
             @Override
             public boolean onItemLongClick(RVHolder viewHolder, int position) {
-                showToast("onItemLongClick: " + position);
+                showToast("onLongClick: " + position);
                 return true;
             }
         });
