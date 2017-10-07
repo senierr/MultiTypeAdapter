@@ -11,8 +11,6 @@ import android.widget.Toast;
 import com.senierr.adapterlib.RVAdapter;
 import com.senierr.adapterlib.ViewWrapper;
 import com.senierr.adapterlib.binder.OneToManyBinder;
-import com.senierr.adapterlib.listener.OnItemClickListener;
-import com.senierr.adapterlib.util.RVHolder;
 import com.senierr.adapterlib.util.RVItemDecoration;
 import com.senierr.rvadapter.bean.FooterBean;
 import com.senierr.rvadapter.bean.HeaderBean;
@@ -88,19 +86,6 @@ public class LoadMoreActivity extends AppCompatActivity {
                         return NormalWrapper2.class;
                     }
                 });
-        // 设置点击事件
-        rvAdapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(RVHolder viewHolder, int position) {
-                showToast("onClick: " + position);
-            }
-
-            @Override
-            public boolean onItemLongClick(RVHolder viewHolder, int position) {
-                showToast("onLongClick: " + position);
-                return true;
-            }
-        });
         // 设置适配器
         recyclerView.setAdapter(rvAdapter);
     }

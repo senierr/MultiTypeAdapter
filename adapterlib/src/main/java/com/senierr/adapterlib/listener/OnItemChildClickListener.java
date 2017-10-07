@@ -1,17 +1,16 @@
 package com.senierr.adapterlib.listener;
 
-import android.support.annotation.IdRes;
 import android.view.View;
-
 import com.senierr.adapterlib.util.RVHolder;
 
-public abstract class OnChildClickListener {
+/**
+ * 列表子控件点击回调
+ *
+ * @author zhouchunjie
+ * @date 2017/9/25
+ */
 
-    public @IdRes int childId;
-
-    public OnChildClickListener(int childId) {
-        this.childId = childId;
-    }
+public abstract class OnItemChildClickListener {
 
     public void onClick(RVHolder viewHolder, View view, int position) {}
 

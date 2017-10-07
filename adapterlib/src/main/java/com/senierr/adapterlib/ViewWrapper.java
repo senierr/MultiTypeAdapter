@@ -3,16 +3,16 @@ package com.senierr.adapterlib;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.senierr.adapterlib.listener.OnChildClickListener;
-import com.senierr.adapterlib.listener.OnClickListener;
+import com.senierr.adapterlib.listener.OnItemChildClickListener;
 import com.senierr.adapterlib.listener.OnItemClickListener;
 import com.senierr.adapterlib.util.RVHolder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,8 +22,8 @@ import java.util.List;
 
 public abstract class ViewWrapper<T> {
 
-    private OnClickListener onClickListener;
-    private  List<OnChildClickListener> onChildClickListeners;
+    private @Nullable OnItemClickListener onItemClickListener;
+    private @Nullable SparseArray<OnItemChildClickListener> onItemChildClickListeners;
 
     public abstract @LayoutRes int getLayoutId();
 
@@ -32,35 +32,37 @@ public abstract class ViewWrapper<T> {
     @NonNull
     public RVHolder onCreateViewHolder(@NonNull ViewGroup parent) {
         final RVHolder holder = RVHolder.create(parent, getLayoutId());
-        if (onClickListener != null) {
+        if (onItemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onClickListener.onClick(holder, holder.getLayoutPosition());
+                    onItemClickListener.onClick(holder, holder.getLayoutPosition());
                 }
             });
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    return onClickListener.onLongClick(holder, holder.getLayoutPosition());
+                    return onItemClickListener.onLongClick(holder, holder.getLayoutPosition());
                 }
             });
         }
 
-        if (onChildClickListeners != null) {
-            for (final OnChildClickListener onChildClickListener : onChildClickListeners) {
-                View childView = holder.getView(onChildClickListener.childId);
-                if (childView != null) {
+        if (onItemChildClickListeners != null) {
+            for (int i = 0; i < onItemChildClickListeners.size(); i++) {
+                int key = onItemChildClickListeners.keyAt(i);
+                final OnItemChildClickListener onItemChildClickListener = onItemChildClickListeners.get(key);
+                View childView = holder.getView(key);
+                if (childView != null && onItemChildClickListener != null) {
                     childView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            onChildClickListener.onClick(holder, view, holder.getLayoutPosition());
+                            onItemChildClickListener.onClick(holder, view, holder.getLayoutPosition());
                         }
                     });
                     childView.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
                         public boolean onLongClick(View view) {
-                            return onChildClickListener.onLongClick(holder, view, holder.getLayoutPosition());
+                            return onItemChildClickListener.onLongClick(holder, view, holder.getLayoutPosition());
                         }
                     });
                 }
@@ -95,29 +97,27 @@ public abstract class ViewWrapper<T> {
         return 1;
     }
 
-    public OnClickListener getOnClickListener() {
-        return onClickListener;
+    @Nullable
+    public OnItemClickListener getOnItemClickListener() {
+        return onItemClickListener;
     }
 
-    public void setOnClickListener(OnClickListener onClickListener) {
-        this.onClickListener = onClickListener;
+    public void setOnItemClickListener(@Nullable OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
 
-    public OnChildClickListener getOnChildClickListener(@IdRes int childId) {
-        if (onChildClickListeners != null) {
-            for (OnChildClickListener onChildClickListener : onChildClickListeners) {
-                if(onChildClickListener.childId == childId) {
-                    return onChildClickListener;
-                }
-            }
+    @Nullable
+    public OnItemChildClickListener getOnItemChildClickListener(@IdRes int childId) {
+        if (onItemChildClickListeners != null) {
+            return onItemChildClickListeners.get(childId);
         }
         return null;
     }
 
-    public void setOnChildClickListener(@NonNull OnChildClickListener onChildClickListener) {
-        if (onChildClickListeners == null) {
-            onChildClickListeners = new ArrayList<>();
+    public void setOnItemChildClickListener(@IdRes int childId, @NonNull OnItemChildClickListener onItemChildClickListener) {
+        if (onItemChildClickListeners == null) {
+            onItemChildClickListeners = new SparseArray<>();
         }
-        onChildClickListeners.add(onChildClickListener);
+        onItemChildClickListeners.put(childId, onItemChildClickListener);
     }
 }

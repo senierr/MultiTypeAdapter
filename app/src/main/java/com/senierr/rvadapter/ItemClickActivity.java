@@ -6,8 +6,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.senierr.adapterlib.RVAdapter;
-import com.senierr.adapterlib.listener.OnChildClickListener;
-import com.senierr.adapterlib.listener.OnClickListener;
+import com.senierr.adapterlib.listener.OnItemChildClickListener;
 import com.senierr.adapterlib.listener.OnItemClickListener;
 import com.senierr.adapterlib.util.RVHolder;
 import com.senierr.rvadapter.bean.NormalBean;
@@ -15,7 +14,6 @@ import com.senierr.rvadapter.wrapper.ItemClickWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class ItemClickActivity extends BaseRecyclerViewActivity {
 
@@ -37,7 +35,8 @@ public class ItemClickActivity extends BaseRecyclerViewActivity {
         rvAdapter = new RVAdapter();
 
         ItemClickWrapper itemClickWrapper = new ItemClickWrapper();
-        itemClickWrapper.setOnClickListener(new OnClickListener() {
+        // 列表点击事件
+        itemClickWrapper.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onClick(RVHolder viewHolder, int position) {
                 showToast("Click: " + position);
@@ -49,8 +48,8 @@ public class ItemClickActivity extends BaseRecyclerViewActivity {
                 return true;
             }
         });
-
-        itemClickWrapper.setOnChildClickListener(new OnChildClickListener(R.id.btn_1) {
+        // 子控件点击事件
+        itemClickWrapper.setOnItemChildClickListener(R.id.btn_1, new OnItemChildClickListener() {
             @Override
             public void onClick(RVHolder viewHolder, View view, int position) {
                 showToast(position + ", Click: " + ((Button) view).getText());
@@ -62,7 +61,7 @@ public class ItemClickActivity extends BaseRecyclerViewActivity {
                 return true;
             }
         });
-        itemClickWrapper.setOnChildClickListener(new OnChildClickListener(R.id.btn_2) {
+        itemClickWrapper.setOnItemChildClickListener(R.id.btn_2, new OnItemChildClickListener() {
             @Override
             public void onClick(RVHolder viewHolder, View view, int position) {
                 showToast(position + ", Click: " + ((Button) view).getText());

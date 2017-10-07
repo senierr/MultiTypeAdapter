@@ -3,16 +3,17 @@ package com.senierr.adapterlib.listener;
 import com.senierr.adapterlib.util.RVHolder;
 
 /**
- * 普通类型点击回调
+ * 列表点击回调
  *
- * Created by zhouchunjie on 2017/3/27.
+ * @author zhouchunjie
+ * @date 2017/9/25
  */
 
 public abstract class OnItemClickListener {
 
-    public void onItemClick(RVHolder viewHolder, int position) {}
+    public void onClick(RVHolder viewHolder, int position) {}
 
-    public boolean onItemLongClick(RVHolder viewHolder, int position) {
+    public boolean onLongClick(RVHolder viewHolder, int position) {
         return false;
     }
 }

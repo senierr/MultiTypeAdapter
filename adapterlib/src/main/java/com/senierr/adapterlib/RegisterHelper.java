@@ -8,6 +8,8 @@ import com.senierr.adapterlib.binder.OneToOneBinder;
 import com.senierr.adapterlib.exception.WrapperNotFoundException;
 
 /**
+ * 注册帮助类
+ *
  * @author zhouchunjie
  * @date 2017/9/25
  */
@@ -30,9 +32,11 @@ public class RegisterHelper<T> {
         return this;
     }
 
-    public final void with(@NonNull ViewWrapper<T> wrapper) {
+    @NonNull
+    public final RegisterHelper<T> with(@NonNull ViewWrapper<T> wrapper) {
         linkedViewTypeMap.put(cls, wrapper, new OneToOneBinder<T>());
         isRegistered = true;
+        return this;
     }
 
     @NonNull @CheckResult @SafeVarargs
