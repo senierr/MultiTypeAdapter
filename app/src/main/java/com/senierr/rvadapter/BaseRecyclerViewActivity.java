@@ -16,15 +16,15 @@ public class BaseRecyclerViewActivity extends AppCompatActivity {
     protected void initRecyclerView() {
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         // 设置布局类型
-        int orientation = OrientationHelper.VERTICAL;
+//        int orientation = OrientationHelper.VERTICAL;
 //        int orientation = OrientationHelper.HORIZONTAL;
 //        recyclerView.setLayoutManager(new LinearLayoutManager(this, orientation, false));
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 4, orientation, false));
+//        recyclerView.setLayoutManager(new GridLayoutManager(this, 4, orientation, false));
 //        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(4, orientation));
         // 每个Item确定高度，设置提高性能
         recyclerView.setHasFixedSize(true);
         // 设置分割线
-        RVItemDecoration rvItemDecoration = new RVItemDecoration(this, R.dimen.dimen_4, R.color.transparent);
+        RVItemDecoration rvItemDecoration = new RVItemDecoration(this, R.dimen.divider_size, R.color.bg_divider);
         recyclerView.addItemDecoration(rvItemDecoration);
     }
 

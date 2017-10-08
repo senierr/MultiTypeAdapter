@@ -1,7 +1,10 @@
 package com.senierr.rvadapter.wrapper;
 
 import android.support.annotation.NonNull;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.senierr.adapterlib.ViewWrapper;
 import com.senierr.adapterlib.util.RVHolder;
@@ -24,5 +27,15 @@ public class ItemClickWrapper extends ViewWrapper<NormalBean> {
     public void onBindViewHolder(@NonNull RVHolder holder, @NonNull NormalBean item) {
         TextView textView = holder.getView(R.id.tv_text);
         textView.setText(item.getContent());
+    }
+
+    @Override
+    public void onViewHolderCreate(@NonNull final RVHolder holder) {
+        holder.getView(R.id.btn_2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(view.getContext(), holder.getLayoutPosition() + ", Click: " + ((Button) view).getText(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

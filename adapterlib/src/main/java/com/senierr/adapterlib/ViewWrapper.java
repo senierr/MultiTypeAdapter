@@ -30,8 +30,9 @@ public abstract class ViewWrapper<T> {
     public abstract void onBindViewHolder(@NonNull RVHolder holder, @NonNull T item);
 
     @NonNull
-    public RVHolder onCreateViewHolder(@NonNull ViewGroup parent) {
+    public final RVHolder onCreateViewHolder(@NonNull ViewGroup parent) {
         final RVHolder holder = RVHolder.create(parent, getLayoutId());
+        // 列表点击事件
         if (onItemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -46,7 +47,7 @@ public abstract class ViewWrapper<T> {
                 }
             });
         }
-
+        // 子控件点击事件
         if (onItemChildClickListeners != null) {
             for (int i = 0; i < onItemChildClickListeners.size(); i++) {
                 int key = onItemChildClickListeners.keyAt(i);
@@ -68,6 +69,8 @@ public abstract class ViewWrapper<T> {
                 }
             }
         }
+        // 创建ViewHolder回调
+        onViewHolderCreate(holder);
         return holder;
     }
 
@@ -97,24 +100,26 @@ public abstract class ViewWrapper<T> {
         return 1;
     }
 
+    public void onViewHolderCreate(@NonNull RVHolder holder) {}
+
     @Nullable
-    public OnItemClickListener getOnItemClickListener() {
+    public final OnItemClickListener getOnItemClickListener() {
         return onItemClickListener;
     }
 
-    public void setOnItemClickListener(@Nullable OnItemClickListener onItemClickListener) {
+    public final void setOnItemClickListener(@Nullable OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
 
     @Nullable
-    public OnItemChildClickListener getOnItemChildClickListener(@IdRes int childId) {
+    public final OnItemChildClickListener getOnItemChildClickListener(@IdRes int childId) {
         if (onItemChildClickListeners != null) {
             return onItemChildClickListeners.get(childId);
         }
         return null;
     }
 
-    public void setOnItemChildClickListener(@IdRes int childId, @NonNull OnItemChildClickListener onItemChildClickListener) {
+    public final void setOnItemChildClickListener(@IdRes int childId, @NonNull OnItemChildClickListener onItemChildClickListener) {
         if (onItemChildClickListeners == null) {
             onItemChildClickListeners = new SparseArray<>();
         }

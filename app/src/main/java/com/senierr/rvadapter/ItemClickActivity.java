@@ -61,18 +61,6 @@ public class ItemClickActivity extends BaseRecyclerViewActivity {
                 return true;
             }
         });
-        itemClickWrapper.setOnItemChildClickListener(R.id.btn_2, new OnItemChildClickListener() {
-            @Override
-            public void onClick(RVHolder viewHolder, View view, int position) {
-                showToast(position + ", Click: " + ((Button) view).getText());
-            }
-
-            @Override
-            public boolean onLongClick(RVHolder viewHolder, View view, int position) {
-                showToast(position + ", LongClick: " + ((Button) view).getText());
-                return true;
-            }
-        });
 
         rvAdapter.register(NormalBean.class)
                 .with(itemClickWrapper);
@@ -85,7 +73,7 @@ public class ItemClickActivity extends BaseRecyclerViewActivity {
     private void loadData() {
         List<Object> list = new ArrayList<>();
         for (int i = 0; i < 80; i++) {
-            list.add(new NormalBean(i, "" + i));
+            list.add(new NormalBean(i, "Item: " + i));
         }
         rvAdapter.setItems(list);
         rvAdapter.notifyDataSetChanged();
