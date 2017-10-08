@@ -18,7 +18,7 @@ public class RegisterHelper<T> {
 
     private LinkedViewTypeMap linkedViewTypeMap;
     private Class<T> cls;
-    private ViewWrapper<T>[] wrappers;
+    private ViewHolderWrapper<T>[] wrappers;
     private boolean isRegistered;
 
     RegisterHelper(LinkedViewTypeMap linkedViewTypeMap) {
@@ -33,14 +33,14 @@ public class RegisterHelper<T> {
     }
 
     @NonNull
-    public final RegisterHelper<T> with(@NonNull ViewWrapper<T> wrapper) {
+    public final RegisterHelper<T> with(@NonNull ViewHolderWrapper<T> wrapper) {
         linkedViewTypeMap.put(cls, wrapper, new OneToOneBinder<T>());
         isRegistered = true;
         return this;
     }
 
     @NonNull @CheckResult @SafeVarargs
-    public final RegisterHelper<T> with(@NonNull ViewWrapper<T>... wrappers) {
+    public final RegisterHelper<T> with(@NonNull ViewHolderWrapper<T>... wrappers) {
         if (wrappers.length == 0) {
             throw new WrapperNotFoundException(cls);
         } else {
@@ -52,7 +52,7 @@ public class RegisterHelper<T> {
     @NonNull
     public final RegisterHelper<T> by(@NonNull OneToManyBinder<T> binder) {
         binder.setWrappers(wrappers);
-        for (ViewWrapper<T> wrapper : wrappers) {
+        for (ViewHolderWrapper<T> wrapper : wrappers) {
             linkedViewTypeMap.put(cls, wrapper, binder);
         }
         isRegistered = true;

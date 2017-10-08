@@ -1,10 +1,9 @@
-package com.senierr.rvadapter.wrapper;
+package com.senierr.rvadapter.normal;
 
 import android.support.annotation.NonNull;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.senierr.adapterlib.ViewWrapper;
+import com.senierr.adapterlib.ViewHolderWrapper;
 import com.senierr.adapterlib.util.RVHolder;
 import com.senierr.rvadapter.R;
 import com.senierr.rvadapter.bean.NormalBean;
@@ -14,7 +13,7 @@ import com.senierr.rvadapter.bean.NormalBean;
  * @date 2017/9/25
  */
 
-public class NormalWrapper1 extends ViewWrapper<NormalBean> {
+public class NormalWrapper1 extends ViewHolderWrapper<NormalBean> {
 
     @Override
     public int getLayoutId() {
@@ -24,7 +23,7 @@ public class NormalWrapper1 extends ViewWrapper<NormalBean> {
     @Override
     public void onBindViewHolder(@NonNull RVHolder holder, @NonNull NormalBean item) {
         TextView textView = holder.getView(R.id.tv_text);
-        textView.setText(item.getContent() + ", size: " + item.getId());
+        textView.setText(NormalWrapper1.class.getSimpleName() + ": " + item.getContent());
     }
 
     @Override

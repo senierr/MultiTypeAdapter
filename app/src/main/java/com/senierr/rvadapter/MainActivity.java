@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import com.senierr.rvadapter.itemclick.ItemClickActivity;
+import com.senierr.rvadapter.normal.NormalActivity;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -19,19 +22,19 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(this, NormalActivity.class));
                 break;
             case R.id.btn_empty_error:
-                startActivity(new Intent(this, EmptyAndErrorActivity.class));
+//                startActivity(new Intent(this, EmptyAndErrorActivity.class));
                 break;
             case R.id.btn_header_footer:
-                startActivity(new Intent(this, HeaderFooterActivity.class));
+//                startActivity(new Intent(this, HeaderFooterActivity.class));
                 break;
             case R.id.btn_click:
                 startActivity(new Intent(this, ItemClickActivity.class));
                 break;
             case R.id.btn_selection:
-                startActivity(new Intent(this, SelectionActivity.class));
+//                startActivity(new Intent(this, SelectionActivity.class));
                 break;
             case R.id.btn_load_more:
-                startActivity(new Intent(this, LoadMoreActivity.class));
+//                startActivity(new Intent(this, LoadMoreActivity.class));
                 break;
         }
     }

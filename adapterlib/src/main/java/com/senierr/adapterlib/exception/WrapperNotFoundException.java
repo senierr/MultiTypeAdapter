@@ -9,6 +9,6 @@ import android.support.annotation.NonNull;
 public class WrapperNotFoundException extends RuntimeException {
 
     public WrapperNotFoundException(@NonNull Class<?> cls) {
-        super(String.format("Can not found ViewWrapper for %s!", cls.getSimpleName()));
+        super(String.format("Can not found ViewHolderWrapper for %s!", cls.getSimpleName()));
     }
 }

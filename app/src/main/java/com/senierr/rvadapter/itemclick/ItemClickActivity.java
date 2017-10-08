@@ -1,4 +1,4 @@
-package com.senierr.rvadapter;
+package com.senierr.rvadapter.itemclick;
 
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,8 +9,9 @@ import com.senierr.adapterlib.RVAdapter;
 import com.senierr.adapterlib.listener.OnItemChildClickListener;
 import com.senierr.adapterlib.listener.OnItemClickListener;
 import com.senierr.adapterlib.util.RVHolder;
+import com.senierr.rvadapter.BaseRecyclerViewActivity;
+import com.senierr.rvadapter.R;
 import com.senierr.rvadapter.bean.NormalBean;
-import com.senierr.rvadapter.wrapper.ItemClickWrapper;
 
 import java.util.ArrayList;
 import java.util.List;

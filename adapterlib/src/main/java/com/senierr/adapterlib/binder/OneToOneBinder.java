@@ -2,7 +2,7 @@ package com.senierr.adapterlib.binder;
 
 import android.support.annotation.NonNull;
 
-import com.senierr.adapterlib.ViewWrapper;
+import com.senierr.adapterlib.ViewHolderWrapper;
 
 /**
  * @author zhouchunjie
@@ -12,7 +12,7 @@ import com.senierr.adapterlib.ViewWrapper;
 public class OneToOneBinder<T> extends Binder<T> {
 
     @Override
-    public final Class<? extends ViewWrapper<T>> onGetWrapperType(@NonNull T item) {
+    public final Class<? extends ViewHolderWrapper<T>> onGetWrapperType(@NonNull T item) {
         return null;
     }
 

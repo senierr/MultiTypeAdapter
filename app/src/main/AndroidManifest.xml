@@ -17,12 +17,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".NormalActivity" />
-        <activity android:name=".EmptyAndErrorActivity" />
-        <activity android:name=".HeaderFooterActivity" />
-        <activity android:name=".ItemClickActivity" />
-        <activity android:name=".LoadMoreActivity" />
-        <activity android:name=".SelectionActivity" />
+        <activity android:name=".normal.NormalActivity" />
+        <activity android:name=".itemclick.ItemClickActivity" />
 
     </application>
 

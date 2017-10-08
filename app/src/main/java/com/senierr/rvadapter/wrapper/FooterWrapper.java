@@ -1,10 +1,9 @@
 package com.senierr.rvadapter.wrapper;
 
 import android.support.annotation.NonNull;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.senierr.adapterlib.ViewWrapper;
+import com.senierr.adapterlib.ViewHolderWrapper;
 import com.senierr.adapterlib.util.RVHolder;
 import com.senierr.rvadapter.R;
 import com.senierr.rvadapter.bean.FooterBean;
@@ -14,7 +13,7 @@ import com.senierr.rvadapter.bean.FooterBean;
  * @date 2017/9/25
  */
 
-public class FooterWrapper extends ViewWrapper<FooterBean> {
+public class FooterWrapper extends ViewHolderWrapper<FooterBean> {
 
     @Override
     public int getLayoutId() {

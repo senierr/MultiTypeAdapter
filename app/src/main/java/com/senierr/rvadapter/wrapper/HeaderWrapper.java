@@ -1,10 +1,9 @@
 package com.senierr.rvadapter.wrapper;
 
 import android.support.annotation.NonNull;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.senierr.adapterlib.ViewWrapper;
+import com.senierr.adapterlib.ViewHolderWrapper;
 import com.senierr.adapterlib.util.RVHolder;
 import com.senierr.rvadapter.R;
 import com.senierr.rvadapter.bean.HeaderBean;
@@ -14,7 +13,7 @@ import com.senierr.rvadapter.bean.HeaderBean;
  * @date 2017/9/25
  */
 
-public class HeaderWrapper extends ViewWrapper<HeaderBean> {
+public class HeaderWrapper extends ViewHolderWrapper<HeaderBean> {
 
     @Override
     public int getLayoutId() {

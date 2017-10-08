@@ -2,7 +2,7 @@ package com.senierr.adapterlib.binder;
 
 import android.support.annotation.NonNull;
 
-import com.senierr.adapterlib.ViewWrapper;
+import com.senierr.adapterlib.ViewHolderWrapper;
 
 /**
  * @author zhouchunjie
@@ -11,18 +11,18 @@ import com.senierr.adapterlib.ViewWrapper;
 
 public abstract class Binder<T> {
 
-    protected @NonNull ViewWrapper<?>[] wrappers;
+    protected @NonNull ViewHolderWrapper<?>[] wrappers;
 
-    public abstract Class<? extends ViewWrapper<T>> onGetWrapperType(@NonNull T item);
+    public abstract Class<? extends ViewHolderWrapper<T>> onGetWrapperType(@NonNull T item);
 
     public abstract int index(@NonNull T item);
 
     @NonNull
-    public ViewWrapper<?>[] getWrappers() {
+    public ViewHolderWrapper<?>[] getWrappers() {
         return wrappers;
     }
 
-    public void setWrappers(@NonNull ViewWrapper<?>[] wrappers) {
+    public void setWrappers(@NonNull ViewHolderWrapper<?>[] wrappers) {
         this.wrappers = wrappers;
     }
 }

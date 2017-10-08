@@ -37,7 +37,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
 
     @Override
     public final RVHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ViewWrapper<?> viewWrapper = linkedViewTypeMap.getViewWrapper(viewType);
+        ViewHolderWrapper<?> viewWrapper = linkedViewTypeMap.getViewWrapper(viewType);
         return viewWrapper.onCreateViewHolder(parent);
     }
 
@@ -47,7 +47,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
     @Override @SuppressWarnings("unchecked")
     public final void onBindViewHolder(RVHolder holder, int position, List<Object> payloads) {
         Object item = items.get(position);
-        ViewWrapper<Object> wrapper = (ViewWrapper<Object>) linkedViewTypeMap.getViewWrapper(holder.getItemViewType());
+        ViewHolderWrapper<Object> wrapper = (ViewHolderWrapper<Object>) linkedViewTypeMap.getViewWrapper(holder.getItemViewType());
         wrapper.onBindViewHolder(holder, item, payloads);
     }
 
@@ -69,20 +69,20 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
 
     @Override @SuppressWarnings("unchecked")
     public final long getItemId(int position) {
-        ViewWrapper wrapper = linkedViewTypeMap.getViewWrapper(getItemViewType(position));
+        ViewHolderWrapper wrapper = linkedViewTypeMap.getViewWrapper(getItemViewType(position));
         return wrapper.getItemId(items.get(position));
     }
 
     @Override
     public final void onViewRecycled(RVHolder holder) {
         super.onViewRecycled(holder);
-        ViewWrapper wrapper = linkedViewTypeMap.getViewWrapper(holder.getItemViewType());
+        ViewHolderWrapper wrapper = linkedViewTypeMap.getViewWrapper(holder.getItemViewType());
         wrapper.onViewRecycled(holder);
     }
 
     @Override
     public final boolean onFailedToRecycleView(RVHolder holder) {
-        ViewWrapper wrapper = linkedViewTypeMap.getViewWrapper(holder.getItemViewType());
+        ViewHolderWrapper wrapper = linkedViewTypeMap.getViewWrapper(holder.getItemViewType());
         return wrapper.onFailedToRecycleView(holder);
     }
 
@@ -93,7 +93,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
             return;
         }
 
-        ViewWrapper wrapper = linkedViewTypeMap.getViewWrapper(holder.getItemViewType());
+        ViewHolderWrapper wrapper = linkedViewTypeMap.getViewWrapper(holder.getItemViewType());
         wrapper.onViewAttachedToWindow(holder);
 
         ViewGroup.LayoutParams lp = holder.itemView.getLayoutParams();
@@ -110,7 +110,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
     @Override
     public final void onViewDetachedFromWindow(RVHolder holder) {
         super.onViewDetachedFromWindow(holder);
-        ViewWrapper wrapper = linkedViewTypeMap.getViewWrapper(holder.getItemViewType());
+        ViewHolderWrapper wrapper = linkedViewTypeMap.getViewWrapper(holder.getItemViewType());
         wrapper.onViewDetachedFromWindow(holder);
     }
 
@@ -119,8 +119,8 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
         super.onAttachedToRecyclerView(recyclerView);
         this.recyclerView = recyclerView;
 
-        List<ViewWrapper<?>> wrappers = linkedViewTypeMap.getViewWrappers();
-        for (ViewWrapper<?> wrapper : wrappers) {
+        List<ViewHolderWrapper<?>> wrappers = linkedViewTypeMap.getViewWrappers();
+        for (ViewHolderWrapper<?> wrapper : wrappers) {
             wrapper.onAttachedToRecyclerView(recyclerView);
         }
 
@@ -130,7 +130,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
             gridManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                 @Override
                 public int getSpanSize(int position) {
-                    ViewWrapper wrapper = linkedViewTypeMap.getViewWrapper(getItemViewType(position));
+                    ViewHolderWrapper wrapper = linkedViewTypeMap.getViewWrapper(getItemViewType(position));
                     int spanSize = wrapper.getSpanSize(items.get(position));
                     int spanCount = gridManager.getSpanCount();
                     return spanSize > spanCount ? spanCount : spanSize;
@@ -144,11 +144,24 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
         super.onDetachedFromRecyclerView(recyclerView);
         this.recyclerView = null;
 
-        List<ViewWrapper<?>> wrappers = linkedViewTypeMap.getViewWrappers();
-        for (ViewWrapper<?> wrapper : wrappers) {
+        List<ViewHolderWrapper<?>> wrappers = linkedViewTypeMap.getViewWrappers();
+        for (ViewHolderWrapper<?> wrapper : wrappers) {
             wrapper.onDetachedFromRecyclerView(recyclerView);
         }
     }
+
+    public final <T> RVAdapter addViewHolderWrapper(@NonNull ViewHolderWrapper<T> viewHolderWrapper) {
+
+        return this;
+    }
+
+    @CheckResult
+    public final <T> RVAdapter addViewHolderWrapper(@NonNull ViewHolderWrapper<T>... viewHolderWrapper) {
+
+        return this;
+    }
+
+
 
     @CheckResult
     public final <T> RegisterHelper<T> register(@NonNull Class<T> cls) {

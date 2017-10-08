@@ -22,7 +22,7 @@ public class LinkedViewTypeMap {
     // 数据类型
     private List<Class<?>> classes;
     // 布局类型
-    private List<ViewWrapper<?>> wrappers;
+    private List<ViewHolderWrapper<?>> wrappers;
     // 对应关系
     private List<Binder<?>> binders;
 
@@ -32,7 +32,7 @@ public class LinkedViewTypeMap {
         this.binders = new ArrayList<>();
     }
 
-    public void put(@NonNull Class<?> cls, @NonNull ViewWrapper<?> wrapper, @NonNull Binder<?> binder) {
+    public void put(@NonNull Class<?> cls, @NonNull ViewHolderWrapper<?> wrapper, @NonNull Binder<?> binder) {
         classes.add(cls);
         wrappers.add(wrapper);
         binders.add(binder);
@@ -65,7 +65,7 @@ public class LinkedViewTypeMap {
     }
 
     @NonNull
-    public ViewWrapper<?> getViewWrapper(int index) {
+    public ViewHolderWrapper<?> getViewWrapper(int index) {
         return wrappers.get(index);
     }
 
@@ -80,7 +80,7 @@ public class LinkedViewTypeMap {
     }
 
     @NonNull
-    public List<ViewWrapper<?>> getViewWrappers() {
+    public List<ViewHolderWrapper<?>> getViewWrappers() {
         return wrappers;
     }
 

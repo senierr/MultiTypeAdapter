@@ -16,14 +16,24 @@ import com.senierr.adapterlib.util.RVHolder;
 import java.util.List;
 
 /**
+ * 为一种类型的Data，生成对应的ViewHolder
+ *
  * @author zhouchunjie
  * @date 2017/9/25
  */
 
-public abstract class ViewWrapper<T> {
+public abstract class ViewHolderWrapper<T> {
 
     private @Nullable OnItemClickListener onItemClickListener;
     private @Nullable SparseArray<OnItemChildClickListener> onItemChildClickListeners;
+
+    private int layoutId;
+    private Class<T> dataCls;
+
+    public ViewHolderWrapper(int layoutId, Class<T> dataCls) {
+        this.layoutId = layoutId;
+        this.dataCls = dataCls;
+    }
 
     public abstract @LayoutRes int getLayoutId();
 
