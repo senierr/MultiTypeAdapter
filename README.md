@@ -12,10 +12,16 @@ maven { url 'https://jitpack.io' }
 
 2. 添加依赖：
 ```java
-compile 'com.android.support:support-annotations:VERSION'
-compile 'com.android.support:recyclerview-v7:VERSION'
-
 compile 'com.github.senierr:RVAdapter:VERSION'
+
+RVAdapter内部依赖了
+compile 'com.android.support:support-annotations:25.3.1'
+compile 'com.android.support:recyclerview-v7:25.3.1'
+
+如果不需要可以
+androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    exclude group: 'com.android.support'
+})
 ```
 ## 使用
 
