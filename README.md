@@ -1,76 +1,100 @@
 # RVAdapter
 
-针对RecyclerView多类型视图的解决方案之一，主要原理为**数据驱动视图**；
+> 将`RecyclerView`比作一本书，`ViewHolder`是**书页**，`Data`则是**内容**（例如：图片、文字等）。
+>
+> `RecyclerView`的**展现过程**即是一本书的**形成过程**：**工人**（`ViewHolderWrapper`）会创建**书页**（`ViewHolder`），并将**内容**（`Data`）写上去，然后交给**工厂**（`RVAdapter`）将其装订成册。
 
 
-## 导入架包
+## 架包引入
 
-1. 添加仓库：
+### 1. 添加仓库
 ```java
 maven { url 'https://jitpack.io' }
 ```
 
-2. 添加依赖：
+### 2. 添加依赖
 ```java
-compile 'com.github.senierr:RVAdapter:VERSION'
+compile 'com.github.senierr:RVAdapter:RELEASE_VERSION'
+```
+#### 注意：
 
-RVAdapter内部依赖了
+`RVAdapter`内部依赖了:
+```jaba
 compile 'com.android.support:support-annotations:25.3.1'
 compile 'com.android.support:recyclerview-v7:25.3.1'
-
-如果不需要可以
-androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-    exclude group: 'com.android.support'
-})
 ```
-## 使用
+依赖关系如下：
+```java
++--- com.github.senierr:RVAdapter:RELEASE_VERSION
+|    |    +--- com.android.support:support-annotations:25.3.1
+|    |    +--- com.android.support:recyclerview-v7:25.3.1
+```
+如不需要，可通过以下方式关闭**传递性依赖**：
+```java
+compile('com.github.senierr:RVAdapter:RELEASE_VERSION', {
+    transitive = false
+})
+或者
+compile 'com.github.senierr:RVAdapter:RELEASE_VERSION@jar'
+```
 
-1. 创建ViewWrapper
+## 基本使用步骤
 
-2. 创建RVAdapter
+### 1. 创建工厂、工人、数据
+```java
+RVAdapter rvAdapter = new RVAdapter();
+ViewHolderWrapper viewHolderWrapper = new ViewHolderWrapper()
+List<Object> list = new ArrayList<>();
+```
 
-3. 注册数据类型(Object)对应的布局类型(ViewWrapper)
+### 2. 分配数据给工人处理
+```java
+// 分配给单个工人处理
+rvAdapter.assign(Data.class)
+    .to(new ViewHolderWrapper());
+// 分配给多个工人处理
+rvAdapter.assign(Data.class)
+    .to(viewHolderWrapper...)
+    .by(new OneToManyLink() {...});
+```
 
-4. 添加数据，刷新
+### 3. 添加数据，开始装订
+```java
+rvAdapter.setItems(list);
+recyclerView.setAdapter(rvAdapter);
+```
 
-**部分示例如下：**
+
+
+## 点击事件
+> **ViewWrapper**提供了基础的点击事件以及更加灵活的自定义。
+
+### 1. 列表项点击事件
+```java
+public void setOnItemClickListener(OnItemClickListener onItemClickListener)
+```
+
+### 2. 子控件点击事件
+```java
+public void setOnItemChildClickListener(int childId, OnItemChildClickListener onItemChildClickListener)
+```
+
+### 3. 自定义事件
+> 通过重写`onViewHolderCreate`获取创建的`ViewHolder`，实现灵活的自定义事件。
 
 ```java
-// 创建适配器
-rvAdapter = new RVAdapter();
-// 注册一对一关系
-rvAdapter.register(SelectionBean.class)
-        .with(new SelectionWrapper());
-rvAdapter.register(FooterBean.class)
-        .with(new FooterWrapper());
-rvAdapter.register(HeaderBean.class)
-        .with(new HeaderWrapper());
-// 注册一对多关系
-rvAdapter.register(NormalBean.class)
-        .with(new NormalWrapper1(),
-                new NormalWrapper2())
-        .by(new OneToManyBinder<NormalBean>() {
-            @Override
-            public Class<? extends ViewWrapper<NormalBean>> onAssigned(@NonNull NormalBean item) {
-                if (item.getId() < 3) {
-                    return NormalWrapper1.class;
-                }
-                return NormalWrapper2.class;
-            }
-        });
-// 设置点击事件
-rvAdapter.setOnItemClickListener(new OnItemClickListener() {
-    @Override
-    public void onClick(RVHolder viewHolder, int position) {
-        showToast("onClick: " + position);
-    }
+@Override
+public void onViewHolderCreate(@NonNull RVHolder holder) {
+    ......
+}
+```
 
-    @Override
-    public boolean onLongClick(RVHolder viewHolder, int position) {
-        showToast("onLongClick: " + position);
-        return true;
-    }
-});
-// 设置适配器
-recyclerView.setAdapter(rvAdapter);
+## 单元格占据列数
+> 重写`getSpanSize`，返回自定义占据列数，默认为1。
+
+```java
+@Override
+public int getSpanSize(T item) {
+    return 1;
+}
 ```
