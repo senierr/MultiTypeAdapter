@@ -2,7 +2,7 @@ package com.senierr.adapterlib;
 
 import android.support.annotation.NonNull;
 
-import com.senierr.adapterlib.binder.Binder;
+import com.senierr.adapterlib.link.DefaultLink;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,20 +22,20 @@ public class LinkedViewTypeMap {
     // 数据类型
     private List<Class<?>> classes;
     // 布局类型
-    private List<ViewHolderWrapper<?>> wrappers;
+    private List<ViewHolderWrapper<?>> viewHolderWrappers;
     // 对应关系
-    private List<Binder<?>> binders;
+    private List<DefaultLink<?>> links;
 
     public LinkedViewTypeMap() {
         this.classes = new ArrayList<>();
-        this.wrappers = new ArrayList<>();
-        this.binders = new ArrayList<>();
+        this.viewHolderWrappers = new ArrayList<>();
+        this.links = new ArrayList<>();
     }
 
-    public void put(@NonNull Class<?> cls, @NonNull ViewHolderWrapper<?> wrapper, @NonNull Binder<?> binder) {
+    public void put(@NonNull Class<?> cls, @NonNull ViewHolderWrapper<?> viewHolderWrapper, @NonNull DefaultLink<?> link) {
         classes.add(cls);
-        wrappers.add(wrapper);
-        binders.add(binder);
+        viewHolderWrappers.add(viewHolderWrapper);
+        links.add(link);
     }
 
     public void remove(@NonNull Class<?> cls) {
@@ -43,8 +43,8 @@ public class LinkedViewTypeMap {
             int index = classes.indexOf(cls);
             if (index != -1) {
                 classes.remove(index);
-                binders.remove(index);
-                binders.remove(index);
+                links.remove(index);
+                links.remove(index);
             } else {
                 break;
             }
@@ -65,13 +65,13 @@ public class LinkedViewTypeMap {
     }
 
     @NonNull
-    public ViewHolderWrapper<?> getViewWrapper(int index) {
-        return wrappers.get(index);
+    public ViewHolderWrapper<?> getViewHolderWrapper(int index) {
+        return viewHolderWrappers.get(index);
     }
 
     @NonNull
-    public Binder<?> getBinder(int index) {
-        return binders.get(index);
+    public DefaultLink<?> getLink(int index) {
+        return links.get(index);
     }
 
     @NonNull
@@ -80,12 +80,12 @@ public class LinkedViewTypeMap {
     }
 
     @NonNull
-    public List<ViewHolderWrapper<?>> getViewWrappers() {
-        return wrappers;
+    public List<ViewHolderWrapper<?>> getViewHolderWrappers() {
+        return viewHolderWrappers;
     }
 
     @NonNull
-    public List<Binder<?>> getBinders() {
-        return binders;
+    public List<DefaultLink<?>> getLinks() {
+        return links;
     }
 }

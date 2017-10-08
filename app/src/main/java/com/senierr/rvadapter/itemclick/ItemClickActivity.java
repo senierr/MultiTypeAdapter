@@ -63,8 +63,8 @@ public class ItemClickActivity extends BaseRecyclerViewActivity {
             }
         });
 
-        rvAdapter.register(NormalBean.class)
-                .with(itemClickWrapper);
+        rvAdapter.assign(NormalBean.class)
+                .to(itemClickWrapper);
         recyclerView.setAdapter(rvAdapter);
     }
 

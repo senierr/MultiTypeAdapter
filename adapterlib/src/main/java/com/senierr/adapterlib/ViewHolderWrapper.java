@@ -27,14 +27,6 @@ public abstract class ViewHolderWrapper<T> {
     private @Nullable OnItemClickListener onItemClickListener;
     private @Nullable SparseArray<OnItemChildClickListener> onItemChildClickListeners;
 
-    private int layoutId;
-    private Class<T> dataCls;
-
-    public ViewHolderWrapper(int layoutId, Class<T> dataCls) {
-        this.layoutId = layoutId;
-        this.dataCls = dataCls;
-    }
-
     public abstract @LayoutRes int getLayoutId();
 
     public abstract void onBindViewHolder(@NonNull RVHolder holder, @NonNull T item);

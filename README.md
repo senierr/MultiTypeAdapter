@@ -51,7 +51,7 @@ rvAdapter.register(NormalBean.class)
                 new NormalWrapper2())
         .by(new OneToManyBinder<NormalBean>() {
             @Override
-            public Class<? extends ViewWrapper<NormalBean>> onGetWrapperType(@NonNull NormalBean item) {
+            public Class<? extends ViewWrapper<NormalBean>> onAssigned(@NonNull NormalBean item) {
                 if (item.getId() < 3) {
                     return NormalWrapper1.class;
                 }

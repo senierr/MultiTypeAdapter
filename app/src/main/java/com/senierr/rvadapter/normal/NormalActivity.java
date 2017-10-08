@@ -8,7 +8,7 @@ import android.support.v7.widget.RecyclerView;
 
 import com.senierr.adapterlib.RVAdapter;
 import com.senierr.adapterlib.ViewHolderWrapper;
-import com.senierr.adapterlib.binder.OneToManyBinder;
+import com.senierr.adapterlib.link.OneToManyLink;
 import com.senierr.rvadapter.BaseRecyclerViewActivity;
 import com.senierr.rvadapter.R;
 import com.senierr.rvadapter.bean.NormalBean;
@@ -32,29 +32,20 @@ public class NormalActivity extends BaseRecyclerViewActivity {
     }
 
     private void initView() {
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        // 设置布局类型
-        int orientation = OrientationHelper.VERTICAL;
-//        int orientation = OrientationHelper.HORIZONTAL;
-//        recyclerView.setLayoutManager(new LinearLayoutManager(this, orientation, false));
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 4, orientation, false));
-//        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(4, orientation));
-        // 创建适配器
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 4, GridLayoutManager.VERTICAL, false));
         rvAdapter = new RVAdapter();
-        // 一对多
-        rvAdapter.register(NormalBean.class)
-                .with(new NormalWrapper1(),
+        rvAdapter.assign(NormalBean.class)
+                .to(new NormalWrapper1(),
                         new NormalWrapper2())
-                .by(new OneToManyBinder<NormalBean>() {
+                .by(new OneToManyLink<NormalBean>() {
                     @Override
-                    public Class<? extends ViewHolderWrapper<NormalBean>> onGetWrapperType(@NonNull NormalBean item) {
+                    public Class<? extends ViewHolderWrapper<NormalBean>> onAssigned(@NonNull NormalBean item) {
                         if (item.getId() < 3) {
                             return NormalWrapper1.class;
                         }
                         return NormalWrapper2.class;
                     }
                 });
-        // 设置适配器
         recyclerView.setAdapter(rvAdapter);
     }
 
