@@ -5,6 +5,7 @@
     <color name="colorAccent">#d1860f</color>
 
     <color name="transparent">#00000000</color>
+    <color name="white">#FFFFFF</color>
 
     <color name="bg_header">#4DB6AC</color>
     <color name="bg_footer">#007968</color>

@@ -17,8 +17,8 @@ import com.senierr.rvadapter.bean.FooterBean;
 public class FooterWrapper extends ViewWrapper<FooterBean> {
 
     @Override
-    public RVHolder onCreateViewHolder(@NonNull ViewGroup parent) {
-        return RVHolder.create(parent, R.layout.layout_footer);
+    public int getLayoutId() {
+        return R.layout.layout_footer;
     }
 
     @Override

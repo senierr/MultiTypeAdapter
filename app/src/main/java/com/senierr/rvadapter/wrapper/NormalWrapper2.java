@@ -17,8 +17,8 @@ import com.senierr.rvadapter.bean.NormalBean;
 public class NormalWrapper2 extends ViewWrapper<NormalBean> {
 
     @Override
-    public RVHolder onCreateViewHolder(@NonNull ViewGroup parent) {
-        return RVHolder.create(parent, R.layout.layout_normal_2);
+    public int getLayoutId() {
+        return R.layout.layout_normal_2;
     }
 
     @Override

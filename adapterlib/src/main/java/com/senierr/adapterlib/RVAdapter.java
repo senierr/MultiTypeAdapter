@@ -2,15 +2,14 @@ package com.senierr.adapterlib;
 
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.senierr.adapterlib.binder.Binder;
 import com.senierr.adapterlib.exception.WrapperNotFoundException;
-import com.senierr.adapterlib.listener.OnItemClickListener;
 import com.senierr.adapterlib.util.RVHolder;
 
 import java.util.Collections;
@@ -23,10 +22,9 @@ import java.util.List;
 
 public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
 
-    private RecyclerView recyclerView;
+    private @Nullable RecyclerView recyclerView;
     private @NonNull LinkedViewTypeMap linkedViewTypeMap;
     private @NonNull List<?> items;
-    private OnItemClickListener onItemClickListener;
 
     public RVAdapter() {
         this(new LinkedViewTypeMap(), Collections.emptyList());
@@ -40,22 +38,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
     @Override
     public final RVHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ViewWrapper<?> viewWrapper = linkedViewTypeMap.getViewWrapper(viewType);
-        final RVHolder holder = viewWrapper.onCreateViewHolder(parent);
-        if (holder!= null && onItemClickListener != null) {
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onItemClickListener.onItemClick(holder, holder.getLayoutPosition());
-                }
-            });
-            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    return onItemClickListener.onItemLongClick(holder, holder.getLayoutPosition());
-                }
-            });
-        }
-        return holder;
+        return viewWrapper.onCreateViewHolder(parent);
     }
 
     @Override @Deprecated
@@ -106,6 +89,10 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
     @Override @SuppressWarnings("unchecked")
     public final void onViewAttachedToWindow(RVHolder holder) {
         super.onViewAttachedToWindow(holder);
+        if (recyclerView ==null) {
+            return;
+        }
+
         ViewWrapper wrapper = linkedViewTypeMap.getViewWrapper(holder.getItemViewType());
         wrapper.onViewAttachedToWindow(holder);
 
@@ -185,13 +172,5 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
 
     public void setItems(@NonNull List<?> items) {
         this.items = items;
-    }
-
-    public OnItemClickListener getOnItemClickListener() {
-        return onItemClickListener;
-    }
-
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        this.onItemClickListener = onItemClickListener;
     }
 }

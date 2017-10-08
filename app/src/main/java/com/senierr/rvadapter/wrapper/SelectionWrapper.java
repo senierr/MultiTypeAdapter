@@ -17,8 +17,8 @@ import com.senierr.rvadapter.bean.SelectionBean;
 public class SelectionWrapper extends ViewWrapper<SelectionBean> {
 
     @Override
-    public RVHolder onCreateViewHolder(@NonNull ViewGroup parent) {
-        return RVHolder.create(parent, R.layout.layout_selection);
+    public int getLayoutId() {
+        return R.layout.layout_selection;
     }
 
     @Override

@@ -4,17 +4,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.widget.Toast;
 
 import com.senierr.adapterlib.RVAdapter;
 import com.senierr.adapterlib.ViewWrapper;
 import com.senierr.adapterlib.binder.OneToManyBinder;
-import com.senierr.adapterlib.listener.OnItemClickListener;
-import com.senierr.adapterlib.util.RVHolder;
 import com.senierr.adapterlib.util.RVItemDecoration;
 import com.senierr.rvadapter.bean.FooterBean;
 import com.senierr.rvadapter.bean.HeaderBean;
@@ -30,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class RecyclerViewActivity extends AppCompatActivity {
+public class EmptyAndErrorActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private RVAdapter rvAdapter;
@@ -90,19 +86,6 @@ public class RecyclerViewActivity extends AppCompatActivity {
                         return NormalWrapper2.class;
                     }
                 });
-        // 设置点击事件
-        rvAdapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(RVHolder viewHolder, int position) {
-                showToast("onItemClick: " + position);
-            }
-
-            @Override
-            public boolean onItemLongClick(RVHolder viewHolder, int position) {
-                showToast("onItemLongClick: " + position);
-                return true;
-            }
-        });
         // 设置适配器
         recyclerView.setAdapter(rvAdapter);
     }
