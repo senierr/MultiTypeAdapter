@@ -20,7 +20,7 @@ public class ItemClickWrapper extends ViewHolderWrapper<NormalBean> {
 
     @Override
     public int getLayoutId() {
-        return R.layout.layout_item_click;
+        return R.layout.item_click;
     }
 
     @Override
