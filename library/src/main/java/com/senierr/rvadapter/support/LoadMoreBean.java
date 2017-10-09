@@ -1,4 +1,4 @@
-package com.senierr.rvadapter.extra;
+package com.senierr.rvadapter.support;
 
 /**
  * @author zhouchunjie

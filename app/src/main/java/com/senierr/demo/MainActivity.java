@@ -3,7 +3,6 @@ package com.senierr.demo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -16,9 +15,6 @@ import com.senierr.rvadapter.listener.OnItemChildClickListener;
 import com.senierr.rvadapter.listener.OnItemClickListener;
 import com.senierr.rvadapter.util.RVHolder;
 import com.senierr.rvadapter.util.RVItemDecoration;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -92,11 +88,9 @@ public class MainActivity extends AppCompatActivity {
      * 加载数据
      */
     private void loadData() {
-        List<Object> list = new ArrayList<>();
         for (int i = 0; i < 80; i++) {
-            list.add(new DataBean(i, "Item: " + i));
+            rvAdapter.getDataList().add(new DataBean(i, "Item: " + i));
         }
-        rvAdapter.setItems(list);
         rvAdapter.notifyDataSetChanged();
     }
 

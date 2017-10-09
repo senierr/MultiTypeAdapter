@@ -32,7 +32,7 @@ public abstract class ViewHolderWrapper<T> {
     public abstract void onBindViewHolder(@NonNull RVHolder holder, @NonNull T item);
 
     @NonNull
-    public final RVHolder onCreateViewHolder(@NonNull ViewGroup parent) {
+    public RVHolder onCreateViewHolder(@NonNull ViewGroup parent) {
         final RVHolder holder = RVHolder.create(parent, getLayoutId());
         // 列表点击事件
         if (onItemClickListener != null) {
@@ -71,8 +71,6 @@ public abstract class ViewHolderWrapper<T> {
                 }
             }
         }
-        // 创建ViewHolder回调
-        onViewHolderCreate(holder);
         return holder;
     }
 
@@ -101,8 +99,6 @@ public abstract class ViewHolderWrapper<T> {
     public int getSpanSize(T item) {
         return 1;
     }
-
-    public void onViewHolderCreate(@NonNull RVHolder holder) {}
 
     @Nullable
     public final OnItemClickListener getOnItemClickListener() {

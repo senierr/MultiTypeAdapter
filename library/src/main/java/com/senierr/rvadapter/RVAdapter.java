@@ -12,7 +12,7 @@ import com.senierr.rvadapter.link.DefaultLink;
 import com.senierr.rvadapter.exception.WrapperNotFoundException;
 import com.senierr.rvadapter.util.RVHolder;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,15 +24,15 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
 
     private @Nullable RecyclerView recyclerView;
     private @NonNull LinkedViewTypeMap linkedViewTypeMap;
-    private @NonNull List<?> items;
+    private @NonNull List<Object> dataList;
 
     public RVAdapter() {
-        this(new LinkedViewTypeMap(), Collections.emptyList());
+        this(new LinkedViewTypeMap(), new ArrayList<>());
     }
 
-    public RVAdapter(@NonNull LinkedViewTypeMap linkedViewTypeMap, @NonNull List<Object> items) {
+    public RVAdapter(@NonNull LinkedViewTypeMap linkedViewTypeMap, @NonNull List<Object> dataList) {
         this.linkedViewTypeMap = linkedViewTypeMap;
-        this.items = items;
+        this.dataList = dataList;
     }
 
     @Override
@@ -46,19 +46,19 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
 
     @Override @SuppressWarnings("unchecked")
     public final void onBindViewHolder(RVHolder holder, int position, List<Object> payloads) {
-        Object item = items.get(position);
+        Object item = dataList.get(position);
         ViewHolderWrapper<Object> viewHolderWrapper = (ViewHolderWrapper<Object>) linkedViewTypeMap.getViewHolderWrapper(holder.getItemViewType());
         viewHolderWrapper.onBindViewHolder(holder, item, payloads);
     }
 
     @Override
     public final int getItemCount() {
-        return items.size();
+        return dataList.size();
     }
 
     @Override @SuppressWarnings("unchecked")
     public final int getItemViewType(int position) {
-        Object item = items.get(position);
+        Object item = dataList.get(position);
         int classIndex = linkedViewTypeMap.indexOf(item.getClass());
         if (classIndex == -1) {
             throw new WrapperNotFoundException(item.getClass());
@@ -70,7 +70,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
     @Override @SuppressWarnings("unchecked")
     public final long getItemId(int position) {
         ViewHolderWrapper viewHolderWrapper = linkedViewTypeMap.getViewHolderWrapper(getItemViewType(position));
-        return viewHolderWrapper.getItemId(items.get(position));
+        return viewHolderWrapper.getItemId(dataList.get(position));
     }
 
     @Override
@@ -102,7 +102,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
             final RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
             StaggeredGridLayoutManager staggeredGridLayoutManager = (StaggeredGridLayoutManager) layoutManager;
             int position = holder.getLayoutPosition();
-            int spanSize = viewHolderWrapper.getSpanSize(items.get(position));
+            int spanSize = viewHolderWrapper.getSpanSize(dataList.get(position));
             p.setFullSpan(spanSize >= staggeredGridLayoutManager.getSpanCount());
         }
     }
@@ -131,7 +131,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
                 @Override
                 public int getSpanSize(int position) {
                     ViewHolderWrapper viewHolderWrapper = linkedViewTypeMap.getViewHolderWrapper(getItemViewType(position));
-                    int spanSize = viewHolderWrapper.getSpanSize(items.get(position));
+                    int spanSize = viewHolderWrapper.getSpanSize(dataList.get(position));
                     int spanCount = gridManager.getSpanCount();
                     return spanSize > spanCount ? spanCount : spanSize;
                 }
@@ -166,11 +166,11 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
     }
 
     @NonNull
-    public List<?> getItems() {
-        return items;
+    public List<Object> getDataList() {
+        return dataList;
     }
 
-    public void setItems(@NonNull List<?> items) {
-        this.items = items;
+    public void setDataList(@NonNull List<Object> dataList) {
+        this.dataList = dataList;
     }
 }

@@ -1,6 +1,7 @@
 package com.senierr.demo;
 
 import android.support.annotation.NonNull;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.senierr.rvadapter.ViewHolderWrapper;
@@ -22,5 +23,11 @@ public class FirstWrapper extends ViewHolderWrapper<DataBean> {
     public void onBindViewHolder(@NonNull RVHolder holder, @NonNull DataBean item) {
         TextView textView = holder.getView(R.id.tv_text);
         textView.setText(item.getContent());
+    }
+
+    @NonNull
+    @Override
+    public RVHolder onCreateViewHolder(@NonNull ViewGroup parent) {
+        return super.onCreateViewHolder(parent);
     }
 }

@@ -2,6 +2,7 @@ package com.senierr.demo;
 
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -29,14 +30,17 @@ public class SecondWrapper extends ViewHolderWrapper<DataBean> {
         textView.setText(item.getContent());
     }
 
+    @NonNull
     @Override
-    public void onViewHolderCreate(@NonNull final RVHolder holder) {
-        CheckBox checkBox = holder.getView(R.id.cb_check);
+    public RVHolder onCreateViewHolder(@NonNull ViewGroup parent) {
+        final RVHolder rvHolder = super.onCreateViewHolder(parent);
+        CheckBox checkBox = rvHolder.getView(R.id.cb_check);
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                Toast.makeText(compoundButton.getContext(), holder.getLayoutPosition() + ", Check: " + b, Toast.LENGTH_SHORT).show();
+                Toast.makeText(compoundButton.getContext(), rvHolder.getLayoutPosition() + ", Check: " + b, Toast.LENGTH_SHORT).show();
             }
         });
+        return rvHolder;
     }
 }
