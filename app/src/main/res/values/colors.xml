@@ -1,17 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#4986af</color>
-    <color name="colorPrimaryDark">#34607e</color>
-    <color name="colorAccent">#d1860f</color>
+    <color name="colorPrimary">#BC2121</color>
+    <color name="colorPrimaryDark">#BC2121</color>
+    <color name="colorAccent">#BC2121</color>
 
     <color name="transparent">#00000000</color>
     <color name="white">#FFFFFF</color>
-
-    <color name="bg_divider">#CECECE</color>
-    <color name="bg_header">#4DB6AC</color>
-    <color name="bg_footer">#007968</color>
-    <color name="bg_selection">#BDBDBD</color>
-    <color name="bg_normal_1">#4986af</color>
-    <color name="bg_normal_2">#34607e</color>
-
+    <color name="grey">#F5F5F5</color>
 </resources>

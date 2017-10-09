@@ -4,81 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/btn_normal"
-        android:text="普通列表"
-        android:textSize="14sp"
-        android:textColor="@color/white"
-        android:background="@color/bg_header"
-        android:onClick="onBtnClick"
-        android:layout_marginTop="@dimen/dimen_8"
-        android:layout_marginStart="@dimen/dimen_8"
-        android:layout_marginEnd="@dimen/dimen_8"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:id="@+id/btn_click"
-        android:text="点击长按事件"
-        android:textSize="14sp"
-        android:textColor="@color/white"
-        android:background="@color/bg_header"
-        android:onClick="onBtnClick"
-        android:layout_marginTop="@dimen/dimen_8"
-        android:layout_marginStart="@dimen/dimen_8"
-        android:layout_marginEnd="@dimen/dimen_8"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:id="@+id/btn_empty_error"
-        android:text="空数据/加载失败"
-        android:textSize="14sp"
-        android:textColor="@color/white"
-        android:background="@color/bg_header"
-        android:onClick="onBtnClick"
-        android:layout_marginTop="@dimen/dimen_8"
-        android:layout_marginStart="@dimen/dimen_8"
-        android:layout_marginEnd="@dimen/dimen_8"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:id="@+id/btn_header_footer"
-        android:text="头部/底部"
-        android:textSize="14sp"
-        android:textColor="@color/white"
-        android:background="@color/bg_header"
-        android:onClick="onBtnClick"
-        android:layout_marginTop="@dimen/dimen_8"
-        android:layout_marginStart="@dimen/dimen_8"
-        android:layout_marginEnd="@dimen/dimen_8"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:id="@+id/btn_selection"
-        android:text="条目项"
-        android:textSize="14sp"
-        android:textColor="@color/white"
-        android:background="@color/bg_header"
-        android:onClick="onBtnClick"
-        android:layout_marginTop="@dimen/dimen_8"
-        android:layout_marginStart="@dimen/dimen_8"
-        android:layout_marginEnd="@dimen/dimen_8"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:id="@+id/btn_load_more"
-        android:text="加载更多"
-        android:textSize="14sp"
-        android:textColor="@color/white"
-        android:background="@color/bg_header"
-        android:onClick="onBtnClick"
-        android:layout_marginTop="@dimen/dimen_8"
-        android:layout_marginStart="@dimen/dimen_8"
-        android:layout_marginEnd="@dimen/dimen_8"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent" />
 </LinearLayout>

@@ -1,19 +1,19 @@
-package com.senierr.demo.bean;
+package com.senierr.demo;
 
 /**
  * @author zhouchunjie
  * @date 2017/9/26
  */
 
-public class NormalBean {
+public class DataBean {
 
     private int id;
     private String content;
 
-    public NormalBean() {
+    public DataBean() {
     }
 
-    public NormalBean(int id, String content) {
+    public DataBean(int id, String content) {
         this.id = id;
         this.content = content;
     }
