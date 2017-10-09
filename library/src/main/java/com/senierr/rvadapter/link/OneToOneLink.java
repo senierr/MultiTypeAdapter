@@ -14,12 +14,12 @@ import com.senierr.rvadapter.ViewHolderWrapper;
 public class OneToOneLink<T> extends DefaultLink<T> {
 
     @Override
-    public final Class<? extends ViewHolderWrapper<T>> onAssigned(@NonNull T item) {
+    public final Class<? extends ViewHolderWrapper<T>> onAssignedWithType(@NonNull T item) {
         return null;
     }
 
     @Override
-    public final int convertToIndex(@NonNull T item) {
+    public int onAssignedWithIndex(@NonNull T item) {
         return 0;
     }
 }

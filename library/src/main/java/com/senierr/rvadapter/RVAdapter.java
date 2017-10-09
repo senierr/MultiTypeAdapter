@@ -64,7 +64,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
             throw new WrapperNotFoundException(item.getClass());
         }
         DefaultLink<Object> binder = (DefaultLink<Object>) linkedViewTypeMap.getLink(classIndex);
-        return classIndex + binder.convertToIndex(item);
+        return classIndex + binder.onAssignedWithIndex(item);
     }
 
     @Override @SuppressWarnings("unchecked")

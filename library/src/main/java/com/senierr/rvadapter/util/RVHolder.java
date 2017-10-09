@@ -3,11 +3,14 @@ package com.senierr.rvadapter.util;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
 /**
  * 通用ViewHolder
@@ -51,5 +54,29 @@ public class RVHolder extends RecyclerView.ViewHolder {
             viewSparseArray.put(viewId, view);
         }
         return (T) view;
+    }
+
+    public RVHolder setText(@IdRes int viewId, @NonNull CharSequence value) {
+        TextView view = getView(viewId);
+        view.setText(value);
+        return this;
+    }
+
+    public RVHolder setText(@IdRes int viewId, @StringRes int strId) {
+        TextView view = getView(viewId);
+        view.setText(strId);
+        return this;
+    }
+
+    public RVHolder setGone(@IdRes int viewId, boolean visible) {
+        View view = getView(viewId);
+        view.setVisibility(visible ? View.VISIBLE : View.GONE);
+        return this;
+    }
+
+    public RVHolder setVisible(@IdRes int viewId, boolean visible) {
+        View view = getView(viewId);
+        view.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+        return this;
     }
 }

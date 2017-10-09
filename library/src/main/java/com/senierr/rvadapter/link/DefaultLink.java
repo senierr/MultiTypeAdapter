@@ -15,16 +15,18 @@ public abstract class DefaultLink<T> {
 
     private ViewHolderWrapper<?>[] viewHolderWrappers;
 
-    public abstract Class<? extends ViewHolderWrapper<T>> onAssigned(@NonNull T item);
+    public abstract Class<? extends ViewHolderWrapper<T>> onAssignedWithType(@NonNull T item);
 
-    public abstract int convertToIndex(@NonNull T item);
+    public int onAssignedWithIndex(@NonNull T item) {
+        return 0;
+    }
 
     @NonNull
-    public ViewHolderWrapper<?>[] getViewHolderWrappers() {
+    public final ViewHolderWrapper<?>[] getViewHolderWrappers() {
         return viewHolderWrappers;
     }
 
-    public void setViewHolderWrappers(@NonNull ViewHolderWrapper<?>[] viewHolderWrappers) {
+    public final void setViewHolderWrappers(@NonNull ViewHolderWrapper<?>[] viewHolderWrappers) {
         this.viewHolderWrappers = viewHolderWrappers;
     }
 }

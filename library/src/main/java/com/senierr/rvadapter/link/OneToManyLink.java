@@ -15,9 +15,9 @@ import com.senierr.rvadapter.exception.WrapperNotFoundException;
 public abstract class OneToManyLink<T> extends DefaultLink<T> {
 
     @Override
-    public final int convertToIndex(@NonNull T item) {
+    public int onAssignedWithIndex(@NonNull T item) {
         ViewHolderWrapper<?>[] viewHolderWrappers = getViewHolderWrappers();
-        Class<? extends ViewHolderWrapper<T>> wrapperCls = onAssigned(item);
+        Class<? extends ViewHolderWrapper<T>> wrapperCls = onAssignedWithType(item);
         for (int i = 0; i < viewHolderWrappers.length; i++) {
             if (viewHolderWrappers[i].getClass().equals(wrapperCls)) {
                 return i;

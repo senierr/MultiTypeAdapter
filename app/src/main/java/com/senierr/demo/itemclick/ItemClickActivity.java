@@ -2,6 +2,7 @@ package com.senierr.demo.itemclick;
 
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 
@@ -9,15 +10,17 @@ import com.senierr.rvadapter.RVAdapter;
 import com.senierr.rvadapter.listener.OnItemChildClickListener;
 import com.senierr.rvadapter.listener.OnItemClickListener;
 import com.senierr.rvadapter.util.RVHolder;
-import com.senierr.demo.BaseRecyclerViewActivity;
+import com.senierr.demo.BaseActivity;
 import com.senierr.demo.R;
 import com.senierr.demo.bean.NormalBean;
+import com.senierr.rvadapter.util.RVItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemClickActivity extends BaseRecyclerViewActivity {
+public class ItemClickActivity extends BaseActivity {
 
+    protected RecyclerView recyclerView;
     private RVAdapter rvAdapter;
 
     @Override
@@ -25,13 +28,15 @@ public class ItemClickActivity extends BaseRecyclerViewActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_layout);
 
-        initRecyclerView();
         initView();
         loadData();
     }
 
     private void initView() {
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        recyclerView.addItemDecoration(new RVItemDecoration(this, R.dimen.divider_size, R.color.bg_divider));
 
         rvAdapter = new RVAdapter();
 
