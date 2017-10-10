@@ -27,55 +27,12 @@ public abstract class ViewHolderWrapper<T> {
     private @Nullable OnItemClickListener onItemClickListener;
     private @Nullable SparseArray<OnItemChildClickListener> onItemChildClickListeners;
 
-    public abstract @LayoutRes int getLayoutId();
+    private @NonNull Class<T> dataCls;
+    private @LayoutRes int layoutId;
 
-    public abstract void onBindViewHolder(@NonNull RVHolder holder, @NonNull T item);
-
-    @NonNull
-    public RVHolder onCreateViewHolder(@NonNull ViewGroup parent) {
-        final RVHolder holder = RVHolder.create(parent, getLayoutId());
-        // 列表点击事件
-        if (onItemClickListener != null) {
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onItemClickListener.onClick(holder, holder.getLayoutPosition());
-                }
-            });
-            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    return onItemClickListener.onLongClick(holder, holder.getLayoutPosition());
-                }
-            });
-        }
-        // 子控件点击事件
-        if (onItemChildClickListeners != null) {
-            for (int i = 0; i < onItemChildClickListeners.size(); i++) {
-                int key = onItemChildClickListeners.keyAt(i);
-                final OnItemChildClickListener onItemChildClickListener = onItemChildClickListeners.get(key);
-                View childView = holder.getView(key);
-                if (childView != null && onItemChildClickListener != null) {
-                    childView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            onItemChildClickListener.onClick(holder, view, holder.getLayoutPosition());
-                        }
-                    });
-                    childView.setOnLongClickListener(new View.OnLongClickListener() {
-                        @Override
-                        public boolean onLongClick(View view) {
-                            return onItemChildClickListener.onLongClick(holder, view, holder.getLayoutPosition());
-                        }
-                    });
-                }
-            }
-        }
-        return holder;
-    }
-
-    public void onBindViewHolder(@NonNull RVHolder holder, @NonNull T item, @NonNull List<Object> payloads) {
-        onBindViewHolder(holder, item);
+    public ViewHolderWrapper(@NonNull Class<T> dataCls, @LayoutRes int layoutId) {
+        this.dataCls = dataCls;
+        this.layoutId = layoutId;
     }
 
     public long getItemId(T item) {
@@ -100,6 +57,57 @@ public abstract class ViewHolderWrapper<T> {
         return 1;
     }
 
+    public boolean onAcceptAssignment(T item) {
+        return true;
+    }
+
+    public abstract void onBindViewHolder(@NonNull RVHolder holder, @NonNull T item);
+
+    public void onBindViewHolder(@NonNull RVHolder holder, @NonNull T item, @NonNull List<Object> payloads) {
+        onBindViewHolder(holder, item);
+    }
+
+    @NonNull
+    public RVHolder onCreateViewHolder(@NonNull ViewGroup parent) {
+        final RVHolder holder = RVHolder.create(parent, layoutId);
+        if (onItemClickListener != null) {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onItemClickListener.onClick(holder, holder.getLayoutPosition());
+                }
+            });
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    return onItemClickListener.onLongClick(holder, holder.getLayoutPosition());
+                }
+            });
+        }
+        if (onItemChildClickListeners != null) {
+            for (int i = 0; i < onItemChildClickListeners.size(); i++) {
+                int key = onItemChildClickListeners.keyAt(i);
+                final OnItemChildClickListener onItemChildClickListener = onItemChildClickListeners.get(key);
+                View childView = holder.getView(key);
+                if (childView != null && onItemChildClickListener != null) {
+                    childView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            onItemChildClickListener.onClick(holder, view, holder.getLayoutPosition());
+                        }
+                    });
+                    childView.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View view) {
+                            return onItemChildClickListener.onLongClick(holder, view, holder.getLayoutPosition());
+                        }
+                    });
+                }
+            }
+        }
+        return holder;
+    }
+
     @Nullable
     public final OnItemClickListener getOnItemClickListener() {
         return onItemClickListener;
@@ -122,5 +130,22 @@ public abstract class ViewHolderWrapper<T> {
             onItemChildClickListeners = new SparseArray<>();
         }
         onItemChildClickListeners.put(childId, onItemChildClickListener);
+    }
+
+    @NonNull
+    public final Class<T> getDataCls() {
+        return dataCls;
+    }
+
+    public final void setDataCls(@NonNull Class<T> dataCls) {
+        this.dataCls = dataCls;
+    }
+
+    public final int getLayoutId() {
+        return layoutId;
+    }
+
+    public final void setLayoutId(@LayoutRes int layoutId) {
+        this.layoutId = layoutId;
     }
 }

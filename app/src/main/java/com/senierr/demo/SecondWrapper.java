@@ -1,9 +1,7 @@
 package com.senierr.demo;
 
 import android.support.annotation.NonNull;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
@@ -19,9 +17,16 @@ import com.senierr.rvadapter.util.RVHolder;
 
 public class SecondWrapper extends ViewHolderWrapper<DataBean> {
 
+    public SecondWrapper() {
+        super(DataBean.class, R.layout.item_second);
+    }
+
     @Override
-    public int getLayoutId() {
-        return R.layout.item_second;
+    public boolean onAcceptAssignment(DataBean item) {
+        if (item.getId()!= 0 && item.getId() % 2 != 0) {
+            return true;
+        }
+        return false;
     }
 
     @Override

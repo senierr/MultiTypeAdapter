@@ -1,6 +1,5 @@
 package com.senierr.rvadapter;
 
-import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
@@ -8,8 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.ViewGroup;
 
-import com.senierr.rvadapter.link.DefaultLink;
-import com.senierr.rvadapter.exception.WrapperNotFoundException;
 import com.senierr.rvadapter.util.RVHolder;
 
 import java.util.ArrayList;
@@ -23,33 +20,40 @@ import java.util.List;
 public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
 
     private @Nullable RecyclerView recyclerView;
-    private @NonNull LinkedViewTypeMap linkedViewTypeMap;
+    private @NonNull ViewHolderWrapperPool viewHolderWrapperPool;
     private @NonNull List<Object> dataList;
 
     public RVAdapter() {
-        this(new LinkedViewTypeMap(), new ArrayList<>());
+        this(new ArrayList<>());
     }
 
-    public RVAdapter(@NonNull LinkedViewTypeMap linkedViewTypeMap, @NonNull List<Object> dataList) {
-        this.linkedViewTypeMap = linkedViewTypeMap;
+    public RVAdapter( @NonNull List<Object> dataList) {
+        this.viewHolderWrapperPool = new ViewHolderWrapperPool();
         this.dataList = dataList;
+    }
+
+    @Override @SuppressWarnings("unchecked")
+    public final int getItemViewType(int position) {
+        Object item = dataList.get(position);
+        return viewHolderWrapperPool.getViewHolderWrapperIndex(item);
     }
 
     @Override
     public final RVHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ViewHolderWrapper<?> viewHolderWrapper = linkedViewTypeMap.getViewHolderWrapper(viewType);
+        ViewHolderWrapper<?> viewHolderWrapper = viewHolderWrapperPool.getViewHolderWrapper(viewType);
         return viewHolderWrapper.onCreateViewHolder(parent);
     }
-
-    @Override @Deprecated
-    public final void onBindViewHolder(RVHolder holder, int position) {}
 
     @Override @SuppressWarnings("unchecked")
     public final void onBindViewHolder(RVHolder holder, int position, List<Object> payloads) {
         Object item = dataList.get(position);
-        ViewHolderWrapper<Object> viewHolderWrapper = (ViewHolderWrapper<Object>) linkedViewTypeMap.getViewHolderWrapper(holder.getItemViewType());
+        ViewHolderWrapper<Object> viewHolderWrapper =
+                (ViewHolderWrapper<Object>) viewHolderWrapperPool.getViewHolderWrapper(holder.getItemViewType());
         viewHolderWrapper.onBindViewHolder(holder, item, payloads);
     }
+
+    @Override @Deprecated
+    public final void onBindViewHolder(RVHolder holder, int position) {}
 
     @Override
     public final int getItemCount() {
@@ -57,32 +61,21 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
     }
 
     @Override @SuppressWarnings("unchecked")
-    public final int getItemViewType(int position) {
-        Object item = dataList.get(position);
-        int classIndex = linkedViewTypeMap.indexOf(item.getClass());
-        if (classIndex == -1) {
-            throw new WrapperNotFoundException(item.getClass());
-        }
-        DefaultLink<Object> binder = (DefaultLink<Object>) linkedViewTypeMap.getLink(classIndex);
-        return classIndex + binder.onAssignedWithIndex(item);
-    }
-
-    @Override @SuppressWarnings("unchecked")
     public final long getItemId(int position) {
-        ViewHolderWrapper viewHolderWrapper = linkedViewTypeMap.getViewHolderWrapper(getItemViewType(position));
+        ViewHolderWrapper viewHolderWrapper = viewHolderWrapperPool.getViewHolderWrapper(getItemViewType(position));
         return viewHolderWrapper.getItemId(dataList.get(position));
     }
 
     @Override
     public final void onViewRecycled(RVHolder holder) {
         super.onViewRecycled(holder);
-        ViewHolderWrapper viewHolderWrapper = linkedViewTypeMap.getViewHolderWrapper(holder.getItemViewType());
+        ViewHolderWrapper viewHolderWrapper = viewHolderWrapperPool.getViewHolderWrapper(holder.getItemViewType());
         viewHolderWrapper.onViewRecycled(holder);
     }
 
     @Override
     public final boolean onFailedToRecycleView(RVHolder holder) {
-        ViewHolderWrapper viewHolderWrapper = linkedViewTypeMap.getViewHolderWrapper(holder.getItemViewType());
+        ViewHolderWrapper viewHolderWrapper = viewHolderWrapperPool.getViewHolderWrapper(holder.getItemViewType());
         return viewHolderWrapper.onFailedToRecycleView(holder);
     }
 
@@ -93,7 +86,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
             return;
         }
 
-        ViewHolderWrapper viewHolderWrapper = linkedViewTypeMap.getViewHolderWrapper(holder.getItemViewType());
+        ViewHolderWrapper viewHolderWrapper = viewHolderWrapperPool.getViewHolderWrapper(holder.getItemViewType());
         viewHolderWrapper.onViewAttachedToWindow(holder);
 
         ViewGroup.LayoutParams lp = holder.itemView.getLayoutParams();
@@ -110,7 +103,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
     @Override
     public final void onViewDetachedFromWindow(RVHolder holder) {
         super.onViewDetachedFromWindow(holder);
-        ViewHolderWrapper viewHolderWrapper = linkedViewTypeMap.getViewHolderWrapper(holder.getItemViewType());
+        ViewHolderWrapper viewHolderWrapper = viewHolderWrapperPool.getViewHolderWrapper(holder.getItemViewType());
         viewHolderWrapper.onViewDetachedFromWindow(holder);
     }
 
@@ -119,7 +112,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
         super.onAttachedToRecyclerView(recyclerView);
         this.recyclerView = recyclerView;
 
-        List<ViewHolderWrapper<?>> viewHolderWrappers = linkedViewTypeMap.getViewHolderWrappers();
+        List<ViewHolderWrapper<?>> viewHolderWrappers = viewHolderWrapperPool.getViewHolderWrappers();
         for (ViewHolderWrapper<?> viewHolderWrapper : viewHolderWrappers) {
             viewHolderWrapper.onAttachedToRecyclerView(recyclerView);
         }
@@ -130,7 +123,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
             gridManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                 @Override
                 public int getSpanSize(int position) {
-                    ViewHolderWrapper viewHolderWrapper = linkedViewTypeMap.getViewHolderWrapper(getItemViewType(position));
+                    ViewHolderWrapper viewHolderWrapper = viewHolderWrapperPool.getViewHolderWrapper(getItemViewType(position));
                     int spanSize = viewHolderWrapper.getSpanSize(dataList.get(position));
                     int spanCount = gridManager.getSpanCount();
                     return spanSize > spanCount ? spanCount : spanSize;
@@ -144,25 +137,14 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
         super.onDetachedFromRecyclerView(recyclerView);
         this.recyclerView = null;
 
-        List<ViewHolderWrapper<?>> viewHolderWrappers = linkedViewTypeMap.getViewHolderWrappers();
+        List<ViewHolderWrapper<?>> viewHolderWrappers = viewHolderWrapperPool.getViewHolderWrappers();
         for (ViewHolderWrapper<?> viewHolderWrapper : viewHolderWrappers) {
             viewHolderWrapper.onDetachedFromRecyclerView(recyclerView);
         }
     }
 
-    @CheckResult
-    public final <T> AssignmentHelper<T> assign(@NonNull Class<T> cls) {
-        linkedViewTypeMap.remove(cls);
-        return new AssignmentHelper<T>(linkedViewTypeMap).assign(cls);
-    }
-
-    @NonNull
-    public LinkedViewTypeMap getLinkedViewTypeMap() {
-        return linkedViewTypeMap;
-    }
-
-    public void setLinkedViewTypeMap(@NonNull LinkedViewTypeMap linkedViewTypeMap) {
-        this.linkedViewTypeMap = linkedViewTypeMap;
+    public void setViewHolderWrappers(@NonNull ViewHolderWrapper<?>... viewHolderWrappers) {
+        viewHolderWrapperPool.addViewHolderWrapper(viewHolderWrappers);
     }
 
     @NonNull

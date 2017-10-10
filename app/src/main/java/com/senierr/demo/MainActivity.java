@@ -1,7 +1,6 @@
 package com.senierr.demo;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,8 +8,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.senierr.rvadapter.RVAdapter;
-import com.senierr.rvadapter.ViewHolderWrapper;
-import com.senierr.rvadapter.link.OneToManyLink;
 import com.senierr.rvadapter.listener.OnItemChildClickListener;
 import com.senierr.rvadapter.listener.OnItemClickListener;
 import com.senierr.rvadapter.util.RVHolder;
@@ -70,17 +67,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        rvAdapter.assign(DataBean.class)
-                .to(firstWrapper, new SecondWrapper())
-                .by(new OneToManyLink<DataBean>() {
-                    @Override
-                    public Class<? extends ViewHolderWrapper<DataBean>> onAssignedWithType(@NonNull DataBean item) {
-                        if (item.getId() % 2 == 0) {
-                            return FirstWrapper.class;
-                        }
-                        return SecondWrapper.class;
-                    }
-                });
+        rvAdapter.setViewHolderWrappers(firstWrapper,
+                new SecondWrapper(),
+                new ThirdWrapper());
         recyclerView.setAdapter(rvAdapter);
     }
 
