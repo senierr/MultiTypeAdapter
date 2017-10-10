@@ -20,7 +20,7 @@ import java.util.List;
 public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
 
     private @Nullable RecyclerView recyclerView;
-    private @NonNull ViewHolderWrapperPool viewHolderWrapperPool;
+    private @NonNull WrapperPool wrapperPool;
     private @NonNull List<Object> dataList;
 
     public RVAdapter() {
@@ -28,19 +28,19 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
     }
 
     public RVAdapter( @NonNull List<Object> dataList) {
-        this.viewHolderWrapperPool = new ViewHolderWrapperPool();
+        this.wrapperPool = new WrapperPool();
         this.dataList = dataList;
     }
 
     @Override @SuppressWarnings("unchecked")
     public final int getItemViewType(int position) {
         Object item = dataList.get(position);
-        return viewHolderWrapperPool.getViewHolderWrapperIndex(item);
+        return wrapperPool.getViewHolderWrapperIndex(item);
     }
 
     @Override
     public final RVHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ViewHolderWrapper<?> viewHolderWrapper = viewHolderWrapperPool.getViewHolderWrapper(viewType);
+        ViewHolderWrapper<?> viewHolderWrapper = wrapperPool.getViewHolderWrapper(viewType);
         return viewHolderWrapper.onCreateViewHolder(parent);
     }
 
@@ -48,7 +48,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
     public final void onBindViewHolder(RVHolder holder, int position, List<Object> payloads) {
         Object item = dataList.get(position);
         ViewHolderWrapper<Object> viewHolderWrapper =
-                (ViewHolderWrapper<Object>) viewHolderWrapperPool.getViewHolderWrapper(holder.getItemViewType());
+                (ViewHolderWrapper<Object>) wrapperPool.getViewHolderWrapper(holder.getItemViewType());
         viewHolderWrapper.onBindViewHolder(holder, item, payloads);
     }
 
@@ -62,20 +62,20 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
 
     @Override @SuppressWarnings("unchecked")
     public final long getItemId(int position) {
-        ViewHolderWrapper viewHolderWrapper = viewHolderWrapperPool.getViewHolderWrapper(getItemViewType(position));
+        ViewHolderWrapper viewHolderWrapper = wrapperPool.getViewHolderWrapper(getItemViewType(position));
         return viewHolderWrapper.getItemId(dataList.get(position));
     }
 
     @Override
     public final void onViewRecycled(RVHolder holder) {
         super.onViewRecycled(holder);
-        ViewHolderWrapper viewHolderWrapper = viewHolderWrapperPool.getViewHolderWrapper(holder.getItemViewType());
+        ViewHolderWrapper viewHolderWrapper = wrapperPool.getViewHolderWrapper(holder.getItemViewType());
         viewHolderWrapper.onViewRecycled(holder);
     }
 
     @Override
     public final boolean onFailedToRecycleView(RVHolder holder) {
-        ViewHolderWrapper viewHolderWrapper = viewHolderWrapperPool.getViewHolderWrapper(holder.getItemViewType());
+        ViewHolderWrapper viewHolderWrapper = wrapperPool.getViewHolderWrapper(holder.getItemViewType());
         return viewHolderWrapper.onFailedToRecycleView(holder);
     }
 
@@ -86,7 +86,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
             return;
         }
 
-        ViewHolderWrapper viewHolderWrapper = viewHolderWrapperPool.getViewHolderWrapper(holder.getItemViewType());
+        ViewHolderWrapper viewHolderWrapper = wrapperPool.getViewHolderWrapper(holder.getItemViewType());
         viewHolderWrapper.onViewAttachedToWindow(holder);
 
         ViewGroup.LayoutParams lp = holder.itemView.getLayoutParams();
@@ -103,7 +103,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
     @Override
     public final void onViewDetachedFromWindow(RVHolder holder) {
         super.onViewDetachedFromWindow(holder);
-        ViewHolderWrapper viewHolderWrapper = viewHolderWrapperPool.getViewHolderWrapper(holder.getItemViewType());
+        ViewHolderWrapper viewHolderWrapper = wrapperPool.getViewHolderWrapper(holder.getItemViewType());
         viewHolderWrapper.onViewDetachedFromWindow(holder);
     }
 
@@ -112,7 +112,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
         super.onAttachedToRecyclerView(recyclerView);
         this.recyclerView = recyclerView;
 
-        List<ViewHolderWrapper<?>> viewHolderWrappers = viewHolderWrapperPool.getViewHolderWrappers();
+        List<ViewHolderWrapper<?>> viewHolderWrappers = wrapperPool.getViewHolderWrappers();
         for (ViewHolderWrapper<?> viewHolderWrapper : viewHolderWrappers) {
             viewHolderWrapper.onAttachedToRecyclerView(recyclerView);
         }
@@ -123,7 +123,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
             gridManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                 @Override
                 public int getSpanSize(int position) {
-                    ViewHolderWrapper viewHolderWrapper = viewHolderWrapperPool.getViewHolderWrapper(getItemViewType(position));
+                    ViewHolderWrapper viewHolderWrapper = wrapperPool.getViewHolderWrapper(getItemViewType(position));
                     int spanSize = viewHolderWrapper.getSpanSize(dataList.get(position));
                     int spanCount = gridManager.getSpanCount();
                     return spanSize > spanCount ? spanCount : spanSize;
@@ -137,14 +137,14 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
         super.onDetachedFromRecyclerView(recyclerView);
         this.recyclerView = null;
 
-        List<ViewHolderWrapper<?>> viewHolderWrappers = viewHolderWrapperPool.getViewHolderWrappers();
+        List<ViewHolderWrapper<?>> viewHolderWrappers = wrapperPool.getViewHolderWrappers();
         for (ViewHolderWrapper<?> viewHolderWrapper : viewHolderWrappers) {
             viewHolderWrapper.onDetachedFromRecyclerView(recyclerView);
         }
     }
 
     public void setViewHolderWrappers(@NonNull ViewHolderWrapper<?>... viewHolderWrappers) {
-        viewHolderWrapperPool.addViewHolderWrapper(viewHolderWrappers);
+        wrapperPool.addViewHolderWrapper(viewHolderWrappers);
     }
 
     @NonNull

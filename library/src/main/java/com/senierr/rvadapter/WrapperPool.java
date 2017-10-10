@@ -3,6 +3,7 @@ package com.senierr.rvadapter;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.IllegalFormatException;
 import java.util.List;
 
 /**
@@ -12,12 +13,12 @@ import java.util.List;
  * @date 2017/10/10
  */
 
-public class ViewHolderWrapperPool {
+public class WrapperPool {
 
     // 工人集合
     private List<ViewHolderWrapper<?>> viewHolderWrappers;
 
-    public ViewHolderWrapperPool() {
+    public WrapperPool() {
         viewHolderWrappers = new ArrayList<>();
     }
 
@@ -48,7 +49,7 @@ public class ViewHolderWrapperPool {
                 }
             }
         }
-        throw new RuntimeException(String.format(
+        throw new IllegalArgumentException(String.format(
                 "Can not found ViewHolderWrapper for %s!", item.getClass().getSimpleName()));
     }
 
