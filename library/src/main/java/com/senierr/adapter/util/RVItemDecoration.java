@@ -1,4 +1,4 @@
-package com.senierr.rvadapter.util;
+package com.senierr.adapter.util;
 
 import android.content.Context;
 import android.graphics.Canvas;

@@ -1,9 +1,8 @@
-package com.senierr.rvadapter;
+package com.senierr.adapter;
 
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
-import java.util.IllegalFormatException;
 import java.util.List;
 
 /**

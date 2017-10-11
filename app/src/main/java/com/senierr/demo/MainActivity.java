@@ -7,18 +7,18 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Toast;
 
-import com.senierr.rvadapter.RVAdapter;
-import com.senierr.rvadapter.listener.OnItemChildClickListener;
-import com.senierr.rvadapter.listener.OnItemClickListener;
-import com.senierr.rvadapter.support.BaseLoadMoreWrapper;
-import com.senierr.rvadapter.util.RVHolder;
-import com.senierr.rvadapter.util.RVItemDecoration;
+import com.senierr.adapter.MultiTypeAdapter;
+import com.senierr.adapter.listener.OnItemChildClickListener;
+import com.senierr.adapter.listener.OnItemClickListener;
+import com.senierr.adapter.support.BaseLoadMoreWrapper;
+import com.senierr.adapter.util.RVHolder;
+import com.senierr.adapter.util.RVItemDecoration;
 
 public class MainActivity extends AppCompatActivity {
 
     private Toast toast;
     private RecyclerView recyclerView;
-    private RVAdapter rvAdapter;
+    private MultiTypeAdapter multiTypeAdapter;
 
     private LoadMoreWrapper loadMoreWrapper;
 
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.addItemDecoration(new RVItemDecoration(this, R.dimen.dimen_4, R.color.transparent));
 
-        rvAdapter = new RVAdapter();
+        multiTypeAdapter = new MultiTypeAdapter();
 
         FirstWrapper firstWrapper = new FirstWrapper();
         // 列表点击事件
@@ -77,28 +77,28 @@ public class MainActivity extends AppCompatActivity {
                 recyclerView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        int size = rvAdapter.getDataList().size();
+                        int size = multiTypeAdapter.getDataList().size();
 
                         if (size > 35) {
                             loadMoreWrapper.loadMoreFailure();
                             return;
                         }
 
-                        rvAdapter.getDataList().add(size - 1, new DataBean(size - 1,
+                        multiTypeAdapter.getDataList().add(size - 1, new DataBean(size - 1,
                                 "Item: " + (size - 1)));
                         loadMoreWrapper.loadMoreCompleted();
-                        rvAdapter.notifyItemChanged(rvAdapter.getItemCount() - 2);
+                        multiTypeAdapter.notifyItemChanged(multiTypeAdapter.getItemCount() - 2);
                     }
                 }, 2000);
             }
         });
 
 
-        rvAdapter.addViewHolderWrappers(firstWrapper,
+        multiTypeAdapter.addViewHolderWrappers(firstWrapper,
                 new SecondWrapper(),
                 new ThirdWrapper(),
                 loadMoreWrapper);
-        recyclerView.setAdapter(rvAdapter);
+        recyclerView.setAdapter(multiTypeAdapter);
     }
 
     /**
@@ -106,10 +106,10 @@ public class MainActivity extends AppCompatActivity {
      */
     private void loadData() {
         for (int i = 0; i < 30; i++) {
-            rvAdapter.getDataList().add(new DataBean(i, "Item: " + i));
+            multiTypeAdapter.getDataList().add(new DataBean(i, "Item: " + i));
         }
-        rvAdapter.getDataList().add(loadMoreWrapper.getLoadMoreBean());
-        rvAdapter.notifyDataSetChanged();
+        multiTypeAdapter.getDataList().add(loadMoreWrapper.getLoadMoreBean());
+        multiTypeAdapter.notifyDataSetChanged();
     }
 
     /**

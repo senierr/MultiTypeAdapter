@@ -1,4 +1,4 @@
-package com.senierr.rvadapter.util;
+package com.senierr.adapter.util;
 
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
@@ -9,7 +9,6 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 /**

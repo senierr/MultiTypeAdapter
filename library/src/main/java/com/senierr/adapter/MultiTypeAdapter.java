@@ -1,4 +1,4 @@
-package com.senierr.rvadapter;
+package com.senierr.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -7,7 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.ViewGroup;
 
-import com.senierr.rvadapter.util.RVHolder;
+import com.senierr.adapter.util.RVHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,17 +19,17 @@ import java.util.List;
  * @date 2017/9/25
  */
 
-public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
+public class MultiTypeAdapter extends RecyclerView.Adapter<RVHolder> {
 
     private @Nullable RecyclerView recyclerView;
     private @NonNull WrapperPool wrapperPool;
     private @NonNull List<Object> dataList;
 
-    public RVAdapter() {
+    public MultiTypeAdapter() {
         this(new ArrayList<>());
     }
 
-    public RVAdapter( @NonNull List<Object> dataList) {
+    public MultiTypeAdapter(@NonNull List<Object> dataList) {
         this.wrapperPool = new WrapperPool();
         this.dataList = dataList;
     }
@@ -151,7 +151,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
      * @param viewHolderWrapper
      * @return
      */
-    public RVAdapter addViewHolderWrapper(@NonNull ViewHolderWrapper<?> viewHolderWrapper) {
+    public MultiTypeAdapter addViewHolderWrapper(@NonNull ViewHolderWrapper<?> viewHolderWrapper) {
         wrapperPool.addViewHolderWrappers(viewHolderWrapper);
         return this;
     }
@@ -162,7 +162,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
      * @param viewHolderWrappers
      * @return
      */
-    public RVAdapter addViewHolderWrappers(@NonNull ViewHolderWrapper<?>... viewHolderWrappers) {
+    public MultiTypeAdapter addViewHolderWrappers(@NonNull ViewHolderWrapper<?>... viewHolderWrappers) {
         wrapperPool.addViewHolderWrappers(viewHolderWrappers);
         return this;
     }

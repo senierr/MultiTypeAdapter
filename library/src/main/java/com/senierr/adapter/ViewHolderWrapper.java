@@ -1,4 +1,4 @@
-package com.senierr.rvadapter;
+package com.senierr.adapter;
 
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
@@ -9,9 +9,9 @@ import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.senierr.rvadapter.listener.OnItemChildClickListener;
-import com.senierr.rvadapter.listener.OnItemClickListener;
-import com.senierr.rvadapter.util.RVHolder;
+import com.senierr.adapter.listener.OnItemChildClickListener;
+import com.senierr.adapter.listener.OnItemClickListener;
+import com.senierr.adapter.util.RVHolder;
 
 import java.util.List;
 

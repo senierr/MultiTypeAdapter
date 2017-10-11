@@ -1,6 +1,6 @@
-package com.senierr.rvadapter.listener;
+package com.senierr.adapter.listener;
 
-import com.senierr.rvadapter.util.RVHolder;
+import com.senierr.adapter.util.RVHolder;
 
 /**
  * 列表点击回调

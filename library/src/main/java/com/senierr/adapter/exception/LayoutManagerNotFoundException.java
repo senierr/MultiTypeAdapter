@@ -1,4 +1,4 @@
-package com.senierr.rvadapter.exception;
+package com.senierr.adapter.exception;
 
 /**
  * @author zhouchunjie

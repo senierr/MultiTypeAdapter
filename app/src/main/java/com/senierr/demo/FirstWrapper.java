@@ -1,11 +1,10 @@
 package com.senierr.demo;
 
 import android.support.annotation.NonNull;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.senierr.rvadapter.ViewHolderWrapper;
-import com.senierr.rvadapter.util.RVHolder;
+import com.senierr.adapter.ViewHolderWrapper;
+import com.senierr.adapter.util.RVHolder;
 
 /**
  * @author zhouchunjie

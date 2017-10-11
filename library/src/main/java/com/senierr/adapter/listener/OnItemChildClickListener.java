@@ -1,7 +1,7 @@
-package com.senierr.rvadapter.listener;
+package com.senierr.adapter.listener;
 
 import android.view.View;
-import com.senierr.rvadapter.util.RVHolder;
+import com.senierr.adapter.util.RVHolder;
 
 /**
  * 列表子控件点击回调

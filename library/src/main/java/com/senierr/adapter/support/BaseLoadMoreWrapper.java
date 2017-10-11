@@ -1,23 +1,26 @@
-package com.senierr.rvadapter.support;
+package com.senierr.adapter.support;
 
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 
-import com.senierr.rvadapter.ViewHolderWrapper;
-import com.senierr.rvadapter.util.RecyclerViewUtil;
+import com.senierr.adapter.ViewHolderWrapper;
+import com.senierr.adapter.util.RecyclerViewUtil;
 
 /**
+ * 加载更多
+ *
  * @author zhouchunjie
  * @date 2017/10/9
  */
 
 public abstract class BaseLoadMoreWrapper extends ViewHolderWrapper<BaseLoadMoreWrapper.LoadMoreBean> {
 
-    private RecyclerView recyclerView;
-    private LoadMoreBean loadMoreBean;
-    private OnLoadMoreListener onLoadMoreListener;
+    private @Nullable RecyclerView recyclerView;
+    private @NonNull LoadMoreBean loadMoreBean;
+    private @Nullable OnLoadMoreListener onLoadMoreListener;
 
     public BaseLoadMoreWrapper(@LayoutRes int layoutId) {
         super(LoadMoreBean.class, layoutId);
@@ -127,11 +130,12 @@ public abstract class BaseLoadMoreWrapper extends ViewHolderWrapper<BaseLoadMore
         return loadMoreBean.getLoadState() == LoadMoreBean.STATUS_LOADING;
     }
 
+    @Nullable
     public OnLoadMoreListener getOnLoadMoreListener() {
         return onLoadMoreListener;
     }
 
-    public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {
+    public void setOnLoadMoreListener(@Nullable OnLoadMoreListener onLoadMoreListener) {
         this.onLoadMoreListener = onLoadMoreListener;
     }
 

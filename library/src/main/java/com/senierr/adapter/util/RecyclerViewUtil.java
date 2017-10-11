@@ -1,4 +1,4 @@
-package com.senierr.rvadapter.util;
+package com.senierr.adapter.util;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
@@ -6,7 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 
-import com.senierr.rvadapter.exception.LayoutManagerNotFoundException;
+import com.senierr.adapter.exception.LayoutManagerNotFoundException;
 
 /**
  * @author zhouchunjie
