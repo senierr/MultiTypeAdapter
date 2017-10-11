@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 工厂：雇佣工人，维持运转，装订成册
+ *
  * @author zhouchunjie
  * @date 2017/9/25
  */
@@ -143,15 +145,43 @@ public class RVAdapter extends RecyclerView.Adapter<RVHolder> {
         }
     }
 
-    public void setViewHolderWrappers(@NonNull ViewHolderWrapper<?>... viewHolderWrappers) {
-        wrapperPool.addViewHolderWrapper(viewHolderWrappers);
+    /**
+     * 雇佣单个工人
+     *
+     * @param viewHolderWrapper
+     * @return
+     */
+    public RVAdapter addViewHolderWrapper(@NonNull ViewHolderWrapper<?> viewHolderWrapper) {
+        wrapperPool.addViewHolderWrappers(viewHolderWrapper);
+        return this;
     }
 
+    /**
+     * 雇佣多个工人
+     *
+     * @param viewHolderWrappers
+     * @return
+     */
+    public RVAdapter addViewHolderWrappers(@NonNull ViewHolderWrapper<?>... viewHolderWrappers) {
+        wrapperPool.addViewHolderWrappers(viewHolderWrappers);
+        return this;
+    }
+
+    /**
+     * 获取数据集
+     *
+     * @return
+     */
     @NonNull
     public List<Object> getDataList() {
         return dataList;
     }
 
+    /**
+     * 设置数据集
+     *
+     * @param dataList
+     */
     public void setDataList(@NonNull List<Object> dataList) {
         this.dataList = dataList;
     }

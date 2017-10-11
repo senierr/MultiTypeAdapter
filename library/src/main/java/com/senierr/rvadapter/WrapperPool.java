@@ -27,7 +27,7 @@ public class WrapperPool {
      *
      * @param viewHolderWrappers
      */
-    public void addViewHolderWrapper(@NonNull ViewHolderWrapper<?>... viewHolderWrappers) {
+    public void addViewHolderWrappers(@NonNull ViewHolderWrapper<?>... viewHolderWrappers) {
         for (ViewHolderWrapper<?> viewHolderWrapper : viewHolderWrappers) {
             this.viewHolderWrappers.add(viewHolderWrapper);
         }

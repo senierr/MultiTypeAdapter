@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        rvAdapter.setViewHolderWrappers(firstWrapper,
+        rvAdapter.addViewHolderWrappers(firstWrapper,
                 new SecondWrapper(),
                 new ThirdWrapper());
         recyclerView.setAdapter(rvAdapter);
