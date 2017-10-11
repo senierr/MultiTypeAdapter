@@ -1,6 +1,7 @@
 package com.senierr.demo;
 
 import android.support.annotation.NonNull;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.senierr.adapter.support.BaseLoadMoreWrapper;
@@ -14,24 +15,27 @@ import com.senierr.adapter.util.RVHolder;
 public class LoadMoreWrapper extends BaseLoadMoreWrapper {
 
     public LoadMoreWrapper() {
-        super(R.layout.item_third);
+        super(R.layout.item_load_more);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RVHolder holder, @NonNull LoadMoreBean item) {
-        TextView textView = holder.getView(R.id.tv_text);
         switch (item.getLoadState()) {
             case LoadMoreBean.STATUS_LOADING:
-                textView.setText("正在加载...");
+                holder.setText(R.id.tv_text, "正在加载...");
+                holder.setGone(R.id.pb_bar, false);
                 break;
             case LoadMoreBean.STATUS_LOADING_COMPLETED:
-                textView.setText("加载完成");
+                holder.setText(R.id.tv_text, "加载完成");
+                holder.setGone(R.id.pb_bar, true);
                 break;
             case LoadMoreBean.STATUS_LOAD_NO_MORE:
-                textView.setText("没有更多");
+                holder.setText(R.id.tv_text, "没有更多");
+                holder.setGone(R.id.pb_bar, true);
                 break;
             case LoadMoreBean.STATUS_LOAD_FAILURE:
-                textView.setText("加载失败");
+                holder.setText(R.id.tv_text, "加载失败");
+                holder.setGone(R.id.pb_bar, true);
                 break;
         }
     }

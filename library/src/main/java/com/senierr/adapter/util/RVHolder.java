@@ -67,15 +67,15 @@ public class RVHolder extends RecyclerView.ViewHolder {
         return this;
     }
 
-    public RVHolder setGone(@IdRes int viewId, boolean visible) {
+    public RVHolder setGone(@IdRes int viewId, boolean isGone) {
         View view = getView(viewId);
-        view.setVisibility(visible ? View.VISIBLE : View.GONE);
+        view.setVisibility(isGone ? View.GONE : View.VISIBLE);
         return this;
     }
 
-    public RVHolder setVisible(@IdRes int viewId, boolean visible) {
+    public RVHolder setVisible(@IdRes int viewId, boolean isVisible) {
         View view = getView(viewId);
-        view.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+        view.setVisibility(isVisible ? View.VISIBLE : View.INVISIBLE);
         return this;
     }
 }
