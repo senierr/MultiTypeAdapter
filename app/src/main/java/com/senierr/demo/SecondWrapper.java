@@ -33,6 +33,8 @@ public class SecondWrapper extends ViewHolderWrapper<DataBean> {
     public void onBindViewHolder(@NonNull RVHolder holder, @NonNull DataBean item) {
         TextView textView = holder.getView(R.id.tv_text);
         textView.setText(item.getContent());
+        CheckBox checkBox = holder.getView(R.id.cb_check);
+        checkBox.setChecked(false);
     }
 
     @NonNull
