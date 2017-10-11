@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.senierr.rvadapter.RVAdapter;
 import com.senierr.rvadapter.listener.OnItemChildClickListener;
 import com.senierr.rvadapter.listener.OnItemClickListener;
+import com.senierr.rvadapter.support.BaseLoadMoreWrapper;
 import com.senierr.rvadapter.util.RVHolder;
 import com.senierr.rvadapter.util.RVItemDecoration;
 
@@ -18,6 +19,8 @@ public class MainActivity extends AppCompatActivity {
     private Toast toast;
     private RecyclerView recyclerView;
     private RVAdapter rvAdapter;
+
+    private LoadMoreWrapper loadMoreWrapper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,9 +70,34 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        loadMoreWrapper = new LoadMoreWrapper();
+        loadMoreWrapper.setOnLoadMoreListener(new BaseLoadMoreWrapper.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                recyclerView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        int size = rvAdapter.getDataList().size();
+
+                        if (size > 35) {
+                            loadMoreWrapper.loadMoreFailure();
+                            return;
+                        }
+
+                        rvAdapter.getDataList().add(size - 1, new DataBean(size - 1,
+                                "Item: " + (size - 1)));
+                        loadMoreWrapper.loadMoreCompleted();
+                        rvAdapter.notifyItemChanged(rvAdapter.getItemCount() - 2);
+                    }
+                }, 2000);
+            }
+        });
+
+
         rvAdapter.addViewHolderWrappers(firstWrapper,
                 new SecondWrapper(),
-                new ThirdWrapper());
+                new ThirdWrapper(),
+                loadMoreWrapper);
         recyclerView.setAdapter(rvAdapter);
     }
 
@@ -77,9 +105,10 @@ public class MainActivity extends AppCompatActivity {
      * 加载数据
      */
     private void loadData() {
-        for (int i = 0; i < 80; i++) {
+        for (int i = 0; i < 30; i++) {
             rvAdapter.getDataList().add(new DataBean(i, "Item: " + i));
         }
+        rvAdapter.getDataList().add(loadMoreWrapper.getLoadMoreBean());
         rvAdapter.notifyDataSetChanged();
     }
 
