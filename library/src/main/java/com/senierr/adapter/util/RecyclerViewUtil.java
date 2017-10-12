@@ -6,7 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 
-import com.senierr.adapter.exception.LayoutManagerNotFoundException;
+import com.senierr.adapter.exception.LayoutManager404Exception;
 
 /**
  * @author zhouchunjie
@@ -31,7 +31,7 @@ public class RecyclerViewUtil {
         } else if (layoutManager instanceof StaggeredGridLayoutManager) {
             orientation = ((StaggeredGridLayoutManager) layoutManager).getOrientation();
         } else {
-            throw new LayoutManagerNotFoundException();
+            throw new LayoutManager404Exception();
         }
         return orientation;
     }
@@ -52,7 +52,7 @@ public class RecyclerViewUtil {
         } else if (layoutManager instanceof StaggeredGridLayoutManager) {
             spanCount = ((StaggeredGridLayoutManager) layoutManager).getSpanCount();
         } else {
-            throw new LayoutManagerNotFoundException();
+            throw new LayoutManager404Exception();
         }
         return spanCount;
     }
@@ -74,7 +74,7 @@ public class RecyclerViewUtil {
                     .findFirstVisibleItemPositions(new int[staggeredGridLayoutManager.getSpanCount()]);
             firstVisibleItemPosition = findMin(lastPositions);
         } else {
-            throw new LayoutManagerNotFoundException();
+            throw new LayoutManager404Exception();
         }
         return firstVisibleItemPosition;
     }
@@ -96,7 +96,7 @@ public class RecyclerViewUtil {
                     .findLastVisibleItemPositions(new int[staggeredGridLayoutManager.getSpanCount()]);
             lastVisibleItemPosition = findMax(lastPositions);
         } else {
-            throw new LayoutManagerNotFoundException();
+            throw new LayoutManager404Exception();
         }
         return lastVisibleItemPosition;
     }
