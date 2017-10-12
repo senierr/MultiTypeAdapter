@@ -24,11 +24,12 @@ import java.util.List;
 
 public abstract class ViewHolderWrapper<T> {
 
-    private @Nullable OnItemClickListener onItemClickListener;
-    private @Nullable SparseArray<OnItemChildClickListener> onItemChildClickListeners;
-
+    protected @Nullable MultiTypeAdapter multiTypeAdapter;
     private @NonNull Class<T> dataCls;
     private @LayoutRes int layoutId;
+
+    private @Nullable OnItemClickListener onItemClickListener;
+    private @Nullable SparseArray<OnItemChildClickListener> onItemChildClickListeners;
 
     public ViewHolderWrapper(@NonNull Class<T> dataCls, @LayoutRes int layoutId) {
         this.dataCls = dataCls;
@@ -109,6 +110,32 @@ public abstract class ViewHolderWrapper<T> {
     }
 
     @Nullable
+    public final MultiTypeAdapter getMultiTypeAdapter() {
+        return multiTypeAdapter;
+    }
+
+    public final void setMultiTypeAdapter(@Nullable MultiTypeAdapter multiTypeAdapter) {
+        this.multiTypeAdapter = multiTypeAdapter;
+    }
+
+    @NonNull
+    public final Class<T> getDataCls() {
+        return dataCls;
+    }
+
+    public final void setDataCls(@NonNull Class<T> dataCls) {
+        this.dataCls = dataCls;
+    }
+
+    public final int getLayoutId() {
+        return layoutId;
+    }
+
+    public final void setLayoutId(@LayoutRes int layoutId) {
+        this.layoutId = layoutId;
+    }
+
+    @Nullable
     public final OnItemClickListener getOnItemClickListener() {
         return onItemClickListener;
     }
@@ -130,22 +157,5 @@ public abstract class ViewHolderWrapper<T> {
             onItemChildClickListeners = new SparseArray<>();
         }
         onItemChildClickListeners.put(childId, onItemChildClickListener);
-    }
-
-    @NonNull
-    public final Class<T> getDataCls() {
-        return dataCls;
-    }
-
-    public final void setDataCls(@NonNull Class<T> dataCls) {
-        this.dataCls = dataCls;
-    }
-
-    public final int getLayoutId() {
-        return layoutId;
-    }
-
-    public final void setLayoutId(@LayoutRes int layoutId) {
-        this.layoutId = layoutId;
     }
 }

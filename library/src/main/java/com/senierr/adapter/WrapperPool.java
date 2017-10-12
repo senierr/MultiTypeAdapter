@@ -24,12 +24,19 @@ public class WrapperPool {
     /**
      * 添加工人
      *
-     * @param viewHolderWrappers
+     * @param viewHolderWrapper
      */
-    public void addViewHolderWrappers(@NonNull ViewHolderWrapper<?>... viewHolderWrappers) {
-        for (ViewHolderWrapper<?> viewHolderWrapper : viewHolderWrappers) {
-            this.viewHolderWrappers.add(viewHolderWrapper);
-        }
+    public void addViewHolderWrapper(@NonNull ViewHolderWrapper<?> viewHolderWrapper) {
+        this.viewHolderWrappers.add(viewHolderWrapper);
+    }
+
+    /**
+     * 移除工人
+     *
+     * @param viewHolderWrapper
+     */
+    public void removeViewHolderWrapper(@NonNull ViewHolderWrapper<?> viewHolderWrapper) {
+        this.viewHolderWrappers.remove(viewHolderWrapper);
     }
 
     /**

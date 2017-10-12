@@ -146,24 +146,30 @@ public class MultiTypeAdapter extends RecyclerView.Adapter<RVHolder> {
     }
 
     /**
-     * 雇佣单个工人
-     *
-     * @param viewHolderWrapper
-     * @return
-     */
-    public MultiTypeAdapter addViewHolderWrapper(@NonNull ViewHolderWrapper<?> viewHolderWrapper) {
-        wrapperPool.addViewHolderWrappers(viewHolderWrapper);
-        return this;
-    }
-
-    /**
-     * 雇佣多个工人
+     * 雇佣工人
      *
      * @param viewHolderWrappers
      * @return
      */
-    public MultiTypeAdapter addViewHolderWrappers(@NonNull ViewHolderWrapper<?>... viewHolderWrappers) {
-        wrapperPool.addViewHolderWrappers(viewHolderWrappers);
+    public final MultiTypeAdapter register(@NonNull ViewHolderWrapper<?>... viewHolderWrappers) {
+        for (ViewHolderWrapper<?> viewHolderWrapper : viewHolderWrappers) {
+            viewHolderWrapper.setMultiTypeAdapter(this);
+            wrapperPool.addViewHolderWrapper(viewHolderWrapper);
+        }
+        return this;
+    }
+
+    /**
+     * 解雇工人
+     *
+     * @param viewHolderWrappers
+     * @return
+     */
+    public final MultiTypeAdapter unregister(@NonNull ViewHolderWrapper<?>... viewHolderWrappers) {
+        for (ViewHolderWrapper<?> viewHolderWrapper : viewHolderWrappers) {
+            viewHolderWrapper.setMultiTypeAdapter(null);
+            wrapperPool.removeViewHolderWrapper(viewHolderWrapper);
+        }
         return this;
     }
 

@@ -56,7 +56,7 @@ public abstract class BaseLoadMoreWrapper extends ViewHolderWrapper<BaseLoadMore
      *
      * @param recyclerView
      */
-    public boolean checkCanLoadMore(RecyclerView recyclerView, int dx, int dy) {
+    private boolean checkCanLoadMore(RecyclerView recyclerView, int dx, int dy) {
         if (loadMoreBean.getLoadState() != LoadMoreBean.STATUS_LOADING &&
                 RecyclerViewUtil.getLastVisibleItemPosition(recyclerView) + 1 >= recyclerView.getAdapter().getItemCount()) {
             int orientation = RecyclerViewUtil.getOrientation(recyclerView);
@@ -70,19 +70,27 @@ public abstract class BaseLoadMoreWrapper extends ViewHolderWrapper<BaseLoadMore
     }
 
     /**
+     * 更新加载更多布局
+     */
+    private void refreshLoadMoreView() {
+        if (multiTypeAdapter != null) {
+            multiTypeAdapter.notifyItemChanged(multiTypeAdapter.getItemCount() - 1);
+        }
+    }
+
+    /**
      * 开始加载
      */
-    public void loadMoreStart() {
-        if (recyclerView == null) {
-            return;
-        }
+    public final void loadMoreStart() {
         loadMoreBean.setLoadState(LoadMoreBean.STATUS_LOADING);
-        if (onLoadMoreListener != null) {
+        if (onLoadMoreListener != null && recyclerView != null) {
             recyclerView.post(new Runnable() {
                 @Override
                 public void run() {
-                    recyclerView.getAdapter().notifyItemChanged(recyclerView.getAdapter().getItemCount() - 1);
-                    onLoadMoreListener.onLoadMore();
+                    refreshLoadMoreView();
+                    if (onLoadMoreListener != null) {
+                        onLoadMoreListener.onLoadMore();
+                    }
                 }
             });
         }
@@ -91,34 +99,25 @@ public abstract class BaseLoadMoreWrapper extends ViewHolderWrapper<BaseLoadMore
     /**
      * 加载完成
      */
-    public void loadMoreCompleted() {
-        if (recyclerView == null) {
-            return;
-        }
+    public final void loadMoreCompleted() {
         loadMoreBean.setLoadState(LoadMoreBean.STATUS_LOADING_COMPLETED);
-        recyclerView.getAdapter().notifyItemChanged(recyclerView.getAdapter().getItemCount() - 1);
+        refreshLoadMoreView();
     }
 
     /**
      * 没有更多数据
      */
-    public void loadMoreNoMore() {
-        if (recyclerView == null) {
-            return;
-        }
+    public final void loadMoreNoMore() {
         loadMoreBean.setLoadState(LoadMoreBean.STATUS_LOAD_NO_MORE);
-        recyclerView.getAdapter().notifyItemChanged(recyclerView.getAdapter().getItemCount() - 1);
+        refreshLoadMoreView();
     }
 
     /**
      * 加载失败
      */
-    public void loadMoreFailure() {
-        if (recyclerView == null) {
-            return;
-        }
+    public final void loadMoreFailure() {
         loadMoreBean.setLoadState(LoadMoreBean.STATUS_LOAD_FAILURE);
-        recyclerView.getAdapter().notifyItemChanged(recyclerView.getAdapter().getItemCount() - 1);
+        refreshLoadMoreView();
     }
 
     /**
@@ -126,25 +125,25 @@ public abstract class BaseLoadMoreWrapper extends ViewHolderWrapper<BaseLoadMore
      *
      * @return
      */
-    public boolean isLoading() {
+    public final boolean isLoading() {
         return loadMoreBean.getLoadState() == LoadMoreBean.STATUS_LOADING;
     }
 
     @Nullable
-    public OnLoadMoreListener getOnLoadMoreListener() {
+    public final OnLoadMoreListener getOnLoadMoreListener() {
         return onLoadMoreListener;
     }
 
-    public void setOnLoadMoreListener(@Nullable OnLoadMoreListener onLoadMoreListener) {
+    public final void setOnLoadMoreListener(@Nullable OnLoadMoreListener onLoadMoreListener) {
         this.onLoadMoreListener = onLoadMoreListener;
     }
 
     @NonNull
-    public LoadMoreBean getLoadMoreBean() {
+    public final LoadMoreBean getLoadMoreBean() {
         return loadMoreBean;
     }
 
-    public void setLoadMoreBean(@NonNull LoadMoreBean loadMoreBean) {
+    public final void setLoadMoreBean(@NonNull LoadMoreBean loadMoreBean) {
         this.loadMoreBean = loadMoreBean;
     }
 

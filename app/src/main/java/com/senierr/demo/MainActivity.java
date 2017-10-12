@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(RVHolder viewHolder, View view, int position) {
                 showToast("ChildClick: " + position);
+                multiTypeAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -80,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         int size = multiTypeAdapter.getDataList().size();
-
                         if (size > 35) {
                             loadMoreWrapper.loadMoreFailure();
                             return;
@@ -88,15 +88,15 @@ public class MainActivity extends AppCompatActivity {
 
                         multiTypeAdapter.getDataList().add(size - 1, new DataBean(size - 1,
                                 "Item: " + (size - 1)));
+                        multiTypeAdapter.notifyItemInserted(multiTypeAdapter.getItemCount() - 2);
                         loadMoreWrapper.loadMoreCompleted();
-                        multiTypeAdapter.notifyItemChanged(multiTypeAdapter.getItemCount() - 2);
                     }
                 }, 2000);
             }
         });
 
 
-        multiTypeAdapter.addViewHolderWrappers(firstWrapper,
+        multiTypeAdapter.register(firstWrapper,
                 new SecondWrapper(),
                 new ThirdWrapper(),
                 loadMoreWrapper);

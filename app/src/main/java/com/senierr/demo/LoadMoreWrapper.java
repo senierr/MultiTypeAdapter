@@ -1,8 +1,6 @@
 package com.senierr.demo;
 
 import android.support.annotation.NonNull;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.senierr.adapter.support.BaseLoadMoreWrapper;
 import com.senierr.adapter.util.RVHolder;
