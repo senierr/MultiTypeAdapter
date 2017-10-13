@@ -1,10 +1,29 @@
 # MultiTypeAdapter
 
-#### 灵活、快捷地创建多类型视图的解决方案。
+#### 灵活、便捷的创建多类型视图解决方案。
+
+## 前言
 
 > 如果将`RecyclerView`比作一本书，那么`ViewHolder`就是**书页**，`Data`则是**内容**（例如：图片、文字等）。
 >
 > `RecyclerView`的**展现过程**即是一本书的**形成过程**：**工人**（`ViewHolderWrapper`）创建**书页**（`ViewHolder`），并将**内容**（`Data`）写上去，然后交给**工厂**（`MultiTypeAdapter`）将其装订成册。
+
+`MultiTypeAdapter`的目标：**创建任意内容的书。**
+
+## 目前支持
+
+* 多类型数据
+* 多类型视图
+* 数据与视图一对一组合
+* 数据与视图一对多组合
+* 列表项及子控件点击长按事件
+* 自定义事件
+* 自定义ViewHolder
+* 自定义列表项所占列数
+* 头部/底部
+* 正在加载/空数据/加载错误/没有网络/自定义状态`
+* 加载更多
+* 其他
 
 ## 架包引入
 
@@ -63,7 +82,7 @@ public class FirstWrapper extends ViewHolderWrapper<DataBean> {
 // 2. 创建工厂
 MultiTypeAdapter multiTypeAdapter = new MultiTypeAdapter();
 // 3. 雇佣工人
-multiTypeAdapter.addViewHolderWrappers(new FirstWrapper())
+multiTypeAdapter.register(new FirstWrapper())
 // 4. 设置数据
 multiTypeAdapter.setDataList(list);
 // 5. 开始装订
@@ -72,7 +91,7 @@ recyclerView.setAdapter(multiTypeAdapter);
 
 ## 进阶使用
 
-### 1. 点击事件
+### 1. 点击长按事件
 ```java
 // 1. 列表项点击长按事件
 setOnItemClickListener(OnItemClickListener onItemClickListener)
@@ -129,12 +148,58 @@ public boolean onAcceptAssignment(T item) {
 
 ## 其他
 
-`MultiTypeAdapter`内部支持**加载更多**，详见`support`包下`BaseLoadMoreWrapper`。
+`头部/底部`、`状态显示`、`加载更多`等，本质上都是一种`数据类型`，以及对应的`ViewHolderWrapper`。
 
-**加载更多**本质上仍然是：一种特殊类型数据（LoadMoreBean），以及特殊的工人（LoadMoreWrapper），用法与其他一致。
+`MultiTypeAdapter`内部提供了简便的处理方式，详见`support`包下。
+
+### 1. 头部/底部
+
+只要实现`ViewHolderWrapper`并重写`getSpanSize()`，返回总列数即可占满全宽。
+
+### 2. 状态显示
+
+`MultiTypeAdapter`内部支持`正在加载`、`空数据`、`加载错误`、`没有网络`及`自定义状态`状态显示。
+
+**注意：**`状态显示`时，会清空`MultiTypeAdapter`内部数据，并增加一条数据`stateBean`，重新加载数据时记得先**clear()、clear()、clear()**!
 
 ```java
-// 1. 定义加载更多工人
+public class StateWrapper extends BaseStateWrapper {
+    public StateWrapper() {
+        super(R.layout.item_state);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull RVHolder holder, @NonNull StateBean item) {
+        switch (item.getState()) {
+            case StateBean.STATE_LOADING:
+                ......
+                break;
+            case StateBean.STATE_EMPTY:
+                ......
+                break;
+            case StateBean.STATE_ERROR:
+                ......
+                break;
+            case StateBean.STATE_NO_NETWORK:
+                ......
+                break;
+        }
+    }
+}
+
+multiTypeAdapter.register(stateWrapper);
+stateWrapper.showLoading();         // 正在加载
+stateWrapper.showEmpty();           // 空数据
+stateWrapper.showError();           // 加载错误
+stateWrapper.showNoNetwork();       // 没有网络
+stateWrapper.refreshView(state);    // 自定义状态
+```
+
+### 3. 加载更多
+
+**注意：** 要在列表数据末添加`加载更多`类型数据。
+
+```java
 public class LoadMoreWrapper extends BaseLoadMoreWrapper {
     public LoadMoreWrapper() {
         super(R.layout.item_third);
@@ -142,31 +207,26 @@ public class LoadMoreWrapper extends BaseLoadMoreWrapper {
 
     @Override
     public void onBindViewHolder(@NonNull RVHolder holder, @NonNull LoadMoreBean item) {
-        TextView textView = holder.getView(R.id.tv_text);
         switch (item.getLoadState()) {
             case LoadMoreBean.STATUS_LOADING:
-                textView.setText("正在加载...");
+                ......
                 break;
             case LoadMoreBean.STATUS_LOADING_COMPLETED:
-                textView.setText("加载完成");
+                ......
                 break;
             case LoadMoreBean.STATUS_LOAD_NO_MORE:
-                textView.setText("没有更多");
+                ......
                 break;
             case LoadMoreBean.STATUS_LOAD_FAILURE:
-                textView.setText("加载失败");
+                ......
                 break;
         }
     }
 }
 
-// 2. 设置加载更多回调
 setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener)
-// 3. 雇佣加载更多工人
-multiTypeAdapter.addViewHolderWrapper(loadMoreWrapper);
-// 4. 列表末添加加载更多类型数据
-multiTypeAdapter.getDataList().add(loadMoreWrapper.getLoadMoreBean());
-
+multiTypeAdapter.register(loadMoreWrapper);
+list.add(loadMoreWrapper.getLoadMoreBean());
 ```
 
 ## License
