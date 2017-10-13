@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
 //        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 //        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        final StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
 //        layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new RVItemDecoration(this, R.dimen.dimen_4, R.color.transparent));
@@ -94,10 +94,11 @@ public class MainActivity extends AppCompatActivity {
                         if (size > 33) {
                             loadMoreWrapper.loadMoreFailure();
 
-                            loadMoreWrapper.setLoadMoreable(false);
                             multiTypeAdapter.getDataList().clear();
                             multiTypeAdapter.getDataList().add("This is en empty page");
                             multiTypeAdapter.notifyDataSetChanged();
+                            layoutManager.invalidateSpanAssignments();
+                            layoutManager.scrollToPosition(0);
                             return;
                         }
 
@@ -118,14 +119,6 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onBindViewHolder(@NonNull RVHolder holder, @NonNull String item) {
                         holder.setText(R.id.tv_text, item);
-                        holder.itemView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Log.e("onBindViewHolder", "" + multiTypeAdapter.getItemCount());
-                            }
-                        });
-                        ((StaggeredGridLayoutManager) recyclerView.getLayoutManager()).invalidateSpanAssignments();
-                        multiTypeAdapter.notifyDataSetChanged();
                     }
 
                     @Override

@@ -21,11 +21,9 @@ public abstract class BaseLoadMoreWrapper extends ViewHolderWrapper<BaseLoadMore
     private @Nullable RecyclerView recyclerView;
     private @NonNull LoadMoreBean loadMoreBean;
     private @Nullable OnLoadMoreListener onLoadMoreListener;
-    private boolean loadMoreable;
 
     public BaseLoadMoreWrapper(@LayoutRes int layoutId) {
         super(LoadMoreBean.class, layoutId);
-        loadMoreable = true;
         loadMoreBean = new LoadMoreBean();
         loadMoreBean.setLoadState(LoadMoreBean.STATUS_LOADING_COMPLETED);
     }
@@ -59,7 +57,12 @@ public abstract class BaseLoadMoreWrapper extends ViewHolderWrapper<BaseLoadMore
      * @param recyclerView
      */
     private boolean checkCanLoadMore(RecyclerView recyclerView, int dx, int dy) {
-        if (loadMoreable && loadMoreBean.getLoadState() != LoadMoreBean.STATUS_LOADING &&
+        // 判断是否有加载更多项
+        boolean hasLoadMoreBean = false;
+        if (multiTypeAdapter != null) {
+            hasLoadMoreBean = multiTypeAdapter.getDataList().indexOf(loadMoreBean) != -1;
+        }
+        if (hasLoadMoreBean && loadMoreBean.getLoadState() != LoadMoreBean.STATUS_LOADING &&
                 RecyclerViewUtil.getLastVisibleItemPosition(recyclerView) + 1 >= recyclerView.getAdapter().getItemCount()) {
             int orientation = RecyclerViewUtil.getOrientation(recyclerView);
             if (orientation == OrientationHelper.VERTICAL && dy > 0) {
@@ -129,24 +132,6 @@ public abstract class BaseLoadMoreWrapper extends ViewHolderWrapper<BaseLoadMore
      */
     public final boolean isLoading() {
         return loadMoreBean.getLoadState() == LoadMoreBean.STATUS_LOADING;
-    }
-
-    /**
-     * 是否可加载更多
-     *
-     * @return
-     */
-    public boolean isLoadMoreable() {
-        return loadMoreable;
-    }
-
-    /**
-     * 设置是否可加载更多
-     *
-     * @param loadMoreable
-     */
-    public void setLoadMoreable(boolean loadMoreable) {
-        this.loadMoreable = loadMoreable;
     }
 
     @Nullable
