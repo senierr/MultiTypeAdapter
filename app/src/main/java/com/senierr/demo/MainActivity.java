@@ -1,19 +1,26 @@
 package com.senierr.demo;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.senierr.adapter.MultiTypeAdapter;
+import com.senierr.adapter.ViewHolderWrapper;
 import com.senierr.adapter.listener.OnItemChildClickListener;
 import com.senierr.adapter.listener.OnItemClickListener;
 import com.senierr.adapter.support.BaseLoadMoreWrapper;
 import com.senierr.adapter.util.RVHolder;
 import com.senierr.adapter.util.RVItemDecoration;
+import com.senierr.adapter.util.RecyclerViewUtil;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,10 +45,13 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+//        layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new RVItemDecoration(this, R.dimen.dimen_4, R.color.transparent));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-
         multiTypeAdapter = new MultiTypeAdapter();
 
         FirstWrapper firstWrapper = new FirstWrapper();
@@ -81,8 +91,13 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         int size = multiTypeAdapter.getDataList().size();
-                        if (size > 35) {
+                        if (size > 33) {
                             loadMoreWrapper.loadMoreFailure();
+
+                            loadMoreWrapper.setLoadMoreable(false);
+                            multiTypeAdapter.getDataList().clear();
+                            multiTypeAdapter.getDataList().add("This is en empty page");
+                            multiTypeAdapter.notifyDataSetChanged();
                             return;
                         }
 
@@ -95,11 +110,29 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         multiTypeAdapter.register(firstWrapper,
                 new SecondWrapper(),
                 new ThirdWrapper(),
-                loadMoreWrapper);
+                loadMoreWrapper,
+                new ViewHolderWrapper<String>(String.class, R.layout.item_empty) {
+                    @Override
+                    public void onBindViewHolder(@NonNull RVHolder holder, @NonNull String item) {
+                        holder.setText(R.id.tv_text, item);
+                        holder.itemView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Log.e("onBindViewHolder", "" + multiTypeAdapter.getItemCount());
+                            }
+                        });
+                        ((StaggeredGridLayoutManager) recyclerView.getLayoutManager()).invalidateSpanAssignments();
+                        multiTypeAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public int getSpanSize(String item) {
+                        return RecyclerViewUtil.getSpanCount(recyclerView);
+                    }
+                });
         recyclerView.setAdapter(multiTypeAdapter);
     }
 
