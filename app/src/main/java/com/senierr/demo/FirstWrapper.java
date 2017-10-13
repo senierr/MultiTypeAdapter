@@ -19,7 +19,7 @@ public class FirstWrapper extends ViewHolderWrapper<DataBean> {
 
     @Override
     public boolean onAcceptAssignment(DataBean item) {
-        if (item.getId()!= 0 && item.getId() % 2 == 0) {
+        if (item.getId() % 2 == 0) {
             return true;
         }
         return false;
@@ -29,5 +29,6 @@ public class FirstWrapper extends ViewHolderWrapper<DataBean> {
     public void onBindViewHolder(@NonNull RVHolder holder, @NonNull DataBean item) {
         TextView textView = holder.getView(R.id.tv_text);
         textView.setText(item.getContent());
+        textView.setHeight(item.getHeight());
     }
 }

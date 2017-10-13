@@ -23,7 +23,7 @@ public class SecondWrapper extends ViewHolderWrapper<DataBean> {
 
     @Override
     public boolean onAcceptAssignment(DataBean item) {
-        if (item.getId()!= 0 && item.getId() % 2 != 0) {
+        if (item.getId() % 2 != 0) {
             return true;
         }
         return false;
@@ -33,6 +33,7 @@ public class SecondWrapper extends ViewHolderWrapper<DataBean> {
     public void onBindViewHolder(@NonNull RVHolder holder, @NonNull DataBean item) {
         TextView textView = holder.getView(R.id.tv_text);
         textView.setText(item.getContent());
+        textView.setHeight(item.getHeight());
         CheckBox checkBox = holder.getView(R.id.cb_check);
         checkBox.setChecked(false);
     }

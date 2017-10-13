@@ -3,8 +3,8 @@ package com.senierr.adapter.support;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 
 import com.senierr.adapter.ViewHolderWrapper;
 import com.senierr.adapter.util.RecyclerViewUtil;
@@ -24,7 +24,7 @@ public abstract class BaseStateWrapper extends ViewHolderWrapper<BaseStateWrappe
     public BaseStateWrapper(@LayoutRes int layoutId) {
         super(StateBean.class, layoutId);
         stateBean = new StateBean();
-        loadMoreBean.setLoadState(LoadMoreBean.STATUS_LOADING_COMPLETED);
+        stateBean.setState(StateBean.STATE_NONE);
     }
 
     @Override
@@ -35,72 +35,73 @@ public abstract class BaseStateWrapper extends ViewHolderWrapper<BaseStateWrappe
         return RecyclerViewUtil.getSpanCount(recyclerView);
     }
 
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        this.recyclerView = recyclerView;
+    }
+
     /**
-     * 更新加载更多布局
+     * 更新布局
      */
-    private void refreshStateView() {
-        if (multiTypeAdapter != null) {
-            multiTypeAdapter.notifyItemChanged(multiTypeAdapter.getItemCount() - 1);
+    public final void refreshView(int state) {
+        stateBean.setState(state);
+        if (multiTypeAdapter != null && recyclerView != null) {
+            multiTypeAdapter.getDataList().clear();
+            multiTypeAdapter.getDataList().add(stateBean);
+            multiTypeAdapter.notifyDataSetChanged();
+            RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+            if (layoutManager instanceof StaggeredGridLayoutManager) {
+                ((StaggeredGridLayoutManager) layoutManager).invalidateSpanAssignments();
+            }
+            layoutManager.scrollToPosition(0);
         }
     }
 
     /**
-     * 开始加载
+     * 加载中
      */
-    public final void loadMoreStart() {
-        loadMoreBean.setLoadState(LoadMoreBean.STATUS_LOADING);
-        if (onLoadMoreListener != null && recyclerView != null) {
-            recyclerView.post(new Runnable() {
-                @Override
-                public void run() {
-                    refreshLoadMoreView();
-                    if (onLoadMoreListener != null) {
-                        onLoadMoreListener.onLoadMore();
-                    }
-                }
-            });
-        }
+    public final void showLoading() {
+        refreshView(StateBean.STATE_LOADING);
     }
 
     /**
-     * 加载完成
+     * 空数据
      */
-    public final void loadMoreCompleted() {
-        loadMoreBean.setLoadState(LoadMoreBean.STATUS_LOADING_COMPLETED);
-        refreshLoadMoreView();
+    public final void showEmpty() {
+        refreshView(StateBean.STATE_EMPTY);
     }
 
     /**
-     * 没有更多数据
+     * 错误数据
      */
-    public final void loadMoreNoMore() {
-        loadMoreBean.setLoadState(LoadMoreBean.STATUS_LOAD_NO_MORE);
-        refreshLoadMoreView();
+    public final void showError() {
+        refreshView(StateBean.STATE_ERROR);
     }
 
     /**
-     * 加载失败
+     * 没网络
      */
-    public final void loadMoreFailure() {
-        loadMoreBean.setLoadState(LoadMoreBean.STATUS_LOAD_FAILURE);
-        refreshLoadMoreView();
+    public final void showNoNetwork() {
+        refreshView(StateBean.STATE_NO_NETWORK);
     }
 
     public class StateBean {
 
-        public final static int STATUS_NO = 101;
-        public final static int STATUS_EMPTY = 102;
-        public final static int STATUS_LOAD_NO_MORE = 103;
-        public final static int STATUS_LOAD_FAILURE = 104;
+        public final static int STATE_NONE = 101;
+        public final static int STATE_LOADING = 102;
+        public final static int STATE_EMPTY = 103;
+        public final static int STATE_ERROR = 104;
+        public final static int STATE_NO_NETWORK = 105;
 
-        private int loadState;
+        private int state;
 
-        public int getLoadState() {
-            return loadState;
+        public int getState() {
+            return state;
         }
 
-        public void setLoadState(int loadState) {
-            this.loadState = loadState;
+        public void setState(int state) {
+            this.state = state;
         }
     }
 }

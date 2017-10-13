@@ -20,19 +20,19 @@ public class LoadMoreWrapper extends BaseLoadMoreWrapper {
     public void onBindViewHolder(@NonNull RVHolder holder, @NonNull LoadMoreBean item) {
         switch (item.getLoadState()) {
             case LoadMoreBean.STATUS_LOADING:
-                holder.setText(R.id.tv_text, "正在加载...");
+                holder.setText(R.id.tv_text, R.string.loading);
                 holder.setGone(R.id.pb_bar, false);
                 break;
             case LoadMoreBean.STATUS_LOADING_COMPLETED:
-                holder.setText(R.id.tv_text, "加载完成");
+                holder.setText(R.id.tv_text, R.string.completed);
                 holder.setGone(R.id.pb_bar, true);
                 break;
             case LoadMoreBean.STATUS_LOAD_NO_MORE:
-                holder.setText(R.id.tv_text, "没有更多");
+                holder.setText(R.id.tv_text, R.string.no_more);
                 holder.setGone(R.id.pb_bar, true);
                 break;
             case LoadMoreBean.STATUS_LOAD_FAILURE:
-                holder.setText(R.id.tv_text, "加载失败");
+                holder.setText(R.id.tv_text, R.string.failure);
                 holder.setGone(R.id.pb_bar, true);
                 break;
         }

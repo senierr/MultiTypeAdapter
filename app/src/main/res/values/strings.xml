@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">MultiTypeAdapter</string>
+
+    <string name="loading">正在加载&#8230;</string>
+    <string name="completed">加载完成</string>
+    <string name="no_more">没有更多</string>
+    <string name="failure">加载失败</string>
+    <string name="error">加载错误</string>
+    <string name="empty">空数据</string>
+    <string name="no_network">没有网络</string>
 </resources>

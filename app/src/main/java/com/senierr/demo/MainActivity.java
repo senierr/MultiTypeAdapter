@@ -1,34 +1,38 @@
 package com.senierr.demo;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.senierr.adapter.MultiTypeAdapter;
-import com.senierr.adapter.ViewHolderWrapper;
 import com.senierr.adapter.listener.OnItemChildClickListener;
 import com.senierr.adapter.listener.OnItemClickListener;
 import com.senierr.adapter.support.BaseLoadMoreWrapper;
 import com.senierr.adapter.util.RVHolder;
 import com.senierr.adapter.util.RVItemDecoration;
-import com.senierr.adapter.util.RecyclerViewUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
     private Toast toast;
     private RecyclerView recyclerView;
+    private List<Object> list = new ArrayList<>();
     private MultiTypeAdapter multiTypeAdapter;
 
     private LoadMoreWrapper loadMoreWrapper;
+    private StateWrapper stateWrapper;
+
+    private int pageIndex = 1;
+    private int pageSize = 20;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,9 +51,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
 //        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 //        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-        final StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-//        layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
-        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         recyclerView.addItemDecoration(new RVItemDecoration(this, R.dimen.dimen_4, R.color.transparent));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         multiTypeAdapter = new MultiTypeAdapter();
@@ -82,62 +84,67 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-
+        // 加载更多
         loadMoreWrapper = new LoadMoreWrapper();
         loadMoreWrapper.setOnLoadMoreListener(new BaseLoadMoreWrapper.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-                recyclerView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        int size = multiTypeAdapter.getDataList().size();
-                        if (size > 33) {
-                            loadMoreWrapper.loadMoreFailure();
-
-                            multiTypeAdapter.getDataList().clear();
-                            multiTypeAdapter.getDataList().add("This is en empty page");
-                            multiTypeAdapter.notifyDataSetChanged();
-                            layoutManager.invalidateSpanAssignments();
-                            layoutManager.scrollToPosition(0);
-                            return;
-                        }
-
-                        multiTypeAdapter.getDataList().add(size - 1, new DataBean(size - 1,
-                                "Item: " + (size - 1)));
-                        multiTypeAdapter.notifyItemInserted(multiTypeAdapter.getItemCount() - 2);
-                        loadMoreWrapper.loadMoreCompleted();
-                    }
-                }, 2000);
+                loadData();
             }
         });
+        // 状态切换
+        stateWrapper = new StateWrapper();
 
-        multiTypeAdapter.register(firstWrapper,
-                new SecondWrapper(),
-                new ThirdWrapper(),
-                loadMoreWrapper,
-                new ViewHolderWrapper<String>(String.class, R.layout.item_empty) {
-                    @Override
-                    public void onBindViewHolder(@NonNull RVHolder holder, @NonNull String item) {
-                        holder.setText(R.id.tv_text, item);
-                    }
-
-                    @Override
-                    public int getSpanSize(String item) {
-                        return RecyclerViewUtil.getSpanCount(recyclerView);
-                    }
-                });
+        multiTypeAdapter.register(firstWrapper, new SecondWrapper(),
+                loadMoreWrapper, stateWrapper);
+        multiTypeAdapter.setDataList(list);
         recyclerView.setAdapter(multiTypeAdapter);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_loading) {
+            stateWrapper.showLoading();
+        } else if (id == R.id.action_empty) {
+            stateWrapper.showEmpty();
+        } else if (id == R.id.action_error) {
+            stateWrapper.showError();
+        } else if (id == R.id.action_no_network) {
+            stateWrapper.showNoNetwork();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**
      * 加载数据
      */
     private void loadData() {
-        for (int i = 0; i < 30; i++) {
-            multiTypeAdapter.getDataList().add(new DataBean(i, "Item: " + i));
-        }
-        multiTypeAdapter.getDataList().add(loadMoreWrapper.getLoadMoreBean());
-        multiTypeAdapter.notifyDataSetChanged();
+        recyclerView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                List<DataBean> dataBeanList = DataBean.getData(pageIndex, pageSize);
+                if (pageIndex == 1) {
+                    list.add(loadMoreWrapper.getLoadMoreBean());
+                }
+                int startPosition = list.size() - 1;
+                if (pageIndex == 3) {
+                    loadMoreWrapper.loadMoreNoMore();
+//                        loadMoreWrapper.loadMoreFailure();
+                } else {
+                    list.addAll(startPosition, dataBeanList);
+                    loadMoreWrapper.loadMoreCompleted();
+                    multiTypeAdapter.notifyItemRangeInserted(startPosition, dataBeanList.size());
+                    pageIndex++;
+                }
+            }
+        }, 2000);
     }
 
     /**
