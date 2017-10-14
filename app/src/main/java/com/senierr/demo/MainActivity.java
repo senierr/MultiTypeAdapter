@@ -112,6 +112,8 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.action_loading) {
             stateWrapper.showLoading();
+            pageIndex = 1;
+            loadData();
         } else if (id == R.id.action_empty) {
             stateWrapper.showEmpty();
         } else if (id == R.id.action_error) {
@@ -131,20 +133,23 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 List<DataBean> dataBeanList = DataBean.getData(pageIndex, pageSize);
                 if (pageIndex == 1) {
+                    list.clear();
+                    list.addAll(dataBeanList);
                     list.add(loadMoreWrapper.getLoadMoreBean());
-                }
-                int startPosition = list.size() - 1;
-                if (pageIndex == 3) {
+                    multiTypeAdapter.notifyDataSetChanged();
+                    pageIndex++;
+                } else if (pageIndex == 3) {
                     loadMoreWrapper.loadMoreNoMore();
 //                        loadMoreWrapper.loadMoreFailure();
                 } else {
-                    list.addAll(startPosition, dataBeanList);
                     loadMoreWrapper.loadMoreCompleted();
+                    int startPosition = list.size() - 1;
+                    list.addAll(startPosition, dataBeanList);
                     multiTypeAdapter.notifyItemRangeInserted(startPosition, dataBeanList.size());
                     pageIndex++;
                 }
             }
-        }, 2000);
+        }, 1000);
     }
 
     /**

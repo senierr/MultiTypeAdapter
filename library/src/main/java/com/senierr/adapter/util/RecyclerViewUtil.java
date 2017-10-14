@@ -6,8 +6,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 
-import com.senierr.adapter.exception.LayoutManager404Exception;
-
 /**
  * @author zhouchunjie
  * @date 2017/6/22
@@ -31,7 +29,8 @@ public class RecyclerViewUtil {
         } else if (layoutManager instanceof StaggeredGridLayoutManager) {
             orientation = ((StaggeredGridLayoutManager) layoutManager).getOrientation();
         } else {
-            throw new LayoutManager404Exception();
+            throw new IllegalArgumentException("Unsupported LayoutManager used. Valid ones are LinearLayoutManager, " +
+                    "GridLayoutManager and StaggeredGridLayoutManager.");
         }
         return orientation;
     }
@@ -52,7 +51,8 @@ public class RecyclerViewUtil {
         } else if (layoutManager instanceof StaggeredGridLayoutManager) {
             spanCount = ((StaggeredGridLayoutManager) layoutManager).getSpanCount();
         } else {
-            throw new LayoutManager404Exception();
+            throw new IllegalArgumentException("Unsupported LayoutManager used. Valid ones are LinearLayoutManager, " +
+                    "GridLayoutManager and StaggeredGridLayoutManager.");
         }
         return spanCount;
     }
@@ -74,7 +74,8 @@ public class RecyclerViewUtil {
                     .findFirstVisibleItemPositions(new int[staggeredGridLayoutManager.getSpanCount()]);
             firstVisibleItemPosition = findMin(lastPositions);
         } else {
-            throw new LayoutManager404Exception();
+            throw new IllegalArgumentException("Unsupported LayoutManager used. Valid ones are LinearLayoutManager, " +
+                    "GridLayoutManager and StaggeredGridLayoutManager.");
         }
         return firstVisibleItemPosition;
     }
@@ -96,7 +97,8 @@ public class RecyclerViewUtil {
                     .findLastVisibleItemPositions(new int[staggeredGridLayoutManager.getSpanCount()]);
             lastVisibleItemPosition = findMax(lastPositions);
         } else {
-            throw new LayoutManager404Exception();
+            throw new IllegalArgumentException("Unsupported LayoutManager used. Valid ones are LinearLayoutManager, " +
+                    "GridLayoutManager and StaggeredGridLayoutManager.");
         }
         return lastVisibleItemPosition;
     }

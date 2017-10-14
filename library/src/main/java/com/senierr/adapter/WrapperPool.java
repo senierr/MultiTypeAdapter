@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 工人池（工人宿舍？）
+ * 产线池
  *
  * @author zhouchunjie
  * @date 2017/10/10
@@ -14,7 +14,6 @@ import java.util.List;
 
 public class WrapperPool {
 
-    // 工人集合
     private List<ViewHolderWrapper<?>> viewHolderWrappers;
 
     public WrapperPool() {
@@ -22,7 +21,7 @@ public class WrapperPool {
     }
 
     /**
-     * 添加工人
+     * 添加产线
      *
      * @param viewHolderWrapper
      */
@@ -31,7 +30,7 @@ public class WrapperPool {
     }
 
     /**
-     * 移除工人
+     * 移除产线
      *
      * @param viewHolderWrapper
      */
@@ -40,7 +39,7 @@ public class WrapperPool {
     }
 
     /**
-     * 获取处理该数据的工人的索引
+     * 获取处理该数据的产线的索引
      *
      * @param item 待处理数据
      * @return
@@ -59,21 +58,11 @@ public class WrapperPool {
                 "Can not found ViewHolderWrapper for %s!", item.getClass().getSimpleName()));
     }
 
-    /**
-     * 获取工人
-     *
-     * @param index
-     * @return
-     */
     public ViewHolderWrapper<?> getViewHolderWrapper(int index) {
         return viewHolderWrappers.get(index);
     }
 
     public List<ViewHolderWrapper<?>> getViewHolderWrappers() {
         return viewHolderWrappers;
-    }
-
-    public void setViewHolderWrappers(List<ViewHolderWrapper<?>> viewHolderWrappers) {
-        this.viewHolderWrappers = viewHolderWrappers;
     }
 }
