@@ -1,4 +1,4 @@
-package com.senierr.adapter;
+package com.senierr.adapter.core;
 
 import android.support.annotation.NonNull;
 

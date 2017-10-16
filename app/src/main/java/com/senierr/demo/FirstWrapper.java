@@ -3,8 +3,8 @@ package com.senierr.demo;
 import android.support.annotation.NonNull;
 import android.widget.TextView;
 
-import com.senierr.adapter.ViewHolderWrapper;
-import com.senierr.adapter.util.RVHolder;
+import com.senierr.adapter.core.ViewHolderWrapper;
+import com.senierr.adapter.core.RVHolder;
 
 /**
  * @author zhouchunjie

@@ -6,8 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 
-import com.senierr.adapter.ViewHolderWrapper;
-import com.senierr.adapter.util.RecyclerViewUtil;
+import com.senierr.adapter.core.ViewHolderWrapper;
 
 /**
  * 状态切换
@@ -32,7 +31,7 @@ public abstract class BaseStateWrapper extends ViewHolderWrapper<BaseStateWrappe
         if (recyclerView == null) {
             return super.getSpanSize(item);
         }
-        return RecyclerViewUtil.getSpanCount(recyclerView);
+        return Integer.MAX_VALUE;
     }
 
     @Override

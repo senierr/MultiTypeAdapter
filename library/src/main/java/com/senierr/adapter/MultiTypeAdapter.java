@@ -7,7 +7,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.ViewGroup;
 
-import com.senierr.adapter.util.RVHolder;
+import com.senierr.adapter.core.ViewHolderWrapper;
+import com.senierr.adapter.core.WrapperPool;
+import com.senierr.adapter.core.RVHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +24,8 @@ import java.util.List;
 public class MultiTypeAdapter extends RecyclerView.Adapter<RVHolder> {
 
     private @Nullable RecyclerView recyclerView;
-    private @NonNull WrapperPool wrapperPool;
+    private @NonNull
+    WrapperPool wrapperPool;
     private @NonNull List<Object> dataList;
 
     public MultiTypeAdapter() {

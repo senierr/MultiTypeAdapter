@@ -3,11 +3,13 @@ package com.senierr.adapter.support;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 
-import com.senierr.adapter.ViewHolderWrapper;
-import com.senierr.adapter.util.RecyclerViewUtil;
+import com.senierr.adapter.core.ViewHolderWrapper;
 
 /**
  * 加载更多
@@ -48,7 +50,7 @@ public abstract class BaseLoadMoreWrapper extends ViewHolderWrapper<BaseLoadMore
         if (recyclerView == null) {
             return super.getSpanSize(item);
         }
-        return RecyclerViewUtil.getSpanCount(recyclerView);
+        return Integer.MAX_VALUE;
     }
 
     /**
@@ -62,9 +64,32 @@ public abstract class BaseLoadMoreWrapper extends ViewHolderWrapper<BaseLoadMore
         if (multiTypeAdapter != null) {
             hasLoadMoreBean = multiTypeAdapter.getDataList().indexOf(loadMoreBean) != -1;
         }
-        if (hasLoadMoreBean && loadMoreBean.getLoadState() != LoadMoreBean.STATUS_LOADING &&
-                RecyclerViewUtil.getLastVisibleItemPosition(recyclerView) + 1 >= recyclerView.getAdapter().getItemCount()) {
-            int orientation = RecyclerViewUtil.getOrientation(recyclerView);
+
+        if (!hasLoadMoreBean || loadMoreBean.getLoadState() == LoadMoreBean.STATUS_LOADING) {
+            return false;
+        }
+
+        RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+        int lastVisibleItemPosition;
+        int orientation;
+        if (layoutManager instanceof GridLayoutManager) {
+            lastVisibleItemPosition = ((GridLayoutManager) layoutManager).findLastVisibleItemPosition();
+            orientation = ((GridLayoutManager) layoutManager).getOrientation();
+        } else if (layoutManager instanceof LinearLayoutManager) {
+            lastVisibleItemPosition = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
+            orientation = ((LinearLayoutManager) layoutManager).getOrientation();
+        } else if (layoutManager instanceof StaggeredGridLayoutManager) {
+            StaggeredGridLayoutManager staggeredGridLayoutManager = (StaggeredGridLayoutManager) layoutManager;
+            int[] lastPositions = staggeredGridLayoutManager
+                    .findLastVisibleItemPositions(new int[staggeredGridLayoutManager.getSpanCount()]);
+            lastVisibleItemPosition = findMax(lastPositions);
+            orientation = ((StaggeredGridLayoutManager) layoutManager).getOrientation();
+        } else {
+            throw new IllegalArgumentException("Unsupported LayoutManager used. Valid ones are LinearLayoutManager, " +
+                    "GridLayoutManager and StaggeredGridLayoutManager.");
+        }
+
+        if (lastVisibleItemPosition >= multiTypeAdapter.getItemCount() - 1) {
             if (orientation == OrientationHelper.VERTICAL && dy > 0) {
                 return true;
             } else if (orientation == OrientationHelper.HORIZONTAL && dx > 0) {
@@ -72,6 +97,14 @@ public abstract class BaseLoadMoreWrapper extends ViewHolderWrapper<BaseLoadMore
             }
         }
         return false;
+    }
+
+    private int findMax(int[] positions) {
+        int max = positions[0];
+        for (int value : positions) {
+            max = Math.max(value, max);
+        }
+        return max;
     }
 
     /**

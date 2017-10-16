@@ -11,15 +11,13 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.senierr.adapter.MultiTypeAdapter;
-import com.senierr.adapter.listener.OnItemChildClickListener;
-import com.senierr.adapter.listener.OnItemClickListener;
+import com.senierr.adapter.core.RVHolder;
+import com.senierr.adapter.core.ViewHolderWrapper;
 import com.senierr.adapter.support.BaseLoadMoreWrapper;
-import com.senierr.adapter.util.RVHolder;
-import com.senierr.adapter.util.RVItemDecoration;
+import com.senierr.adapter.support.RVItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -58,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
         FirstWrapper firstWrapper = new FirstWrapper();
         // 列表点击事件
-        firstWrapper.setOnItemClickListener(new OnItemClickListener() {
+        firstWrapper.setOnItemClickListener(new ViewHolderWrapper.OnItemClickListener() {
             @Override
             public void onClick(RVHolder viewHolder, int position) {
                 showToast("ItemClick: " + position);
@@ -70,12 +68,13 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+
         // 子控件点击事件
-        firstWrapper.setOnItemChildClickListener(R.id.btn_click, new OnItemChildClickListener() {
+        firstWrapper.setOnItemChildClickListener(R.id.btn_click,
+                new ViewHolderWrapper.OnItemChildClickListener() {
             @Override
             public void onClick(RVHolder viewHolder, View view, int position) {
                 showToast("ChildClick: " + position);
-                multiTypeAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -84,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+
         // 加载更多
         loadMoreWrapper = new LoadMoreWrapper();
         loadMoreWrapper.setOnLoadMoreListener(new BaseLoadMoreWrapper.OnLoadMoreListener() {

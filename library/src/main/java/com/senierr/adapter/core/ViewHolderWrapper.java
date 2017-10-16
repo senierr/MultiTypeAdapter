@@ -1,4 +1,4 @@
-package com.senierr.adapter;
+package com.senierr.adapter.core;
 
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
@@ -9,14 +9,12 @@ import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.senierr.adapter.listener.OnItemChildClickListener;
-import com.senierr.adapter.listener.OnItemClickListener;
-import com.senierr.adapter.util.RVHolder;
+import com.senierr.adapter.MultiTypeAdapter;
 
 import java.util.List;
 
 /**
- * 为一种类型的Data，生成对应的ViewHolder
+ * 将指定类型的数据和视图生成为ViewHolder
  *
  * @author zhouchunjie
  * @date 2017/9/25
@@ -24,7 +22,8 @@ import java.util.List;
 
 public abstract class ViewHolderWrapper<T> {
 
-    protected @Nullable MultiTypeAdapter multiTypeAdapter;
+    protected @Nullable
+    MultiTypeAdapter multiTypeAdapter;
     private @NonNull Class<T> dataCls;
     private @LayoutRes int layoutId;
 
@@ -157,5 +156,29 @@ public abstract class ViewHolderWrapper<T> {
             onItemChildClickListeners = new SparseArray<>();
         }
         onItemChildClickListeners.put(childId, onItemChildClickListener);
+    }
+
+    /**
+     * 列表项点击事件
+     */
+    public static abstract class OnItemClickListener {
+
+        public void onClick(RVHolder viewHolder, int position) {}
+
+        public boolean onLongClick(RVHolder viewHolder, int position) {
+            return false;
+        }
+    }
+
+    /**
+     * 子控件点击事件
+     */
+    public static abstract class OnItemChildClickListener {
+
+        public void onClick(RVHolder viewHolder, View view, int position) {}
+
+        public boolean onLongClick(RVHolder viewHolder, View view, int position) {
+            return false;
+        }
     }
 }

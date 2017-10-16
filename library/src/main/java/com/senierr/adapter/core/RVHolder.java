@@ -1,4 +1,4 @@
-package com.senierr.adapter.util;
+package com.senierr.adapter.core;
 
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;

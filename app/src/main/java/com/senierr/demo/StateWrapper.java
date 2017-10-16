@@ -3,7 +3,7 @@ package com.senierr.demo;
 import android.support.annotation.NonNull;
 
 import com.senierr.adapter.support.BaseStateWrapper;
-import com.senierr.adapter.util.RVHolder;
+import com.senierr.adapter.core.RVHolder;
 
 /**
  * @author zhouchunjie

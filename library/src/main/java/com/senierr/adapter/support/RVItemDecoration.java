@@ -1,4 +1,4 @@
-package com.senierr.adapter.util;
+package com.senierr.adapter.support;
 
 import android.content.Context;
 import android.graphics.Canvas;
