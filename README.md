@@ -1,14 +1,6 @@
 # MultiTypeAdapter
 
-#### 灵活、便捷的创建多类型视图解决方案。
-
-## 前言
-
-> 如果将`RecyclerView`比作一本书，那么`ViewHolder`就是**书页**，`Data`则是**内容**（例如：图片、文字等）。
->
-> `RecyclerView`的**展现过程**即是一本书的**形成过程**：**工人**（`ViewHolderWrapper`）创建**书页**（`ViewHolder`），并将**内容**（`Data`）写上去，然后交给**工厂**（`MultiTypeAdapter`）将其装订成册。
-
-`MultiTypeAdapter`的目标：**创建任意内容的书。**
+#### 提供灵活、便捷以及可插拔的多类型视图。
 
 ## 目前支持
 
@@ -20,10 +12,11 @@
 * 自定义事件
 * 自定义ViewHolder
 * 自定义列表项所占列数
-* 头部/底部
-* 正在加载/空数据/加载错误/没有网络/自定义状态`
-* 加载更多
 * 其他
+    * 头部/底部
+    * 正在加载/空数据/加载错误/没有网络/自定义状态`
+    * 加载更多
+    * 通用分割线
 
 ## 架包引入
 
@@ -60,14 +53,14 @@ compile 'com.github.senierr:MultiTypeAdapter:RELEASE_VERSION@jar'
 
 ## 基本使用
 ```java
-// 1. 定义工人
+// 1. 定义产线
 public class FirstWrapper extends ViewHolderWrapper<DataBean> {
 
     public FirstWrapper() {
         /**
-         * 构造函数，指定工人的技能：能处理的数据类型和布局类型
+         * 构造函数，指定产线的职能：处理的数据类型和布局类型
          *
-         * 注：一名工人只负责一类数据和一类布局的处理，细分职责粒度，方便重用。
+         * 注：一条产线只能负责一类数据和一类布局，细分职责粒度，方便重用。
          */
         super(DataBean.class, R.layout.item_first);
     }
@@ -81,7 +74,7 @@ public class FirstWrapper extends ViewHolderWrapper<DataBean> {
 
 // 2. 创建工厂
 MultiTypeAdapter multiTypeAdapter = new MultiTypeAdapter();
-// 3. 雇佣工人
+// 3. 注册产线
 multiTypeAdapter.register(new FirstWrapper())
 // 4. 设置数据
 multiTypeAdapter.setDataList(list);
@@ -104,8 +97,7 @@ setOnItemChildClickListener(int childId, OnItemChildClickListener onItemChildCli
 
 ```java
 /**
- * 通过重写onCreateViewHolder函数，获取父类创建的RVHolder，实现灵活的自定义事件；
- * 或者返回创建的自定义RVHolder。
+ * 获取父类创建的RVHolder，实现灵活的自定义事件，或者返回创建的自定义RVHolder。
  */
 @Override @NonNull
 public RVHolder onCreateViewHolder(@NonNull ViewGroup parent) {
@@ -119,7 +111,9 @@ public RVHolder onCreateViewHolder(@NonNull ViewGroup parent) {
 
 ```java
 /**
- * 重写getSpanSize函数，返回自定义占据列数，默认为1。
+ * 自定义占据列数
+ *
+ * 默认返回1。
  */
 @Override
 public int getSpanSize(T item) {
@@ -129,15 +123,14 @@ public int getSpanSize(T item) {
 
 ### 4. 协同/一对多
 
-> **协同/一对多**：即一种数据类型分配给多种工人共同处理；
+> **协同/一对多**：即多条产线共同处理相同指定类型数据；
 > 例如：聊天列表界面，相同的聊天数据（ChatBean），对应不同的布局（**当前用户**和**其他用户**）。
 
 ```java
 /**
- * 协同处理相同类型数据的工人都会收到询问：是否接受分配数据onAcceptAssignment()。
- * 重写onAcceptAssignment()函数，选择是否接受分配，默认接受true。
+ * 处理相同类型数据的产线都会收到询问：是否接受分配任务。
  *
- * 原理为：轮询拦截机制，所以必须保证一个数据只有一个处理，否则数据会分配给优先添加的工人（ViewHolderWrapper）。
+ * 默认返回true。
  */
 @Override
 public boolean onAcceptAssignment(T item) {
@@ -150,7 +143,7 @@ public boolean onAcceptAssignment(T item) {
 
 `头部/底部`、`状态显示`、`加载更多`等，本质上都是一种`数据类型`，以及对应的`ViewHolderWrapper`。
 
-`MultiTypeAdapter`内部提供了简便的处理方式，详见`support`包下。
+`MultiTypeAdapter`内部提供了简便的处理方式，详见`support`包。
 
 ### 1. 头部/底部
 
@@ -158,9 +151,9 @@ public boolean onAcceptAssignment(T item) {
 
 ### 2. 状态显示
 
-`MultiTypeAdapter`内部支持`正在加载`、`空数据`、`加载错误`、`没有网络`及`自定义状态`状态显示。
+`BaseStateWrapper`内部支持`正在加载`、`空数据`、`加载错误`、`没有网络`及`自定义状态`状态显示。
 
-**注意：**`状态显示`时，会清空`MultiTypeAdapter`内部数据，并增加一条数据`stateBean`，重新加载数据时记得先**clear()、clear()、clear()**!
+**注意：**调用`stateWrapper.show...()`时，会清空`MultiTypeAdapter`内部数据，并增加一条新数据`stateBean`，重新加载数据时记得先**clear()、clear()、clear()**!
 
 ```java
 public class StateWrapper extends BaseStateWrapper {
@@ -197,7 +190,7 @@ stateWrapper.refreshView(state);    // 自定义状态
 
 ### 3. 加载更多
 
-**注意：** 要在列表数据末添加`加载更多`类型数据。
+**注意：** 要在列表数据末添加`加载更多（LoadMoreBean）`类型数据。
 
 ```java
 public class LoadMoreWrapper extends BaseLoadMoreWrapper {
@@ -227,6 +220,24 @@ public class LoadMoreWrapper extends BaseLoadMoreWrapper {
 setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener)
 multiTypeAdapter.register(loadMoreWrapper);
 list.add(loadMoreWrapper.getLoadMoreBean());
+```
+
+### 4. 通用分割线
+
+**RVItemDecoration：** 详见`support`包
+
+#### 目前支持
+
+* 设置宽度、颜色
+* 线性、表格、瀑布流三种类型布局
+* 横竖屏两种方向
+
+## 混淆
+
+`MultiTypeAdapter`默认是可以被混淆的，如果仍希望不被混淆：
+```java
+-dontwarn com.senierr.adapter.**
+-keep class com.senierr.adapter.** { *; }
 ```
 
 ## License
