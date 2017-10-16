@@ -22,8 +22,7 @@ import java.util.List;
 
 public abstract class ViewHolderWrapper<T> {
 
-    protected @Nullable
-    MultiTypeAdapter multiTypeAdapter;
+    protected @Nullable MultiTypeAdapter multiTypeAdapter;
     private @NonNull Class<T> dataCls;
     private @LayoutRes int layoutId;
 
@@ -53,10 +52,22 @@ public abstract class ViewHolderWrapper<T> {
 
     public void onDetachedFromRecyclerView(RecyclerView recyclerView) {}
 
+    /**
+     * 指定占据列数
+     *
+     * @param item 待处理数据
+     * @return
+     */
     public int getSpanSize(T item) {
         return 1;
     }
 
+    /**
+     * 任务分配询问
+     *
+     * @param item 待处理数据
+     * @return 是否接受处理此数据
+     */
     public boolean onAcceptAssignment(T item) {
         return true;
     }
