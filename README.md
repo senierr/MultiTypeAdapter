@@ -47,11 +47,11 @@ compile 'com.android.support:recyclerview-v7:25.3.1'
 ```
 如不需要，可通过以下方式关闭**传递性依赖**：
 ```java
-compile('com.github.senierr:MultiTypeAdapter:RELEASE_VERSION', {
+compile ('com.github.senierr:MultiTypeAdapter:RELEASE_VERSION', {
     transitive = false
 })
 或者
-compile 'com.github.senierr:MultiTypeAdapter:RELEASE_VERSION@jar'
+compile 'com.github.senierr:MultiTypeAdapter:RELEASE_VERSION@aar'
 ```
 
 ## 基本使用
