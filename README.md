@@ -1,5 +1,8 @@
 # MultiTypeAdapter
 
+[![](https://jitpack.io/v/senierr/MultiTypeAdapter.svg)](https://jitpack.io/#senierr/MultiTypeAdapter)
+[![](https://img.shields.io/travis/rust-lang/rust.svg)](https://github.com/senierr/SeHttp)
+
 #### 提供灵活、便捷以及可插拔的多类型视图。
 
 ## 目前支持
@@ -27,7 +30,7 @@ maven { url 'https://jitpack.io' }
 
 ### 2. 添加依赖
 ```java
-compile 'com.github.senierr:MultiTypeAdapter:RELEASE_VERSION'
+compile 'com.github.senierr:MultiTypeAdapter:1.1.0'
 ```
 
 #### 注意：
