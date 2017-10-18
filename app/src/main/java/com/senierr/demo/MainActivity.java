@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+        SecondWrapper secondWrapper = new SecondWrapper();
 
         // 加载更多
         loadMoreWrapper = new LoadMoreWrapper();
@@ -97,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
         // 状态切换
         stateWrapper = new StateWrapper();
 
-        multiTypeAdapter.register(firstWrapper, new SecondWrapper())
+        multiTypeAdapter.register(firstWrapper, secondWrapper)
                 .with(new DataBinder<DataBean>() {
                     @Override
                     public int onBindIndex(@NonNull DataBean item) {

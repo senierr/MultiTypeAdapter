@@ -1,5 +1,6 @@
 package com.senierr.adapter.core;
 
+import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 
 /**
@@ -11,6 +12,7 @@ public abstract class DataBinder<T> {
 
     private ViewHolderWrapper<T>[] viewHolderWrappers;
 
+    @IntRange(from = 0, to = Integer.MAX_VALUE)
     public abstract int onBindIndex(@NonNull T item);
 
     void setViewHolderWrappers(@NonNull ViewHolderWrapper<T>[] viewHolderWrappers) {
