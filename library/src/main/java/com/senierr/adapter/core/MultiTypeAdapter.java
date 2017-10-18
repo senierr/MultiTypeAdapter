@@ -1,4 +1,4 @@
-package com.senierr.adapter;
+package com.senierr.adapter.core;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -6,10 +6,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.ViewGroup;
-
-import com.senierr.adapter.core.RVHolder;
-import com.senierr.adapter.core.ViewHolderWrapper;
-import com.senierr.adapter.core.WrapperPool;
 
 import java.util.ArrayList;
 import java.util.List;

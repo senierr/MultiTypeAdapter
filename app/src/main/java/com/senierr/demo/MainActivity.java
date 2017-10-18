@@ -10,7 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.senierr.adapter.MultiTypeAdapter;
+import com.senierr.adapter.core.MultiTypeAdapter;
 import com.senierr.adapter.core.RVHolder;
 import com.senierr.adapter.core.ViewHolderWrapper;
 import com.senierr.adapter.support.BaseLoadMoreWrapper;

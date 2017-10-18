@@ -9,8 +9,6 @@ import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.senierr.adapter.MultiTypeAdapter;
-
 import java.util.List;
 
 /**
