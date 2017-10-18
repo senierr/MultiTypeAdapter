@@ -60,16 +60,6 @@ public abstract class ViewHolderWrapper<T> {
         return 1;
     }
 
-    /**
-     * 任务分配询问
-     *
-     * @param item 待处理数据
-     * @return 是否接受处理此数据
-     */
-    public boolean onAcceptAssignment(T item) {
-        return true;
-    }
-
     public abstract void onBindViewHolder(@NonNull RVHolder holder, @NonNull T item);
 
     public void onBindViewHolder(@NonNull RVHolder holder, @NonNull T item, @NonNull List<Object> payloads) {

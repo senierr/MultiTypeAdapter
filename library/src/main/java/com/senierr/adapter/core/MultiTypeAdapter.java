@@ -1,5 +1,6 @@
 package com.senierr.adapter.core;
 
+import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
@@ -141,32 +142,22 @@ public class MultiTypeAdapter extends RecyclerView.Adapter<RVHolder> {
         }
     }
 
-    /**
-     * 添加产线
-     *
-     * @param viewHolderWrappers
-     * @return
-     */
-    public final MultiTypeAdapter register(@NonNull ViewHolderWrapper<?>... viewHolderWrappers) {
+    @NonNull @SafeVarargs @CheckResult
+    public final <T> RegisterHelper<T> register(@NonNull ViewHolderWrapper<T>... viewHolderWrappers) {
         for (ViewHolderWrapper<?> viewHolderWrapper : viewHolderWrappers) {
             viewHolderWrapper.setMultiTypeAdapter(this);
-            wrapperPool.addViewHolderWrapper(viewHolderWrapper);
         }
-        return this;
+        return new RegisterHelper<T>().register(viewHolderWrappers);
     }
 
-    /**
-     * 移除产线
-     *
-     * @param viewHolderWrappers
-     * @return
-     */
-    public final MultiTypeAdapter unregister(@NonNull ViewHolderWrapper<?>... viewHolderWrappers) {
-        for (ViewHolderWrapper<?> viewHolderWrapper : viewHolderWrappers) {
-            viewHolderWrapper.setMultiTypeAdapter(null);
-            wrapperPool.removeViewHolderWrapper(viewHolderWrapper);
-        }
-        return this;
+    public final <T> void register(@NonNull ViewHolderWrapper<T> viewHolderWrapper) {
+        viewHolderWrapper.setMultiTypeAdapter(this);
+        new RegisterHelper<T>().register(viewHolderWrapper).with(new DataBinder<T>() {
+            @Override
+            public int onBindIndex(@NonNull T item) {
+                return 0;
+            }
+        });
     }
 
     /**
@@ -186,5 +177,28 @@ public class MultiTypeAdapter extends RecyclerView.Adapter<RVHolder> {
      */
     public void setDataList(@NonNull List<Object> dataList) {
         this.dataList = dataList;
+    }
+
+    /**
+     * 注册帮助类
+     *
+     * @param <T>
+     */
+    public final class RegisterHelper<T> {
+
+        private ViewHolderWrapper<T>[] viewHolderWrappers;
+
+        @NonNull @CheckResult @SafeVarargs
+        final RegisterHelper<T> register(@NonNull ViewHolderWrapper<T>... viewHolderWrappers) {
+            this.viewHolderWrappers = viewHolderWrappers;
+            return this;
+        }
+
+        public final void with(@NonNull DataBinder<T> dataBinder) {
+            dataBinder.setViewHolderWrappers(viewHolderWrappers);
+            for (ViewHolderWrapper<T> viewHolderWrapper : viewHolderWrappers) {
+                wrapperPool.add(viewHolderWrapper, dataBinder);
+            }
+        }
     }
 }

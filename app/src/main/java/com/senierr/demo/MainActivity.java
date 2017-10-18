@@ -1,6 +1,7 @@
 package com.senierr.demo;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.senierr.adapter.core.DataBinder;
 import com.senierr.adapter.core.MultiTypeAdapter;
 import com.senierr.adapter.core.RVHolder;
 import com.senierr.adapter.core.ViewHolderWrapper;
@@ -95,8 +97,18 @@ public class MainActivity extends AppCompatActivity {
         // 状态切换
         stateWrapper = new StateWrapper();
 
-        multiTypeAdapter.register(firstWrapper, new SecondWrapper(),
-                loadMoreWrapper, stateWrapper);
+        multiTypeAdapter.register(firstWrapper, new SecondWrapper())
+                .with(new DataBinder<DataBean>() {
+                    @Override
+                    public int onBindIndex(@NonNull DataBean item) {
+                        if (item.getId() % 2 == 0) {
+                            return 0;
+                        }
+                        return 1;
+                    }
+                });
+        multiTypeAdapter.register(stateWrapper);
+        multiTypeAdapter.register(loadMoreWrapper);
         multiTypeAdapter.setDataList(list);
         recyclerView.setAdapter(multiTypeAdapter);
     }

@@ -4,10 +4,9 @@ import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
- * 产线池
- *
  * @author zhouchunjie
  * @date 2017/10/10
  */
@@ -15,41 +14,31 @@ import java.util.List;
 public class WrapperPool {
 
     private List<ViewHolderWrapper<?>> viewHolderWrappers;
+    private List<DataBinder<?>> dataBinders;
 
     public WrapperPool() {
         viewHolderWrappers = new ArrayList<>();
+        dataBinders = new ArrayList<>();
     }
 
-    /**
-     * 添加产线
-     *
-     * @param viewHolderWrapper
-     */
-    public void addViewHolderWrapper(@NonNull ViewHolderWrapper<?> viewHolderWrapper) {
-        this.viewHolderWrappers.add(viewHolderWrapper);
+    public void add(@NonNull ViewHolderWrapper<?> viewHolderWrapper, @NonNull DataBinder<?> dataBinder) {
+        viewHolderWrappers.add(viewHolderWrapper);
+        dataBinders.add(dataBinder);
     }
 
-    /**
-     * 移除产线
-     *
-     * @param viewHolderWrapper
-     */
-    public void removeViewHolderWrapper(@NonNull ViewHolderWrapper<?> viewHolderWrapper) {
-        this.viewHolderWrappers.remove(viewHolderWrapper);
+    public void remove(@NonNull ViewHolderWrapper<?> viewHolderWrapper, @NonNull DataBinder<?> dataBinder) {
+        viewHolderWrappers.remove(viewHolderWrapper);
+        dataBinders.remove(dataBinder);
     }
 
-    /**
-     * 获取处理该数据的产线的索引
-     *
-     * @param item 待处理数据
-     * @return
-     */
     @SuppressWarnings("unchecked")
     public <T> int getViewHolderWrapperIndex(@NonNull T item) {
         for (int i = 0; i < viewHolderWrappers.size(); i++) {
             ViewHolderWrapper<?> viewHolderWrapper = viewHolderWrappers.get(i);
             if (viewHolderWrapper.getDataCls().equals(item.getClass())) {
-                if (((ViewHolderWrapper<T>) viewHolderWrapper).onAcceptAssignment(item)) {
+                DataBinder<T> dataBinder = (DataBinder<T>) dataBinders.get(i);
+                ViewHolderWrapper<T> wrapper = dataBinder.getViewHolderWrapper(item);
+                if (wrapper.equals(viewHolderWrapper)) {
                     return i;
                 }
             }
