@@ -56,32 +56,26 @@ compile 'com.github.senierr:MultiTypeAdapter:RELEASE_VERSION@aar'
 
 ## 基本使用
 ```java
-// 1. 定义产线
 public class FirstWrapper extends ViewHolderWrapper<DataBean> {
 
     public FirstWrapper() {
         /**
-         * 构造函数，指定产线的职能：处理的数据类型和布局类型
+         * 构造函数，指定职能：处理的数据类型和布局类型
          *
-         * 注：一条产线只能负责一类数据和一类布局，细分职责粒度，方便重用。
+         * 注：只负责一类数据和一类布局，细分职责粒度，方便重用。
          */
         super(DataBean.class, R.layout.item_first);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RVHolder holder, @NonNull DataBean item) {
-        // 定义如何排版，数据如何写入
         ......
     }
 }
 
-// 2. 创建工厂
 MultiTypeAdapter multiTypeAdapter = new MultiTypeAdapter();
-// 3. 注册产线
 multiTypeAdapter.register(new FirstWrapper())
-// 4. 设置数据
 multiTypeAdapter.setDataList(list);
-// 5. 开始装订
 recyclerView.setAdapter(multiTypeAdapter);
 ```
 
@@ -126,20 +120,23 @@ public int getSpanSize(T item) {
 
 ### 4. 协同/一对多
 
-> **协同/一对多**：即多条产线共同处理相同指定类型数据；
+> **协同/一对多**：即共同处理相同指定类型数据；
 > 例如：聊天列表界面，相同的聊天数据（ChatBean），对应不同的布局（**当前用户**和**其他用户**）。
 
 ```java
 /**
- * 处理相同类型数据的产线都会收到询问：是否接受分配任务。
- *
- * 默认返回true。
+ * 注册多种处理处理器时，指定数据绑定方式
  */
-@Override
-public boolean onAcceptAssignment(T item) {
-    ......
-    return true;
-}
+multiTypeAdapter.register(firstWrapper, secondWrapper)
+            .with(new DataBinder<DataBean>() {
+                @Override
+                public int onBindIndex(@NonNull DataBean item) {
+                    if (item.getId() % 2 == 0) {
+                        return 0;   // 返回注册的处理器的索引
+                    }
+                    return 1;
+                }
+            });
 ```
 
 ## 其他
