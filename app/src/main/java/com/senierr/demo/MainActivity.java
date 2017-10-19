@@ -97,6 +97,14 @@ public class MainActivity extends AppCompatActivity {
         });
         // 状态切换
         stateWrapper = new StateWrapper();
+        stateWrapper.setOnItemClickListener(new ViewHolderWrapper.OnItemClickListener() {
+            @Override
+            public void onClick(RVHolder viewHolder, int position) {
+                stateWrapper.hide();
+                pageIndex = 1;
+                loadData();
+            }
+        });
 
         multiTypeAdapter.register(firstWrapper, secondWrapper)
                 .with(new DataBinder<DataBean>() {
@@ -125,8 +133,6 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.action_loading) {
             stateWrapper.showLoading();
-            pageIndex = 1;
-            loadData();
         } else if (id == R.id.action_empty) {
             stateWrapper.showEmpty();
         } else if (id == R.id.action_error) {

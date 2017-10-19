@@ -43,7 +43,7 @@ public abstract class BaseStateWrapper extends ViewHolderWrapper<BaseStateWrappe
     /**
      * 更新布局
      */
-    public final void refreshView(int state) {
+    private final void refreshView(int state) {
         stateBean.setState(state);
         if (multiTypeAdapter != null && recyclerView != null) {
             multiTypeAdapter.getDataList().clear();
@@ -54,6 +54,19 @@ public abstract class BaseStateWrapper extends ViewHolderWrapper<BaseStateWrappe
                 ((StaggeredGridLayoutManager) layoutManager).invalidateSpanAssignments();
             }
             layoutManager.scrollToPosition(0);
+        }
+    }
+
+    /**
+     * 隐藏状态布局
+     */
+    public void hide() {
+        if (multiTypeAdapter != null) {
+            int stateBeanIndex = multiTypeAdapter.getDataList().indexOf(stateBean);
+            if (stateBeanIndex != -1) {
+                multiTypeAdapter.getDataList().remove(stateBeanIndex);
+                multiTypeAdapter.notifyDataSetChanged();
+            }
         }
     }
 
