@@ -185,7 +185,8 @@ stateWrapper.showLoading();         // 正在加载
 stateWrapper.showEmpty();           // 空数据
 stateWrapper.showError();           // 加载错误
 stateWrapper.showNoNetwork();       // 没有网络
-stateWrapper.refreshView(state);    // 自定义状态
+stateWrapper.show(state);           // 自定义状态，state必须大于等于0
+stateWrapper.hide()                 // 隐藏状态页
 ```
 
 ### 3. 加载更多
