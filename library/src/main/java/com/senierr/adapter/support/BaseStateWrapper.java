@@ -71,6 +71,16 @@ public abstract class BaseStateWrapper extends ViewHolderWrapper<BaseStateWrappe
     }
 
     /**
+     * 显示自定义状态
+     */
+    public final void show(int state) {
+        if (state < 0) {
+            throw new IllegalArgumentException("The state must be greater than 0");
+        }
+        refreshView(state);
+    }
+
+    /**
      * 加载中
      */
     public final void showLoading() {
@@ -100,11 +110,11 @@ public abstract class BaseStateWrapper extends ViewHolderWrapper<BaseStateWrappe
 
     public class StateBean {
 
-        public final static int STATE_NONE = 101;
-        public final static int STATE_LOADING = 102;
-        public final static int STATE_EMPTY = 103;
-        public final static int STATE_ERROR = 104;
-        public final static int STATE_NO_NETWORK = 105;
+        public final static int STATE_NONE = -101;
+        public final static int STATE_LOADING = -102;
+        public final static int STATE_EMPTY = -103;
+        public final static int STATE_ERROR = -104;
+        public final static int STATE_NO_NETWORK = -105;
 
         private int state;
 

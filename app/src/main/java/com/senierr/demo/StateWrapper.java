@@ -12,6 +12,8 @@ import com.senierr.adapter.core.RVHolder;
 
 public class StateWrapper extends BaseStateWrapper {
 
+    public final static int STATE_DEFAULT = 0;
+
     public StateWrapper() {
         super(R.layout.item_state);
     }
@@ -33,6 +35,10 @@ public class StateWrapper extends BaseStateWrapper {
                 break;
             case StateBean.STATE_NO_NETWORK:
                 holder.setText(R.id.tv_text, R.string.no_network);
+                holder.setGone(R.id.pb_bar, true);
+                break;
+            case STATE_DEFAULT:
+                holder.setText(R.id.tv_text, R.string.state_default);
                 holder.setGone(R.id.pb_bar, true);
                 break;
         }

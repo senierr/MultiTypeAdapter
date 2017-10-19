@@ -139,6 +139,8 @@ public class MainActivity extends AppCompatActivity {
             stateWrapper.showError();
         } else if (id == R.id.action_no_network) {
             stateWrapper.showNoNetwork();
+        } else if (id == R.id.action_default) {
+            stateWrapper.show(StateWrapper.STATE_DEFAULT);
         }
         return super.onOptionsItemSelected(item);
     }

@@ -8,4 +8,5 @@
     <string name="error">加载错误</string>
     <string name="empty">空数据</string>
     <string name="no_network">没有网络</string>
+    <string name="state_default">自定义状态</string>
 </resources>

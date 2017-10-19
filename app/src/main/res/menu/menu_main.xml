@@ -20,4 +20,9 @@
         android:orderInCategory="100"
         android:title="@string/no_network"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_default"
+        android:orderInCategory="100"
+        android:title="@string/state_default"
+        app:showAsAction="never" />
 </menu>
