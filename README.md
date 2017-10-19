@@ -30,7 +30,7 @@ maven { url 'https://jitpack.io' }
 
 ### 2. 添加依赖
 ```java
-compile 'com.github.senierr:MultiTypeAdapter:1.1.1'
+compile 'com.github.senierr:MultiTypeAdapter:1.1.2'
 ```
 
 #### 注意：
