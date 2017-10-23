@@ -112,7 +112,10 @@ public abstract class BaseLoadMoreWrapper extends ViewHolderWrapper<BaseLoadMore
      */
     private void refreshLoadMoreView() {
         if (multiTypeAdapter != null) {
-            multiTypeAdapter.notifyItemChanged(multiTypeAdapter.getItemCount() - 1);
+            int loadMoreIndex = multiTypeAdapter.getDataList().indexOf(loadMoreBean);
+            if (loadMoreIndex >= 0) {
+                multiTypeAdapter.notifyItemChanged(loadMoreIndex);
+            }
         }
     }
 
