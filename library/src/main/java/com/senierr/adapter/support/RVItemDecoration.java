@@ -46,6 +46,11 @@ public class RVItemDecoration extends RecyclerView.ItemDecoration {
             } else if (spanState.isFirstSpanGroup) {
                 outRect.top = 0;
                 outRect.bottom = eachSize;
+
+                final RecyclerView.LayoutManager layoutManager = parent.getLayoutManager();
+                if (layoutManager instanceof StaggeredGridLayoutManager) {
+                    outRect.bottom = dividerSize;
+                }
             } else if (spanState.isLastSpanGroup) {
                 outRect.top = eachSize;
                 outRect.bottom = 0;
@@ -75,6 +80,11 @@ public class RVItemDecoration extends RecyclerView.ItemDecoration {
             } else if (spanState.isFirstSpanGroup) {
                 outRect.left = 0;
                 outRect.right = eachSize;
+
+                final RecyclerView.LayoutManager layoutManager = parent.getLayoutManager();
+                if (layoutManager instanceof StaggeredGridLayoutManager) {
+                    outRect.right = dividerSize;
+                }
             } else if (spanState.isLastSpanGroup) {
                 outRect.left = eachSize;
                 outRect.right = 0;
@@ -125,9 +135,16 @@ public class RVItemDecoration extends RecyclerView.ItemDecoration {
                             childBounds.right, childBounds.top +  eachSize);
                     dividerDrawable.draw(c);
                 } else if (!spanState.isLastSpanGroup) {
-                    dividerDrawable.setBounds(childBounds.left, childBounds.bottom - eachSize,
-                            childBounds.right, childBounds.bottom);
-                    dividerDrawable.draw(c);
+                    final RecyclerView.LayoutManager layoutManager = parent.getLayoutManager();
+                    if (layoutManager instanceof StaggeredGridLayoutManager) {
+                        dividerDrawable.setBounds(childBounds.left, childBounds.bottom - dividerSize,
+                                childBounds.right, childBounds.bottom);
+                        dividerDrawable.draw(c);
+                    } else {
+                        dividerDrawable.setBounds(childBounds.left, childBounds.bottom - eachSize,
+                                childBounds.right, childBounds.bottom);
+                        dividerDrawable.draw(c);
+                    }
                 }
                 // left, right
                 if (!spanState.isStartSpan && !spanState.isEndSpan) {
@@ -147,19 +164,6 @@ public class RVItemDecoration extends RecyclerView.ItemDecoration {
                     dividerDrawable.draw(c);
                 }
             } else {
-                // 画垂直分割线
-                if (!spanState.isLastSpanGroup) {
-                    dividerDrawable.setBounds(childBounds.right - dividerSize, childBounds.top,
-                            childBounds.right, childBounds.bottom);
-                    dividerDrawable.draw(c);
-                }
-                // 画水平分割线
-                if (!spanState.isEndSpan) {
-                    dividerDrawable.setBounds(childBounds.left, childBounds.bottom - dividerSize,
-                            childBounds.right, childBounds.bottom);
-                    dividerDrawable.draw(c);
-                }
-
                 // left, right
                 if (!spanState.isFirstSpanGroup && !spanState.isLastSpanGroup) {
                     dividerDrawable.setBounds(childBounds.left, childBounds.top,
@@ -173,9 +177,16 @@ public class RVItemDecoration extends RecyclerView.ItemDecoration {
                             childBounds.left + eachSize, childBounds.bottom);
                     dividerDrawable.draw(c);
                 } else if (!spanState.isLastSpanGroup) {
-                    dividerDrawable.setBounds(childBounds.right - eachSize, childBounds.top,
-                            childBounds.right, childBounds.bottom);
-                    dividerDrawable.draw(c);
+                    final RecyclerView.LayoutManager layoutManager = parent.getLayoutManager();
+                    if (layoutManager instanceof StaggeredGridLayoutManager) {
+                        dividerDrawable.setBounds(childBounds.right - dividerSize, childBounds.top,
+                                childBounds.right, childBounds.bottom);
+                        dividerDrawable.draw(c);
+                    } else {
+                        dividerDrawable.setBounds(childBounds.right - eachSize, childBounds.top,
+                                childBounds.right, childBounds.bottom);
+                        dividerDrawable.draw(c);
+                    }
                 }
                 // top, bottom
                 if (!spanState.isStartSpan && !spanState.isEndSpan) {
