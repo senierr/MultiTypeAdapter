@@ -21,12 +21,39 @@ public class WrapperPool {
         dataBinders = new ArrayList<>();
     }
 
+    /**
+     * 检查重复注册
+     *
+     * @param cls
+     * @param <T>
+     */
+    private <T> void checkRepeats(@NonNull Class<T> cls) {
+        for (ViewHolderWrapper<?> viewHolderWrapper : viewHolderWrappers) {
+            if (cls.equals(viewHolderWrapper.getDataCls())) {
+
+            }
+        }
+    }
+
+    /**
+     * 添加
+     *
+     * @param viewHolderWrapper
+     * @param dataBinder
+     */
     public void add(@NonNull ViewHolderWrapper<?> viewHolderWrapper, @NonNull DataBinder<?> dataBinder) {
         viewHolderWrappers.add(viewHolderWrapper);
         dataBinders.add(dataBinder);
     }
 
-    public void remove(@NonNull ViewHolderWrapper<?> viewHolderWrapper, @NonNull DataBinder<?> dataBinder) {
+    /**
+     * 移除
+     *
+     * @param index
+     */
+    public void remove(int index) {
+        ViewHolderWrapper<?> viewHolderWrapper = viewHolderWrappers.get(index);
+        DataBinder<?> dataBinder = dataBinders.get(index);
         viewHolderWrappers.remove(viewHolderWrapper);
         dataBinders.remove(dataBinder);
     }

@@ -10,17 +10,33 @@ import android.support.annotation.NonNull;
 
 public abstract class DataBinder<T> {
 
+    private Class<T> dataCls;
     private ViewHolderWrapper<T>[] viewHolderWrappers;
 
+    /**
+     * 数据对应的封装器的索引
+     *
+     * @param item
+     * @return
+     */
     @IntRange(from = 0, to = Integer.MAX_VALUE)
     public abstract int onBindIndex(@NonNull T item);
+
+    @NonNull
+    Class<T> getDataCls() {
+        return dataCls;
+    }
+
+    void setDataCls(@NonNull Class<T> dataCls) {
+        this.dataCls = dataCls;
+    }
 
     void setViewHolderWrappers(@NonNull ViewHolderWrapper<T>[] viewHolderWrappers) {
         this.viewHolderWrappers = viewHolderWrappers;
     }
 
     @NonNull
-    ViewHolderWrapper<T> getViewHolderWrapper(@NonNull T item) {
-        return viewHolderWrappers[onBindIndex(item)];
+    ViewHolderWrapper<T>[] getViewHolderWrappers() {
+        return viewHolderWrappers;
     }
 }

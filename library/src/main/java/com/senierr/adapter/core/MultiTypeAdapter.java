@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.SparseArray;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
@@ -143,16 +144,14 @@ public class MultiTypeAdapter extends RecyclerView.Adapter<RVHolder> {
     }
 
     @NonNull @SafeVarargs @CheckResult
-    public final <T> RegisterHelper<T> register(@NonNull ViewHolderWrapper<T>... viewHolderWrappers) {
-        for (ViewHolderWrapper<?> viewHolderWrapper : viewHolderWrappers) {
-            viewHolderWrapper.setMultiTypeAdapter(this);
-        }
-        return new RegisterHelper<T>().register(viewHolderWrappers);
+    public final <T> RegisterHelper<T> register(@NonNull Class<T> cls,
+                                                @NonNull ViewHolderWrapper<T>... viewHolderWrappers) {
+        return new RegisterHelper<T>().register(cls, viewHolderWrappers);
     }
 
-    public final <T> void register(@NonNull ViewHolderWrapper<T> viewHolderWrapper) {
-        viewHolderWrapper.setMultiTypeAdapter(this);
-        new RegisterHelper<T>().register(viewHolderWrapper).with(new DataBinder<T>() {
+    public final <T> void register(@NonNull Class<T> cls,
+                                   @NonNull ViewHolderWrapper<T> viewHolderWrapper) {
+        new RegisterHelper<T>().register(cls, viewHolderWrapper).with(new DataBinder<T>() {
             @Override
             public int onBindIndex(@NonNull T item) {
                 return 0;
@@ -179,6 +178,8 @@ public class MultiTypeAdapter extends RecyclerView.Adapter<RVHolder> {
         this.dataList = dataList;
     }
 
+    private List<DataBinder<?>> dataBinderList = new ArrayList<>();
+
     /**
      * 注册帮助类
      *
@@ -186,18 +187,33 @@ public class MultiTypeAdapter extends RecyclerView.Adapter<RVHolder> {
      */
     public final class RegisterHelper<T> {
 
+        private Class<T> cls;
         private ViewHolderWrapper<T>[] viewHolderWrappers;
 
         @NonNull @CheckResult @SafeVarargs
-        final RegisterHelper<T> register(@NonNull ViewHolderWrapper<T>... viewHolderWrappers) {
+        final RegisterHelper<T> register(@NonNull Class<T> cls, @NonNull ViewHolderWrapper<T>... viewHolderWrappers) {
+            this.cls = cls;
             this.viewHolderWrappers = viewHolderWrappers;
+            for (ViewHolderWrapper<?> viewHolderWrapper : viewHolderWrappers) {
+                viewHolderWrapper.setMultiTypeAdapter(MultiTypeAdapter.this);
+            }
             return this;
         }
 
         public final void with(@NonNull DataBinder<T> dataBinder) {
+            dataBinder.setDataCls(cls);
             dataBinder.setViewHolderWrappers(viewHolderWrappers);
-            for (ViewHolderWrapper<T> viewHolderWrapper : viewHolderWrappers) {
-                wrapperPool.add(viewHolderWrapper, dataBinder);
+            for (int i = 0; i < viewHolderWrappers.length; i++) {
+                dataBinderList.add(dataBinder);
+            }
+        }
+
+        /**
+         * 检查重复注册
+         */
+        private <T> void checkRepeats() {
+            while (true) {
+                
             }
         }
     }
