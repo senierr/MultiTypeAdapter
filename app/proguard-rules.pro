@@ -46,9 +46,9 @@
 -keep interface android.support.design.** { *; }
 -keep public class android.support.design.R$* { *; }
 
-# MultiTypeAdapter
--dontwarn com.senierr.adapter.**
--keep class com.senierr.adapter.** { *; }
+# SeAdapter
+-dontwarn com.senierr.seadapter.**
+-keep class com.senierr.seadapter.** { *; }
 
 #-------------------------------------------------------------------------
 

@@ -3,9 +3,9 @@ package com.senierr.demo;
 import android.support.annotation.NonNull;
 import android.view.ViewGroup;
 
-import com.senierr.adapter.support.wrapper.BaseLoadMoreWrapper;
-import com.senierr.adapter.core.RVHolder;
-import com.senierr.adapter.support.bean.LoadMoreBean;
+import com.senierr.seadapter.support.wrapper.BaseLoadMoreWrapper;
+import com.senierr.seadapter.internal.RVHolder;
+import com.senierr.seadapter.support.bean.LoadMoreBean;
 
 /**
  * @author zhouchunjie

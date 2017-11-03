@@ -4,8 +4,8 @@ import android.support.annotation.NonNull;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.senierr.adapter.core.ViewHolderWrapper;
-import com.senierr.adapter.core.RVHolder;
+import com.senierr.seadapter.internal.ViewHolderWrapper;
+import com.senierr.seadapter.internal.RVHolder;
 
 /**
  * @author zhouchunjie
@@ -26,4 +26,6 @@ public class FirstWrapper extends ViewHolderWrapper<DataBean> {
         textView.setText(item.getContent());
         textView.setHeight(item.getHeight());
     }
+
+
 }

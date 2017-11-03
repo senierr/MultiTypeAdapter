@@ -73,10 +73,10 @@ public class FirstWrapper extends ViewHolderWrapper<DataBean> {
     }
 }
 
-MultiTypeAdapter multiTypeAdapter = new MultiTypeAdapter();
-multiTypeAdapter.register(new FirstWrapper())
-multiTypeAdapter.setDataList(list);
-recyclerView.setAdapter(multiTypeAdapter);
+MultiTypeAdapter seAdapter = new MultiTypeAdapter();
+seAdapter.register(new FirstWrapper())
+seAdapter.setDataList(list);
+recyclerView.setAdapter(seAdapter);
 ```
 
 ## 进阶使用
@@ -127,7 +127,7 @@ public int getSpanSize(T item) {
 /**
  * 注册多种处理处理器时，指定数据绑定方式
  */
-multiTypeAdapter.register(firstWrapper, secondWrapper)
+seAdapter.register(firstWrapper, secondWrapper)
             .with(new DataBinder<DataBean>() {
                 @Override
                 public int onBindIndex(@NonNull DataBean item) {
@@ -180,7 +180,7 @@ public class StateWrapper extends BaseStateWrapper {
     }
 }
 
-multiTypeAdapter.register(stateWrapper);
+seAdapter.register(stateWrapper);
 stateWrapper.showLoading();         // 正在加载
 stateWrapper.showEmpty();           // 空数据
 stateWrapper.showError();           // 加载错误
@@ -219,7 +219,7 @@ public class LoadMoreWrapper extends BaseLoadMoreWrapper {
 }
 
 setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener)
-multiTypeAdapter.register(loadMoreWrapper);
+seAdapter.register(loadMoreWrapper);
 list.add(loadMoreWrapper.getLoadMoreBean());
 ```
 

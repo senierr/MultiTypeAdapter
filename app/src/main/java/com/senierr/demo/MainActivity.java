@@ -11,14 +11,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.senierr.adapter.core.DataBinder;
-import com.senierr.adapter.core.MultiTypeAdapter;
-import com.senierr.adapter.core.RVHolder;
-import com.senierr.adapter.core.ViewHolderWrapper;
-import com.senierr.adapter.support.wrapper.BaseLoadMoreWrapper;
-import com.senierr.adapter.support.decoration.BaseItemDecoration;
-import com.senierr.adapter.support.bean.LoadMoreBean;
-import com.senierr.adapter.support.bean.StateBean;
+import com.senierr.seadapter.internal.DataBinder;
+import com.senierr.seadapter.internal.SeAdapter;
+import com.senierr.seadapter.internal.RVHolder;
+import com.senierr.seadapter.internal.ViewHolderWrapper;
+import com.senierr.seadapter.support.wrapper.BaseLoadMoreWrapper;
+import com.senierr.seadapter.support.decoration.BaseItemDecoration;
+import com.senierr.seadapter.support.bean.LoadMoreBean;
+import com.senierr.seadapter.support.bean.StateBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private Toast toast;
     private RecyclerView recyclerView;
     private List<Object> list = new ArrayList<>();
-    private MultiTypeAdapter multiTypeAdapter;
+    private SeAdapter seAdapter;
 
     private LoadMoreWrapper loadMoreWrapper;
     private StateWrapper stateWrapper;
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         recyclerView.addItemDecoration(new BaseItemDecoration(this, R.dimen.dimen_4, R.color.transparent));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        multiTypeAdapter = new MultiTypeAdapter();
+        seAdapter = new SeAdapter();
 
         FirstWrapper firstWrapper = new FirstWrapper();
         // 列表点击事件
@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        multiTypeAdapter.bind(DataBean.class, firstWrapper, secondWrapper)
+        seAdapter.bind(DataBean.class, firstWrapper, secondWrapper)
                 .with(new DataBinder<DataBean>() {
                     @Override
                     public int onBindIndex(@NonNull DataBean item) {
@@ -118,10 +118,10 @@ public class MainActivity extends AppCompatActivity {
                         return 1;
                     }
                 });
-        multiTypeAdapter.bind(StateBean.class, stateWrapper);
-        multiTypeAdapter.bind(LoadMoreBean.class, loadMoreWrapper);
-        multiTypeAdapter.setDataList(list);
-        recyclerView.setAdapter(multiTypeAdapter);
+        seAdapter.bind(StateBean.class, stateWrapper);
+        seAdapter.bind(LoadMoreBean.class, loadMoreWrapper);
+        seAdapter.setDataList(list);
+        recyclerView.setAdapter(seAdapter);
     }
 
     @Override
@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
                     list.clear();
                     list.addAll(dataBeanList);
                     list.add(loadMoreWrapper.getLoadMoreBean());
-                    multiTypeAdapter.notifyDataSetChanged();
+                    seAdapter.notifyDataSetChanged();
                     pageIndex++;
                 } else if (pageIndex == 3) {
                     loadMoreWrapper.loadMoreNoMore();
@@ -168,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
                     loadMoreWrapper.loadMoreCompleted();
                     int startPosition = list.size() - 1;
                     list.addAll(startPosition, dataBeanList);
-                    multiTypeAdapter.notifyItemRangeInserted(startPosition, dataBeanList.size());
+                    seAdapter.notifyItemRangeInserted(startPosition, dataBeanList.size());
                     pageIndex++;
                 }
             }

@@ -1,4 +1,4 @@
-package com.senierr.adapter.support.decoration;
+package com.senierr.seadapter.support.decoration;
 
 import android.content.Context;
 import android.graphics.Canvas;

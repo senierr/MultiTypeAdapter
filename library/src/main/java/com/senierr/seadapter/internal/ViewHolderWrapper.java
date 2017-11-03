@@ -1,4 +1,4 @@
-package com.senierr.adapter.core;
+package com.senierr.seadapter.internal;
 
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
@@ -19,7 +19,7 @@ import java.util.List;
 
 public abstract class ViewHolderWrapper<T> {
 
-    private @Nullable MultiTypeAdapter multiTypeAdapter;
+    private @Nullable SeAdapter seAdapter;
     private @Nullable OnItemClickListener onItemClickListener;
     private @Nullable SparseArray<OnItemChildClickListener> onItemChildClickListeners;
 
@@ -95,13 +95,13 @@ public abstract class ViewHolderWrapper<T> {
         onBindViewHolder(holder, item);
     }
 
-    public final void setMultiTypeAdapter(@Nullable MultiTypeAdapter multiTypeAdapter) {
-        this.multiTypeAdapter = multiTypeAdapter;
+    public final void setAdapter(@Nullable SeAdapter seAdapter) {
+        this.seAdapter = seAdapter;
     }
 
     @Nullable
-    public final MultiTypeAdapter getMultiTypeAdapter() {
-        return multiTypeAdapter;
+    public final SeAdapter getAdapter() {
+        return seAdapter;
     }
 
     @Nullable
