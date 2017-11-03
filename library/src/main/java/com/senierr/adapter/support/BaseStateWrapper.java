@@ -1,6 +1,5 @@
 package com.senierr.adapter.support;
 
-import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -20,8 +19,7 @@ public abstract class BaseStateWrapper extends ViewHolderWrapper<BaseStateWrappe
     private @Nullable RecyclerView recyclerView;
     private @NonNull StateBean stateBean;
 
-    public BaseStateWrapper(@LayoutRes int layoutId) {
-        super(StateBean.class, layoutId);
+    public BaseStateWrapper() {
         stateBean = new StateBean();
         stateBean.setState(StateBean.STATE_NONE);
     }
@@ -45,10 +43,10 @@ public abstract class BaseStateWrapper extends ViewHolderWrapper<BaseStateWrappe
      */
     private final void refreshView(int state) {
         stateBean.setState(state);
-        if (multiTypeAdapter != null && recyclerView != null) {
-            multiTypeAdapter.getDataList().clear();
-            multiTypeAdapter.getDataList().add(stateBean);
-            multiTypeAdapter.notifyDataSetChanged();
+        if (getMultiTypeAdapter() != null && recyclerView != null) {
+            getMultiTypeAdapter().getDataList().clear();
+            getMultiTypeAdapter().getDataList().add(stateBean);
+            getMultiTypeAdapter().notifyDataSetChanged();
             RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
             if (layoutManager instanceof StaggeredGridLayoutManager) {
                 ((StaggeredGridLayoutManager) layoutManager).invalidateSpanAssignments();
@@ -61,11 +59,11 @@ public abstract class BaseStateWrapper extends ViewHolderWrapper<BaseStateWrappe
      * 隐藏状态布局
      */
     public void hide() {
-        if (multiTypeAdapter != null) {
-            int stateBeanIndex = multiTypeAdapter.getDataList().indexOf(stateBean);
+        if (getMultiTypeAdapter() != null) {
+            int stateBeanIndex = getMultiTypeAdapter().getDataList().indexOf(stateBean);
             if (stateBeanIndex != -1) {
-                multiTypeAdapter.getDataList().remove(stateBeanIndex);
-                multiTypeAdapter.notifyDataSetChanged();
+                getMultiTypeAdapter().getDataList().remove(stateBeanIndex);
+                getMultiTypeAdapter().notifyDataSetChanged();
             }
         }
     }

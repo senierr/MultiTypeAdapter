@@ -1,6 +1,5 @@
 package com.senierr.adapter.support;
 
-import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
@@ -24,8 +23,7 @@ public abstract class BaseLoadMoreWrapper extends ViewHolderWrapper<BaseLoadMore
     private @NonNull LoadMoreBean loadMoreBean;
     private @Nullable OnLoadMoreListener onLoadMoreListener;
 
-    public BaseLoadMoreWrapper(@LayoutRes int layoutId) {
-        super(LoadMoreBean.class, layoutId);
+    public BaseLoadMoreWrapper() {
         loadMoreBean = new LoadMoreBean();
         loadMoreBean.setLoadState(LoadMoreBean.STATUS_LOADING_COMPLETED);
     }
@@ -61,8 +59,8 @@ public abstract class BaseLoadMoreWrapper extends ViewHolderWrapper<BaseLoadMore
     private boolean checkCanLoadMore(RecyclerView recyclerView, int dx, int dy) {
         // 判断是否有加载更多项
         boolean hasLoadMoreBean = false;
-        if (multiTypeAdapter != null) {
-            hasLoadMoreBean = multiTypeAdapter.getDataList().indexOf(loadMoreBean) != -1;
+        if (getMultiTypeAdapter() != null) {
+            hasLoadMoreBean = getMultiTypeAdapter().getDataList().indexOf(loadMoreBean) != -1;
         }
 
         if (!hasLoadMoreBean || loadMoreBean.getLoadState() == LoadMoreBean.STATUS_LOADING) {
@@ -89,7 +87,7 @@ public abstract class BaseLoadMoreWrapper extends ViewHolderWrapper<BaseLoadMore
                     "GridLayoutManager and StaggeredGridLayoutManager.");
         }
 
-        if (lastVisibleItemPosition >= multiTypeAdapter.getItemCount() - 1) {
+        if (lastVisibleItemPosition >= getMultiTypeAdapter().getItemCount() - 1) {
             if (orientation == OrientationHelper.VERTICAL && dy > 0) {
                 return true;
             } else if (orientation == OrientationHelper.HORIZONTAL && dx > 0) {
@@ -111,10 +109,10 @@ public abstract class BaseLoadMoreWrapper extends ViewHolderWrapper<BaseLoadMore
      * 更新加载更多布局
      */
     private void refreshLoadMoreView() {
-        if (multiTypeAdapter != null) {
-            int loadMoreIndex = multiTypeAdapter.getDataList().indexOf(loadMoreBean);
+        if (getMultiTypeAdapter() != null) {
+            int loadMoreIndex = getMultiTypeAdapter().getDataList().indexOf(loadMoreBean);
             if (loadMoreIndex >= 0) {
-                multiTypeAdapter.notifyItemChanged(loadMoreIndex);
+                getMultiTypeAdapter().notifyItemChanged(loadMoreIndex);
             }
         }
     }
