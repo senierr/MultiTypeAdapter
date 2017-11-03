@@ -1,9 +1,7 @@
-# MultiTypeAdapter
+# SeAdapter
 
-[![](https://jitpack.io/v/senierr/MultiTypeAdapter.svg)](https://jitpack.io/#senierr/MultiTypeAdapter)
+[![](https://jitpack.io/v/senierr/SeAdapter.svg)](https://jitpack.io/#senierr/SeAdapter)
 [![](https://img.shields.io/travis/rust-lang/rust.svg)](https://github.com/senierr/SeHttp)
-
-#### 提供灵活、便捷以及可插拔的多类型视图。
 
 ## 目前支持
 
@@ -17,9 +15,9 @@
 * 自定义列表项所占列数
 * 其他
     * 头部/底部
-    * 正在加载/空数据/加载错误/没有网络/自定义状态`
+    * 正在加载/空数据/加载错误/没有网络/自定义状态
     * 加载更多
-    * 通用分割线
+    * 基础分割线
 
 ## 架包引入
 
@@ -30,41 +28,37 @@ maven { url 'https://jitpack.io' }
 
 ### 2. 添加依赖
 ```java
-compile 'com.github.senierr:MultiTypeAdapter:1.1.2'
+compile 'com.github.senierr:SeAdapter:<release_version>'
 ```
 
 #### 注意：
-`MultiTypeAdapter`内部依赖了:
+`SeAdapter`内部依赖了:
 ```jaba
 compile 'com.android.support:support-annotations:25.3.1'
 compile 'com.android.support:recyclerview-v7:25.3.1'
 ```
 依赖关系如下：
 ```java
-+--- com.github.senierr:MultiTypeAdapter:RELEASE_VERSION
++--- com.github.senierr:MultiTypeAdapter:<release_version>
 |    |    +--- com.android.support:support-annotations:25.3.1
 |    |    +--- com.android.support:recyclerview-v7:25.3.1
 ```
 如不需要，可通过以下方式关闭**传递性依赖**：
 ```java
-compile ('com.github.senierr:MultiTypeAdapter:RELEASE_VERSION', {
+compile ('com.github.senierr:SeAdapter:<release_version>', {
     transitive = false
 })
 或者
-compile 'com.github.senierr:MultiTypeAdapter:RELEASE_VERSION@aar'
+compile 'com.github.senierr:SeAdapter:RELEASE_VERSION@aar'
 ```
 
 ## 基本使用
 ```java
 public class FirstWrapper extends ViewHolderWrapper<DataBean> {
 
-    public FirstWrapper() {
-        /**
-         * 构造函数，指定职能：处理的数据类型和布局类型
-         *
-         * 注：只负责一类数据和一类布局，细分职责粒度，方便重用。
-         */
-        super(DataBean.class, R.layout.item_first);
+    @NonNull @Override
+    public RVHolder onCreateViewHolder(@NonNull ViewGroup parent) {
+        return RVHolder.create(parent, R.layout.item_first);
     }
 
     @Override
@@ -73,8 +67,8 @@ public class FirstWrapper extends ViewHolderWrapper<DataBean> {
     }
 }
 
-MultiTypeAdapter seAdapter = new MultiTypeAdapter();
-seAdapter.register(new FirstWrapper())
+SeAdapter seAdapter = new SeAdapter();
+seAdapter.bind(DataBean.class, new FirstWrapper())
 seAdapter.setDataList(list);
 recyclerView.setAdapter(seAdapter);
 ```
@@ -94,11 +88,11 @@ setOnItemChildClickListener(int childId, OnItemChildClickListener onItemChildCli
 
 ```java
 /**
- * 获取父类创建的RVHolder，实现灵活的自定义事件，或者返回创建的自定义RVHolder。
+ * 获取创建的RVHolder，实现灵活的自定义事件，或者返回创建的自定义RVHolder。
  */
 @Override @NonNull
 public RVHolder onCreateViewHolder(@NonNull ViewGroup parent) {
-    RVHolder rvHolder = super.onCreateViewHolder(parent);
+    RVHolder rvHolder = ...;
     ......
     return rvHolder;
 }
@@ -127,7 +121,7 @@ public int getSpanSize(T item) {
 /**
  * 注册多种处理处理器时，指定数据绑定方式
  */
-seAdapter.register(firstWrapper, secondWrapper)
+seAdapter.bind(DataBean.class, firstWrapper, secondWrapper)
             .with(new DataBinder<DataBean>() {
                 @Override
                 public int onBindIndex(@NonNull DataBean item) {
@@ -143,7 +137,7 @@ seAdapter.register(firstWrapper, secondWrapper)
 
 `头部/底部`、`状态显示`、`加载更多`等，本质上都是一种`数据类型`，以及对应的`ViewHolderWrapper`。
 
-`MultiTypeAdapter`内部提供了简便的处理方式，详见`support`包。
+`SeAdapter`内部提供了简便的处理方式，详见`support`包。
 
 ### 1. 头部/底部
 
@@ -157,8 +151,10 @@ seAdapter.register(firstWrapper, secondWrapper)
 
 ```java
 public class StateWrapper extends BaseStateWrapper {
-    public StateWrapper() {
-        super(R.layout.item_state);
+
+    @NonNull @Override
+    public RVHolder onCreateViewHolder(@NonNull ViewGroup parent) {
+        return RVHolder.create(parent, R.layout.item_state);
     }
 
     @Override
@@ -180,7 +176,7 @@ public class StateWrapper extends BaseStateWrapper {
     }
 }
 
-seAdapter.register(stateWrapper);
+seAdapter.bind(StateBean.class, stateWrapper);
 stateWrapper.showLoading();         // 正在加载
 stateWrapper.showEmpty();           // 空数据
 stateWrapper.showError();           // 加载错误
@@ -195,8 +191,10 @@ stateWrapper.hide()                 // 隐藏状态页
 
 ```java
 public class LoadMoreWrapper extends BaseLoadMoreWrapper {
-    public LoadMoreWrapper() {
-        super(R.layout.item_third);
+
+    @NonNull @Override
+    public RVHolder onCreateViewHolder(@NonNull ViewGroup parent) {
+        return RVHolder.create(parent, R.layout.item_load_more);
     }
 
     @Override
@@ -219,26 +217,27 @@ public class LoadMoreWrapper extends BaseLoadMoreWrapper {
 }
 
 setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener)
-seAdapter.register(loadMoreWrapper);
+seAdapter.bind(LoadMoreBean.class, loadMoreWrapper);
 list.add(loadMoreWrapper.getLoadMoreBean());
 ```
 
 ### 4. 通用分割线
 
-**RVItemDecoration：** 详见`support`包
+**BaseItemDecoration：** 详见`support`包
 
 #### 目前支持
 
 * 设置宽度、颜色
 * 线性、表格、瀑布流三种类型布局
+* 等距分割
 * 横竖屏两种方向
 
 ## 混淆
 
-`MultiTypeAdapter`默认是可以被混淆的，如果仍希望不被混淆：
+`SeAdapter`默认是可以被混淆的，如果仍希望不被混淆：
 ```java
--dontwarn com.senierr.adapter.**
--keep class com.senierr.adapter.** { *; }
+-dontwarn com.senierr.seadapter.**
+-keep class com.senierr.seadapter.** { *; }
 ```
 
 ## License
