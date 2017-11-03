@@ -15,9 +15,10 @@ import com.senierr.adapter.core.DataBinder;
 import com.senierr.adapter.core.MultiTypeAdapter;
 import com.senierr.adapter.core.RVHolder;
 import com.senierr.adapter.core.ViewHolderWrapper;
-import com.senierr.adapter.support.BaseLoadMoreWrapper;
-import com.senierr.adapter.support.BaseStateWrapper;
-import com.senierr.adapter.support.RVItemDecoration;
+import com.senierr.adapter.support.wrapper.BaseLoadMoreWrapper;
+import com.senierr.adapter.support.decoration.BaseItemDecoration;
+import com.senierr.adapter.support.bean.LoadMoreBean;
+import com.senierr.adapter.support.bean.StateBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 //        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 //        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-        recyclerView.addItemDecoration(new RVItemDecoration(this, R.dimen.dimen_4, R.color.transparent));
+        recyclerView.addItemDecoration(new BaseItemDecoration(this, R.dimen.dimen_4, R.color.transparent));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         multiTypeAdapter = new MultiTypeAdapter();
 
@@ -117,8 +118,8 @@ public class MainActivity extends AppCompatActivity {
                         return 1;
                     }
                 });
-        multiTypeAdapter.bind(BaseStateWrapper.StateBean.class, stateWrapper);
-        multiTypeAdapter.bind(BaseLoadMoreWrapper.LoadMoreBean.class, loadMoreWrapper);
+        multiTypeAdapter.bind(StateBean.class, stateWrapper);
+        multiTypeAdapter.bind(LoadMoreBean.class, loadMoreWrapper);
         multiTypeAdapter.setDataList(list);
         recyclerView.setAdapter(multiTypeAdapter);
     }

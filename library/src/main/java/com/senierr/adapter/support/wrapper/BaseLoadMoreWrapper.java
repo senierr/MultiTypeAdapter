@@ -1,4 +1,4 @@
-package com.senierr.adapter.support;
+package com.senierr.adapter.support.wrapper;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 
 import com.senierr.adapter.core.ViewHolderWrapper;
+import com.senierr.adapter.support.bean.LoadMoreBean;
 
 /**
  * 加载更多
@@ -17,7 +18,7 @@ import com.senierr.adapter.core.ViewHolderWrapper;
  * @date 2017/10/9
  */
 
-public abstract class BaseLoadMoreWrapper extends ViewHolderWrapper<BaseLoadMoreWrapper.LoadMoreBean> {
+public abstract class BaseLoadMoreWrapper extends ViewHolderWrapper<LoadMoreBean> {
 
     private @Nullable RecyclerView recyclerView;
     private @NonNull LoadMoreBean loadMoreBean;
@@ -186,25 +187,10 @@ public abstract class BaseLoadMoreWrapper extends ViewHolderWrapper<BaseLoadMore
         this.loadMoreBean = loadMoreBean;
     }
 
+    /**
+     * 加载更多回调
+     */
     public interface OnLoadMoreListener {
         void onLoadMore();
-    }
-
-    public class LoadMoreBean {
-
-        public final static int STATUS_LOADING = 101;
-        public final static int STATUS_LOADING_COMPLETED = 102;
-        public final static int STATUS_LOAD_NO_MORE = 103;
-        public final static int STATUS_LOAD_FAILURE = 104;
-
-        private int loadState;
-
-        public int getLoadState() {
-            return loadState;
-        }
-
-        public void setLoadState(int loadState) {
-            this.loadState = loadState;
-        }
     }
 }

@@ -1,4 +1,4 @@
-package com.senierr.adapter.support;
+package com.senierr.adapter.support.decoration;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -15,7 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 
-public class RVItemDecoration extends RecyclerView.ItemDecoration {
+public class BaseItemDecoration extends RecyclerView.ItemDecoration {
 
     // 布局方向
     private int orientation = -1;
@@ -26,7 +26,7 @@ public class RVItemDecoration extends RecyclerView.ItemDecoration {
     // 子布局
     private final Rect childBounds = new Rect();
 
-    public RVItemDecoration(Context context, @DimenRes int dividerSize, @ColorRes int color) {
+    public BaseItemDecoration(Context context, @DimenRes int dividerSize, @ColorRes int color) {
         this.dividerSize = context.getResources().getDimensionPixelSize(dividerSize);
         dividerDrawable = new ColorDrawable(ContextCompat.getColor(context, color));
     }

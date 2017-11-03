@@ -1,11 +1,13 @@
-package com.senierr.adapter.support;
+package com.senierr.adapter.support.wrapper;
 
+import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 
 import com.senierr.adapter.core.ViewHolderWrapper;
+import com.senierr.adapter.support.bean.StateBean;
 
 /**
  * 状态切换
@@ -14,7 +16,7 @@ import com.senierr.adapter.core.ViewHolderWrapper;
  * @date 2017/10/9
  */
 
-public abstract class BaseStateWrapper extends ViewHolderWrapper<BaseStateWrapper.StateBean> {
+public abstract class BaseStateWrapper extends ViewHolderWrapper<StateBean> {
 
     private @Nullable RecyclerView recyclerView;
     private @NonNull StateBean stateBean;
@@ -41,7 +43,7 @@ public abstract class BaseStateWrapper extends ViewHolderWrapper<BaseStateWrappe
     /**
      * 更新布局
      */
-    private final void refreshView(int state) {
+    private void refreshView(int state) {
         stateBean.setState(state);
         if (getMultiTypeAdapter() != null && recyclerView != null) {
             getMultiTypeAdapter().getDataList().clear();
@@ -71,7 +73,7 @@ public abstract class BaseStateWrapper extends ViewHolderWrapper<BaseStateWrappe
     /**
      * 显示自定义状态
      */
-    public final void show(int state) {
+    public final void show(@IntRange(from = 0, to = Integer.MAX_VALUE) int state) {
         if (state < 0) {
             throw new IllegalArgumentException("The state must be greater than 0");
         }
@@ -104,24 +106,5 @@ public abstract class BaseStateWrapper extends ViewHolderWrapper<BaseStateWrappe
      */
     public final void showNoNetwork() {
         refreshView(StateBean.STATE_NO_NETWORK);
-    }
-
-    public class StateBean {
-
-        public final static int STATE_NONE = -101;
-        public final static int STATE_LOADING = -102;
-        public final static int STATE_EMPTY = -103;
-        public final static int STATE_ERROR = -104;
-        public final static int STATE_NO_NETWORK = -105;
-
-        private int state;
-
-        public int getState() {
-            return state;
-        }
-
-        public void setState(int state) {
-            this.state = state;
-        }
     }
 }

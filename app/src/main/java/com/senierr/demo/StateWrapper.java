@@ -3,8 +3,9 @@ package com.senierr.demo;
 import android.support.annotation.NonNull;
 import android.view.ViewGroup;
 
-import com.senierr.adapter.support.BaseStateWrapper;
+import com.senierr.adapter.support.wrapper.BaseStateWrapper;
 import com.senierr.adapter.core.RVHolder;
+import com.senierr.adapter.support.bean.StateBean;
 
 /**
  * @author zhouchunjie
