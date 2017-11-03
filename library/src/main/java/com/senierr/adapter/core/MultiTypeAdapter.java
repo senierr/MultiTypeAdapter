@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.SparseArray;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
@@ -20,35 +19,35 @@ import java.util.List;
 public class MultiTypeAdapter extends RecyclerView.Adapter<RVHolder> {
 
     private @Nullable RecyclerView recyclerView;
-    private @NonNull WrapperPool wrapperPool;
     private @NonNull List<Object> dataList;
+    private @NonNull List<DataBinder<?>> dataBinderList;
 
     public MultiTypeAdapter() {
         this(new ArrayList<>());
     }
 
     public MultiTypeAdapter(@NonNull List<Object> dataList) {
-        this.wrapperPool = new WrapperPool();
         this.dataList = dataList;
+        this.dataBinderList = new ArrayList<>();
     }
 
     @Override @SuppressWarnings("unchecked")
     public final int getItemViewType(int position) {
         Object item = dataList.get(position);
-        return wrapperPool.getViewHolderWrapperIndex(item);
+        return getViewHolderWrapperIndex(item);
     }
 
     @Override
     public final RVHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ViewHolderWrapper<?> viewHolderWrapper = wrapperPool.getViewHolderWrapper(viewType);
-        return viewHolderWrapper.onCreateViewHolder(parent);
+        ViewHolderWrapper<?> viewHolderWrapper = getViewHolderWrapper(viewType);
+        return viewHolderWrapper.getViewHolder(parent);
     }
 
     @Override @SuppressWarnings("unchecked")
     public final void onBindViewHolder(RVHolder holder, int position, List<Object> payloads) {
         Object item = dataList.get(position);
         ViewHolderWrapper<Object> viewHolderWrapper =
-                (ViewHolderWrapper<Object>) wrapperPool.getViewHolderWrapper(holder.getItemViewType());
+                (ViewHolderWrapper<Object>) getViewHolderWrapper(holder.getItemViewType());
         viewHolderWrapper.onBindViewHolder(holder, item, payloads);
     }
 
@@ -62,20 +61,20 @@ public class MultiTypeAdapter extends RecyclerView.Adapter<RVHolder> {
 
     @Override @SuppressWarnings("unchecked")
     public final long getItemId(int position) {
-        ViewHolderWrapper viewHolderWrapper = wrapperPool.getViewHolderWrapper(getItemViewType(position));
+        ViewHolderWrapper viewHolderWrapper = getViewHolderWrapper(getItemViewType(position));
         return viewHolderWrapper.getItemId(dataList.get(position));
     }
 
     @Override
     public final void onViewRecycled(RVHolder holder) {
         super.onViewRecycled(holder);
-        ViewHolderWrapper viewHolderWrapper = wrapperPool.getViewHolderWrapper(holder.getItemViewType());
+        ViewHolderWrapper viewHolderWrapper = getViewHolderWrapper(holder.getItemViewType());
         viewHolderWrapper.onViewRecycled(holder);
     }
 
     @Override
     public final boolean onFailedToRecycleView(RVHolder holder) {
-        ViewHolderWrapper viewHolderWrapper = wrapperPool.getViewHolderWrapper(holder.getItemViewType());
+        ViewHolderWrapper viewHolderWrapper = getViewHolderWrapper(holder.getItemViewType());
         return viewHolderWrapper.onFailedToRecycleView(holder);
     }
 
@@ -86,7 +85,7 @@ public class MultiTypeAdapter extends RecyclerView.Adapter<RVHolder> {
             return;
         }
 
-        ViewHolderWrapper viewHolderWrapper = wrapperPool.getViewHolderWrapper(holder.getItemViewType());
+        ViewHolderWrapper viewHolderWrapper = getViewHolderWrapper(holder.getItemViewType());
         viewHolderWrapper.onViewAttachedToWindow(holder);
 
         ViewGroup.LayoutParams lp = holder.itemView.getLayoutParams();
@@ -103,7 +102,7 @@ public class MultiTypeAdapter extends RecyclerView.Adapter<RVHolder> {
     @Override
     public final void onViewDetachedFromWindow(RVHolder holder) {
         super.onViewDetachedFromWindow(holder);
-        ViewHolderWrapper viewHolderWrapper = wrapperPool.getViewHolderWrapper(holder.getItemViewType());
+        ViewHolderWrapper viewHolderWrapper = getViewHolderWrapper(holder.getItemViewType());
         viewHolderWrapper.onViewDetachedFromWindow(holder);
     }
 
@@ -112,9 +111,8 @@ public class MultiTypeAdapter extends RecyclerView.Adapter<RVHolder> {
         super.onAttachedToRecyclerView(recyclerView);
         this.recyclerView = recyclerView;
 
-        List<ViewHolderWrapper<?>> viewHolderWrappers = wrapperPool.getViewHolderWrappers();
-        for (ViewHolderWrapper<?> viewHolderWrapper : viewHolderWrappers) {
-            viewHolderWrapper.onAttachedToRecyclerView(recyclerView);
+        for (DataBinder<?> dataBinder : dataBinderList) {
+            dataBinder.getViewHolderWrapper().onAttachedToRecyclerView(recyclerView);
         }
 
         final RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
@@ -123,7 +121,7 @@ public class MultiTypeAdapter extends RecyclerView.Adapter<RVHolder> {
             gridManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                 @Override
                 public int getSpanSize(int position) {
-                    ViewHolderWrapper viewHolderWrapper = wrapperPool.getViewHolderWrapper(getItemViewType(position));
+                    ViewHolderWrapper viewHolderWrapper = getViewHolderWrapper(getItemViewType(position));
                     int spanSize = viewHolderWrapper.getSpanSize(dataList.get(position));
                     int spanCount = gridManager.getSpanCount();
                     return spanSize > spanCount ? spanCount : spanSize;
@@ -137,26 +135,76 @@ public class MultiTypeAdapter extends RecyclerView.Adapter<RVHolder> {
         super.onDetachedFromRecyclerView(recyclerView);
         this.recyclerView = null;
 
-        List<ViewHolderWrapper<?>> viewHolderWrappers = wrapperPool.getViewHolderWrappers();
-        for (ViewHolderWrapper<?> viewHolderWrapper : viewHolderWrappers) {
-            viewHolderWrapper.onDetachedFromRecyclerView(recyclerView);
+        for (DataBinder<?> dataBinder : dataBinderList) {
+            dataBinder.getViewHolderWrapper().onDetachedFromRecyclerView(recyclerView);
         }
     }
 
+    /**
+     * 绑定数据和封装器
+     *
+     * @param cls
+     * @param viewHolderWrappers
+     * @param <T>
+     * @return
+     */
     @NonNull @SafeVarargs @CheckResult
-    public final <T> RegisterHelper<T> register(@NonNull Class<T> cls,
-                                                @NonNull ViewHolderWrapper<T>... viewHolderWrappers) {
-        return new RegisterHelper<T>().register(cls, viewHolderWrappers);
+    public final <T> BindHelper<T> bind(@NonNull Class<T> cls,
+                                        @NonNull ViewHolderWrapper<T>... viewHolderWrappers) {
+        return new BindHelper<T>().bind(cls, viewHolderWrappers);
     }
 
-    public final <T> void register(@NonNull Class<T> cls,
-                                   @NonNull ViewHolderWrapper<T> viewHolderWrapper) {
-        new RegisterHelper<T>().register(cls, viewHolderWrapper).with(new DataBinder<T>() {
+    /**
+     * 绑定数据和封装器
+     *
+     * @param cls
+     * @param viewHolderWrapper
+     * @param <T>
+     */
+    public final <T> void bind(@NonNull Class<T> cls,
+                               @NonNull ViewHolderWrapper<T> viewHolderWrapper) {
+        new BindHelper<T>().bind(cls, viewHolderWrapper).with(new DataBinder<T>() {
             @Override
             public int onBindIndex(@NonNull T item) {
                 return 0;
             }
         });
+    }
+
+    /**
+     * viewType -> index
+     *
+     * @param item
+     * @param <T>
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public <T> int getViewHolderWrapperIndex(T item) {
+        int index = indexOf(item.getClass());
+        return index + ((DataBinder<T>) dataBinderList.get(index)).onBindIndex(item);
+    }
+
+    /**
+     * 获取封装器
+     *
+     * @return
+     */
+    public @NonNull List<ViewHolderWrapper<?>> getViewHolderWrappers() {
+        List<ViewHolderWrapper<?>> viewHolderWrappers = new ArrayList<>();
+        for (DataBinder<?> dataBinder : dataBinderList) {
+            viewHolderWrappers.add(dataBinder.getViewHolderWrapper());
+        }
+        return viewHolderWrappers;
+    }
+
+    /**
+     * 获取封装器
+     *
+     * @param index
+     * @return
+     */
+    public ViewHolderWrapper getViewHolderWrapper(int index) {
+        return dataBinderList.get(index).getViewHolderWrapper();
     }
 
     /**
@@ -178,20 +226,33 @@ public class MultiTypeAdapter extends RecyclerView.Adapter<RVHolder> {
         this.dataList = dataList;
     }
 
-    private List<DataBinder<?>> dataBinderList = new ArrayList<>();
+    /**
+     * 查找对应Cls的DataBinder的索引
+     *
+     * @param cls
+     * @return
+     */
+    private int indexOf(@NonNull Class cls) {
+        for (int i = 0; i < dataBinderList.size(); i++) {
+            if (cls.equals(dataBinderList.get(i).getDataCls())) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
     /**
-     * 注册帮助类
+     * 绑定辅助类
      *
      * @param <T>
      */
-    public final class RegisterHelper<T> {
+    public final class BindHelper<T> {
 
         private Class<T> cls;
         private ViewHolderWrapper<T>[] viewHolderWrappers;
 
         @NonNull @CheckResult @SafeVarargs
-        final RegisterHelper<T> register(@NonNull Class<T> cls, @NonNull ViewHolderWrapper<T>... viewHolderWrappers) {
+        final BindHelper<T> bind(@NonNull Class<T> cls, @NonNull ViewHolderWrapper<T>... viewHolderWrappers) {
             this.cls = cls;
             this.viewHolderWrappers = viewHolderWrappers;
             for (ViewHolderWrapper<?> viewHolderWrapper : viewHolderWrappers) {
@@ -200,20 +261,32 @@ public class MultiTypeAdapter extends RecyclerView.Adapter<RVHolder> {
             return this;
         }
 
+        @SuppressWarnings("unchecked")
         public final void with(@NonNull DataBinder<T> dataBinder) {
+            checkAndRemoveRepeats();
             dataBinder.setDataCls(cls);
-            dataBinder.setViewHolderWrappers(viewHolderWrappers);
-            for (int i = 0; i < viewHolderWrappers.length; i++) {
-                dataBinderList.add(dataBinder);
+            for (ViewHolderWrapper<T> viewHolderWrapper : viewHolderWrappers) {
+                DataBinder<T> dataBinderTemp = null;
+                try {
+                    dataBinderTemp = (DataBinder<T>) dataBinder.clone();
+                } catch (CloneNotSupportedException e) {
+                    e.printStackTrace();
+                }
+                if (dataBinderTemp != null) {
+                    dataBinderTemp.setViewHolderWrapper(viewHolderWrapper);
+                    dataBinderList.add(dataBinderTemp);
+                }
             }
         }
 
-        /**
-         * 检查重复注册
-         */
-        private <T> void checkRepeats() {
+        private void checkAndRemoveRepeats() {
             while (true) {
-                
+                int index = indexOf(cls);
+                if (index != -1) {
+                    dataBinderList.remove(index);
+                } else {
+                    break;
+                }
             }
         }
     }

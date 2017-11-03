@@ -16,6 +16,7 @@ import com.senierr.adapter.core.MultiTypeAdapter;
 import com.senierr.adapter.core.RVHolder;
 import com.senierr.adapter.core.ViewHolderWrapper;
 import com.senierr.adapter.support.BaseLoadMoreWrapper;
+import com.senierr.adapter.support.BaseStateWrapper;
 import com.senierr.adapter.support.RVItemDecoration;
 
 import java.util.ArrayList;
@@ -106,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        multiTypeAdapter.register(firstWrapper, secondWrapper)
+        multiTypeAdapter.bind(DataBean.class, firstWrapper, secondWrapper)
                 .with(new DataBinder<DataBean>() {
                     @Override
                     public int onBindIndex(@NonNull DataBean item) {
@@ -116,8 +117,8 @@ public class MainActivity extends AppCompatActivity {
                         return 1;
                     }
                 });
-        multiTypeAdapter.register(stateWrapper);
-        multiTypeAdapter.register(loadMoreWrapper);
+        multiTypeAdapter.bind(BaseStateWrapper.StateBean.class, stateWrapper);
+        multiTypeAdapter.bind(BaseLoadMoreWrapper.LoadMoreBean.class, loadMoreWrapper);
         multiTypeAdapter.setDataList(list);
         recyclerView.setAdapter(multiTypeAdapter);
     }
