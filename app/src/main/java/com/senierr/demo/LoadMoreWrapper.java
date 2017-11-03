@@ -1,6 +1,7 @@
 package com.senierr.demo;
 
 import android.support.annotation.NonNull;
+import android.view.ViewGroup;
 
 import com.senierr.adapter.support.BaseLoadMoreWrapper;
 import com.senierr.adapter.core.RVHolder;
@@ -12,8 +13,10 @@ import com.senierr.adapter.core.RVHolder;
 
 public class LoadMoreWrapper extends BaseLoadMoreWrapper {
 
-    public LoadMoreWrapper() {
-        super(R.layout.item_load_more);
+    @NonNull
+    @Override
+    public RVHolder onCreateViewHolder(@NonNull ViewGroup parent) {
+        return RVHolder.create(parent, R.layout.item_load_more);
     }
 
     @Override

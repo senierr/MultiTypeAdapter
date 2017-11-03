@@ -1,6 +1,7 @@
 package com.senierr.demo;
 
 import android.support.annotation.NonNull;
+import android.view.ViewGroup;
 
 import com.senierr.adapter.support.BaseStateWrapper;
 import com.senierr.adapter.core.RVHolder;
@@ -14,8 +15,10 @@ public class StateWrapper extends BaseStateWrapper {
 
     public final static int STATE_DEFAULT = 0;
 
-    public StateWrapper() {
-        super(R.layout.item_state);
+    @NonNull
+    @Override
+    public RVHolder onCreateViewHolder(@NonNull ViewGroup parent) {
+        return RVHolder.create(parent, R.layout.item_state);
     }
 
     @Override

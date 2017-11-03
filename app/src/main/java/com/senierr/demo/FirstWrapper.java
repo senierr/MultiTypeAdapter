@@ -1,6 +1,7 @@
 package com.senierr.demo;
 
 import android.support.annotation.NonNull;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.senierr.adapter.core.ViewHolderWrapper;
@@ -13,8 +14,10 @@ import com.senierr.adapter.core.RVHolder;
 
 public class FirstWrapper extends ViewHolderWrapper<DataBean> {
 
-    public FirstWrapper() {
-        super(DataBean.class, R.layout.item_first);
+    @NonNull
+    @Override
+    public RVHolder onCreateViewHolder(@NonNull ViewGroup parent) {
+        return RVHolder.create(parent, R.layout.item_first);
     }
 
     @Override

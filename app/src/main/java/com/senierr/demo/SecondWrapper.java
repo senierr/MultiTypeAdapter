@@ -17,8 +17,18 @@ import com.senierr.adapter.core.RVHolder;
 
 public class SecondWrapper extends ViewHolderWrapper<DataBean> {
 
-    public SecondWrapper() {
-        super(DataBean.class, R.layout.item_second);
+    @NonNull
+    @Override
+    public RVHolder onCreateViewHolder(@NonNull ViewGroup parent) {
+        final RVHolder rvHolder = RVHolder.create(parent, R.layout.item_second);
+        CheckBox checkBox = rvHolder.getView(R.id.cb_check);
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                Toast.makeText(compoundButton.getContext(), rvHolder.getLayoutPosition() + ", Check: " + b, Toast.LENGTH_SHORT).show();
+            }
+        });
+        return rvHolder;
     }
 
     @Override
@@ -28,19 +38,5 @@ public class SecondWrapper extends ViewHolderWrapper<DataBean> {
         textView.setHeight(item.getHeight());
         CheckBox checkBox = holder.getView(R.id.cb_check);
         checkBox.setChecked(false);
-    }
-
-    @NonNull
-    @Override
-    public RVHolder onCreateViewHolder(@NonNull ViewGroup parent) {
-        final RVHolder rvHolder = super.onCreateViewHolder(parent);
-        CheckBox checkBox = rvHolder.getView(R.id.cb_check);
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                Toast.makeText(compoundButton.getContext(), rvHolder.getLayoutPosition() + ", Check: " + b, Toast.LENGTH_SHORT).show();
-            }
-        });
-        return rvHolder;
     }
 }
