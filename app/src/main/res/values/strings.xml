@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MultiTypeAdapter</string>
+    <string name="app_name">SeAdapter</string>
 
     <string name="loading">正在加载&#8230;</string>
     <string name="completed">加载完成</string>
