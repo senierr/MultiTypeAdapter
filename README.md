@@ -11,13 +11,11 @@
 * 数据与视图一对多组合
 * 列表项及子控件点击长按事件
 * 自定义事件
-* 自定义ViewHolder
 * 自定义列表项所占列数
 * 其他
     * 头部/底部
     * 正在加载/空数据/加载错误/没有网络/自定义状态
     * 加载更多
-    * 基础分割线
 
 ## 架包引入
 
@@ -84,21 +82,7 @@ setOnItemClickListener(OnItemClickListener onItemClickListener)
 setOnItemChildClickListener(int childId, OnItemChildClickListener onItemChildClickListener)
 ```
 
-### 2. 自定义ViewHolder
-
-```java
-/**
- * 获取创建的RVHolder，实现灵活的自定义事件，或者返回创建的自定义RVHolder。
- */
-@Override @NonNull
-public RVHolder onCreateViewHolder(@NonNull ViewGroup parent) {
-    RVHolder rvHolder = ...;
-    ......
-    return rvHolder;
-}
-```
-
-### 3. 自定义占据列数
+### 2. 自定义占据列数
 
 ```java
 /**
@@ -112,7 +96,7 @@ public int getSpanSize(T item) {
 }
 ```
 
-### 4. 协同/一对多
+### 3. 协同/一对多
 
 > **协同/一对多**：即共同处理相同指定类型数据；
 > 例如：聊天列表界面，相同的聊天数据（ChatBean），对应不同的布局（**当前用户**和**其他用户**）。
@@ -221,20 +205,8 @@ seAdapter.bind(LoadMoreBean.class, loadMoreWrapper);
 list.add(loadMoreWrapper.getLoadMoreBean());
 ```
 
-### 4. 通用分割线
-
-**BaseItemDecoration：** 详见`support`包
-
-#### 目前支持
-
-* 设置宽度、颜色
-* 线性、表格、瀑布流三种类型布局
-* 等距分割
-* 横竖屏两种方向
-
 ## 混淆
 
-`SeAdapter`默认是可以被混淆的，如果仍希望不被混淆：
 ```java
 -dontwarn com.senierr.seadapter.**
 -keep class com.senierr.seadapter.** { *; }
