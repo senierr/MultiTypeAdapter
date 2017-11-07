@@ -12,13 +12,12 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.senierr.seadapter.internal.DataBinder;
-import com.senierr.seadapter.internal.SeAdapter;
 import com.senierr.seadapter.internal.RVHolder;
+import com.senierr.seadapter.internal.SeAdapter;
 import com.senierr.seadapter.internal.ViewHolderWrapper;
-import com.senierr.seadapter.support.wrapper.BaseLoadMoreWrapper;
-import com.senierr.seadapter.support.decoration.BaseItemDecoration;
 import com.senierr.seadapter.support.bean.LoadMoreBean;
 import com.senierr.seadapter.support.bean.StateBean;
+import com.senierr.seadapter.support.wrapper.BaseLoadMoreWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
