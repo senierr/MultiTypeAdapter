@@ -1,4 +1,4 @@
-package com.senierr.seadapter.support.bean;
+package com.senierr.adapter.support.bean;
 
 /**
  * 加载更多实体类

@@ -1,4 +1,4 @@
-package com.senierr.seadapter.internal;
+package com.senierr.adapter.internal;
 
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;

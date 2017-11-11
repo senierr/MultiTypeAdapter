@@ -7,8 +7,8 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.senierr.seadapter.internal.ViewHolderWrapper;
-import com.senierr.seadapter.internal.RVHolder;
+import com.senierr.adapter.internal.ViewHolderWrapper;
+import com.senierr.adapter.internal.RVHolder;
 
 /**
  * @author zhouchunjie

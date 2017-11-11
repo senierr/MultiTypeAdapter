@@ -1,6 +1,6 @@
-# SeAdapter
+# MultiTypeAdapter
 
-[![](https://jitpack.io/v/senierr/SeAdapter.svg)](https://jitpack.io/#senierr/SeAdapter)
+[![](https://jitpack.io/v/senierr/MultiTypeAdapter.svg)](https://jitpack.io/#senierr/MultiTypeAdapter)
 [![](https://img.shields.io/travis/rust-lang/rust.svg)](https://github.com/senierr/SeHttp)
 
 ## 目前支持
@@ -26,11 +26,11 @@ maven { url 'https://jitpack.io' }
 
 ### 2. 添加依赖
 ```java
-compile 'com.github.senierr:SeAdapter:<release_version>'
+compile 'com.github.senierr:MultiTypeAdapter:<release_version>'
 ```
 
 #### 注意：
-`SeAdapter`内部依赖了:
+`MultiTypeAdapter`内部依赖了:
 ```jaba
 compile 'com.android.support:support-annotations:25.3.1'
 compile 'com.android.support:recyclerview-v7:25.3.1'
@@ -43,11 +43,11 @@ compile 'com.android.support:recyclerview-v7:25.3.1'
 ```
 如不需要，可通过以下方式关闭**传递性依赖**：
 ```java
-compile ('com.github.senierr:SeAdapter:<release_version>', {
+compile ('com.github.senierr:MultiTypeAdapter:<release_version>', {
     transitive = false
 })
 或者
-compile 'com.github.senierr:SeAdapter:RELEASE_VERSION@aar'
+compile 'com.github.senierr:MultiTypeAdapter:RELEASE_VERSION@aar'
 ```
 
 ## 基本使用
@@ -65,10 +65,10 @@ public class FirstWrapper extends ViewHolderWrapper<DataBean> {
     }
 }
 
-SeAdapter seAdapter = new SeAdapter();
-seAdapter.bind(DataBean.class, new FirstWrapper())
-seAdapter.setDataList(list);
-recyclerView.setAdapter(seAdapter);
+MultiTypeAdapter multiTypeAdapter = new MultiTypeAdapter();
+multiTypeAdapter.bind(DataBean.class, new FirstWrapper())
+multiTypeAdapter.setDataList(list);
+recyclerView.setAdapter(multiTypeAdapter);
 ```
 
 ## 进阶使用
@@ -105,7 +105,7 @@ public int getSpanSize(T item) {
 /**
  * 注册多种处理处理器时，指定数据绑定方式
  */
-seAdapter.bind(DataBean.class, firstWrapper, secondWrapper)
+multiTypeAdapter.bind(DataBean.class, firstWrapper, secondWrapper)
             .with(new DataBinder<DataBean>() {
                 @Override
                 public int onBindIndex(@NonNull DataBean item) {
@@ -121,7 +121,7 @@ seAdapter.bind(DataBean.class, firstWrapper, secondWrapper)
 
 `头部/底部`、`状态显示`、`加载更多`等，本质上都是一种`数据类型`，以及对应的`ViewHolderWrapper`。
 
-`SeAdapter`内部提供了简便的处理方式，详见`support`包。
+`MultiTypeAdapter`内部提供了简便的处理方式，详见`support`包。
 
 ### 1. 头部/底部
 
@@ -160,7 +160,7 @@ public class StateWrapper extends BaseStateWrapper {
     }
 }
 
-seAdapter.bind(StateBean.class, stateWrapper);
+multiTypeAdapter.bind(StateBean.class, stateWrapper);
 stateWrapper.showLoading();         // 正在加载
 stateWrapper.showEmpty();           // 空数据
 stateWrapper.showError();           // 加载错误
@@ -201,15 +201,15 @@ public class LoadMoreWrapper extends BaseLoadMoreWrapper {
 }
 
 setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener)
-seAdapter.bind(LoadMoreBean.class, loadMoreWrapper);
+multiTypeAdapter.bind(LoadMoreBean.class, loadMoreWrapper);
 list.add(loadMoreWrapper.getLoadMoreBean());
 ```
 
 ## 混淆
 
 ```java
--dontwarn com.senierr.seadapter.**
--keep class com.senierr.seadapter.** { *; }
+-dontwarn com.senierr.adapter.**
+-keep class com.senierr.adapter.** { *; }
 ```
 
 ## License

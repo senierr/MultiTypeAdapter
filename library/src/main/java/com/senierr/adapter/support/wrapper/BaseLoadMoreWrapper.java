@@ -1,4 +1,4 @@
-package com.senierr.seadapter.support.wrapper;
+package com.senierr.adapter.support.wrapper;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,8 +8,8 @@ import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 
-import com.senierr.seadapter.internal.ViewHolderWrapper;
-import com.senierr.seadapter.support.bean.LoadMoreBean;
+import com.senierr.adapter.internal.ViewHolderWrapper;
+import com.senierr.adapter.support.bean.LoadMoreBean;
 
 /**
  * 加载更多

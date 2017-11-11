@@ -1,4 +1,4 @@
-package com.senierr.seadapter.internal;
+package com.senierr.adapter.internal;
 
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
@@ -12,21 +12,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 多类型适配器
+ *
  * @author zhouchunjie
  * @date 2017/9/25
  */
 
-public class SeAdapter extends RecyclerView.Adapter<RVHolder> {
+public class MultiTypeAdapter extends RecyclerView.Adapter<RVHolder> {
 
     private @Nullable RecyclerView recyclerView;
     private @NonNull List<Object> dataList;
     private @NonNull List<DataBinder<?>> dataBinderList;
 
-    public SeAdapter() {
+    public MultiTypeAdapter() {
         this(new ArrayList<>());
     }
 
-    public SeAdapter(@NonNull List<Object> dataList) {
+    public MultiTypeAdapter(@NonNull List<Object> dataList) {
         this.dataList = dataList;
         this.dataBinderList = new ArrayList<>();
     }
@@ -256,7 +258,7 @@ public class SeAdapter extends RecyclerView.Adapter<RVHolder> {
             this.cls = cls;
             this.viewHolderWrappers = viewHolderWrappers;
             for (ViewHolderWrapper<?> viewHolderWrapper : viewHolderWrappers) {
-                viewHolderWrapper.setAdapter(SeAdapter.this);
+                viewHolderWrapper.setAdapter(MultiTypeAdapter.this);
             }
             return this;
         }
