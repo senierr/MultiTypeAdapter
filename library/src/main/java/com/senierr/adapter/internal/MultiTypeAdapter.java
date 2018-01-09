@@ -183,6 +183,9 @@ public class MultiTypeAdapter extends RecyclerView.Adapter<RVHolder> {
     @SuppressWarnings("unchecked")
     public <T> int getViewHolderWrapperIndex(T item) {
         int index = indexOf(item.getClass());
+        if (index < 0 || index > dataBinderList.size() - 1) {
+            throw new IllegalArgumentException("Have you bound this type? : " + item.getClass().getSimpleName());
+        }
         return index + ((DataBinder<T>) dataBinderList.get(index)).onBindIndex(item);
     }
 
