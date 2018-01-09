@@ -26,7 +26,7 @@ public abstract class BaseLoadMoreWrapper extends ViewHolderWrapper<LoadMoreBean
 
     public BaseLoadMoreWrapper() {
         loadMoreBean = new LoadMoreBean();
-        loadMoreBean.setLoadState(LoadMoreBean.STATUS_LOADING_COMPLETED);
+        loadMoreBean.setLoadState(LoadMoreBean.STATUS_LOAD_NO_MORE);
     }
 
     @Override
