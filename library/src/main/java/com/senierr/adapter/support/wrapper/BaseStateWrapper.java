@@ -1,21 +1,20 @@
 package com.senierr.adapter.support.wrapper;
 
-import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 
+import com.senierr.adapter.internal.MultiTypeAdapter;
 import com.senierr.adapter.internal.ViewHolderWrapper;
 import com.senierr.adapter.support.bean.StateBean;
 
 /**
- * 状态切换
+ * 状态封装
  *
  * @author zhouchunjie
  * @date 2017/10/9
  */
-
 public abstract class BaseStateWrapper extends ViewHolderWrapper<StateBean> {
 
     private @Nullable RecyclerView recyclerView;
@@ -23,7 +22,6 @@ public abstract class BaseStateWrapper extends ViewHolderWrapper<StateBean> {
 
     public BaseStateWrapper() {
         stateBean = new StateBean();
-        stateBean.setState(StateBean.STATE_NONE);
     }
 
     @Override
@@ -41,70 +39,24 @@ public abstract class BaseStateWrapper extends ViewHolderWrapper<StateBean> {
     }
 
     /**
-     * 更新布局
+     * 更新状态
+     *
+     * @param state
      */
-    private void refreshView(int state) {
+    public void setState(int state) {
         stateBean.setState(state);
-        if (getAdapter() != null && recyclerView != null) {
-            getAdapter().getDataList().clear();
-            getAdapter().getDataList().add(stateBean);
-            getAdapter().notifyDataSetChanged();
+        MultiTypeAdapter multiTypeAdapter = getMultiTypeAdapter();
+        if (multiTypeAdapter != null && recyclerView != null) {
+            multiTypeAdapter.getDataList().clear();
+            multiTypeAdapter.getDataList().add(stateBean);
+            multiTypeAdapter.notifyDataSetChanged();
             RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-            if (layoutManager instanceof StaggeredGridLayoutManager) {
-                ((StaggeredGridLayoutManager) layoutManager).invalidateSpanAssignments();
-            }
-            layoutManager.scrollToPosition(0);
-        }
-    }
-
-    /**
-     * 隐藏状态布局
-     */
-    public void hide() {
-        if (getAdapter() != null) {
-            int stateBeanIndex = getAdapter().getDataList().indexOf(stateBean);
-            if (stateBeanIndex != -1) {
-                getAdapter().getDataList().remove(stateBeanIndex);
-                getAdapter().notifyDataSetChanged();
+            if (layoutManager != null) {
+                if (layoutManager instanceof StaggeredGridLayoutManager) {
+                    ((StaggeredGridLayoutManager) layoutManager).invalidateSpanAssignments();
+                }
+                layoutManager.scrollToPosition(0);
             }
         }
-    }
-
-    /**
-     * 显示自定义状态
-     */
-    public final void show(@IntRange(from = 0, to = Integer.MAX_VALUE) int state) {
-        if (state < 0) {
-            throw new IllegalArgumentException("The state must be greater than 0");
-        }
-        refreshView(state);
-    }
-
-    /**
-     * 加载中
-     */
-    public final void showLoading() {
-        refreshView(StateBean.STATE_LOADING);
-    }
-
-    /**
-     * 空数据
-     */
-    public final void showEmpty() {
-        refreshView(StateBean.STATE_EMPTY);
-    }
-
-    /**
-     * 错误数据
-     */
-    public final void showError() {
-        refreshView(StateBean.STATE_ERROR);
-    }
-
-    /**
-     * 没网络
-     */
-    public final void showNoNetwork() {
-        refreshView(StateBean.STATE_NO_NETWORK);
     }
 }

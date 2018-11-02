@@ -8,16 +8,16 @@ import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 
+import com.senierr.adapter.internal.MultiTypeAdapter;
 import com.senierr.adapter.internal.ViewHolderWrapper;
 import com.senierr.adapter.support.bean.LoadMoreBean;
 
 /**
- * 加载更多
+ * 加载更多封装
  *
  * @author zhouchunjie
  * @date 2017/10/9
  */
-
 public abstract class BaseLoadMoreWrapper extends ViewHolderWrapper<LoadMoreBean> {
 
     private @Nullable RecyclerView recyclerView;
@@ -26,7 +26,7 @@ public abstract class BaseLoadMoreWrapper extends ViewHolderWrapper<LoadMoreBean
 
     public BaseLoadMoreWrapper() {
         loadMoreBean = new LoadMoreBean();
-        loadMoreBean.setLoadState(LoadMoreBean.STATUS_LOAD_NO_MORE);
+        loadMoreBean.setLoadState(LoadMoreBean.STATUS_NO_MORE);
     }
 
     @Override
@@ -35,10 +35,10 @@ public abstract class BaseLoadMoreWrapper extends ViewHolderWrapper<LoadMoreBean
         this.recyclerView = recyclerView;
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (checkCanLoadMore(recyclerView, dx, dy)) {
-                    loadMoreStart();
+                    startLoadMore();
                 }
             }
         });
@@ -60,8 +60,9 @@ public abstract class BaseLoadMoreWrapper extends ViewHolderWrapper<LoadMoreBean
     private boolean checkCanLoadMore(RecyclerView recyclerView, int dx, int dy) {
         // 判断是否有加载更多项
         boolean hasLoadMoreBean = false;
-        if (getAdapter() != null) {
-            hasLoadMoreBean = getAdapter().getDataList().indexOf(loadMoreBean) != -1;
+        MultiTypeAdapter multiTypeAdapter = getMultiTypeAdapter();
+        if (multiTypeAdapter != null) {
+            hasLoadMoreBean = multiTypeAdapter.getDataList().indexOf(loadMoreBean) != -1;
         }
 
         if (!hasLoadMoreBean || loadMoreBean.getLoadState() == LoadMoreBean.STATUS_LOADING) {
@@ -88,14 +89,9 @@ public abstract class BaseLoadMoreWrapper extends ViewHolderWrapper<LoadMoreBean
                     "GridLayoutManager and StaggeredGridLayoutManager.");
         }
 
-        if (lastVisibleItemPosition >= getAdapter().getItemCount() - 1) {
-            if (orientation == OrientationHelper.VERTICAL && dy > 0) {
-                return true;
-            } else if (orientation == OrientationHelper.HORIZONTAL && dx > 0) {
-                return true;
-            }
-        }
-        return false;
+        return lastVisibleItemPosition >= multiTypeAdapter.getItemCount() - 1
+                && (orientation == OrientationHelper.VERTICAL && dy > 0
+                || orientation == OrientationHelper.HORIZONTAL && dx > 0);
     }
 
     private int findMax(int[] positions) {
@@ -107,13 +103,14 @@ public abstract class BaseLoadMoreWrapper extends ViewHolderWrapper<LoadMoreBean
     }
 
     /**
-     * 更新加载更多布局
+     * 刷新加载更多布局
      */
     private void refreshLoadMoreView() {
-        if (getAdapter() != null) {
-            int loadMoreIndex = getAdapter().getDataList().indexOf(loadMoreBean);
+        MultiTypeAdapter multiTypeAdapter = getMultiTypeAdapter();
+        if (multiTypeAdapter != null) {
+            int loadMoreIndex = multiTypeAdapter.getDataList().indexOf(loadMoreBean);
             if (loadMoreIndex >= 0) {
-                getAdapter().notifyItemChanged(loadMoreIndex);
+                multiTypeAdapter.notifyItemChanged(loadMoreIndex);
             }
         }
     }
@@ -121,7 +118,7 @@ public abstract class BaseLoadMoreWrapper extends ViewHolderWrapper<LoadMoreBean
     /**
      * 开始加载
      */
-    public final void loadMoreStart() {
+    public void startLoadMore() {
         loadMoreBean.setLoadState(LoadMoreBean.STATUS_LOADING);
         if (onLoadMoreListener != null && recyclerView != null) {
             recyclerView.post(new Runnable() {
@@ -139,24 +136,24 @@ public abstract class BaseLoadMoreWrapper extends ViewHolderWrapper<LoadMoreBean
     /**
      * 加载完成
      */
-    public final void loadMoreCompleted() {
-        loadMoreBean.setLoadState(LoadMoreBean.STATUS_LOADING_COMPLETED);
+    public final void loadCompleted() {
+        loadMoreBean.setLoadState(LoadMoreBean.STATUS_COMPLETED);
         refreshLoadMoreView();
     }
 
     /**
      * 没有更多数据
      */
-    public final void loadMoreNoMore() {
-        loadMoreBean.setLoadState(LoadMoreBean.STATUS_LOAD_NO_MORE);
+    public final void loadNoMore() {
+        loadMoreBean.setLoadState(LoadMoreBean.STATUS_NO_MORE);
         refreshLoadMoreView();
     }
 
     /**
      * 加载失败
      */
-    public final void loadMoreFailure() {
-        loadMoreBean.setLoadState(LoadMoreBean.STATUS_LOAD_FAILURE);
+    public final void loadFailure() {
+        loadMoreBean.setLoadState(LoadMoreBean.STATUS_FAILURE);
         refreshLoadMoreView();
     }
 

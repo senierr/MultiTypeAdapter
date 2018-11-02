@@ -1,4 +1,4 @@
-package com.senierr.demo;
+package com.senierr.demo.wrapper;
 
 import android.support.annotation.NonNull;
 import android.view.ViewGroup;
@@ -8,20 +8,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.senierr.adapter.internal.ViewHolderWrapper;
-import com.senierr.adapter.internal.RVHolder;
+import com.senierr.adapter.internal.ViewHolder;
+import com.senierr.demo.DataBean;
+import com.senierr.demo.R;
 
 /**
  * @author zhouchunjie
  * @date 2017/9/25
  */
-
 public class SecondWrapper extends ViewHolderWrapper<DataBean> {
 
     @NonNull
     @Override
-    public RVHolder onCreateViewHolder(@NonNull ViewGroup parent) {
-        final RVHolder rvHolder = RVHolder.create(parent, R.layout.item_second);
-        CheckBox checkBox = rvHolder.getView(R.id.cb_check);
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent) {
+        final ViewHolder rvHolder = ViewHolder.create(parent, R.layout.item_second);
+        CheckBox checkBox = rvHolder.findView(R.id.cb_check);
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -32,11 +33,11 @@ public class SecondWrapper extends ViewHolderWrapper<DataBean> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RVHolder holder, @NonNull DataBean item) {
-        TextView textView = holder.getView(R.id.tv_text);
+    public void onBindViewHolder(@NonNull ViewHolder holder, @NonNull DataBean item) {
+        TextView textView = holder.findView(R.id.tv_text);
         textView.setText(item.getContent());
         textView.setHeight(item.getHeight());
-        CheckBox checkBox = holder.getView(R.id.cb_check);
+        CheckBox checkBox = holder.findView(R.id.cb_check);
         checkBox.setChecked(false);
     }
 }

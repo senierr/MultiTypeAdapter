@@ -8,55 +8,82 @@ import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.senierr.adapter.listener.OnChildClickListener;
+import com.senierr.adapter.listener.OnChildLongClickListener;
+import com.senierr.adapter.listener.OnItemClickListener;
+import com.senierr.adapter.listener.OnItemLongClickListener;
+
 import java.util.List;
 
 /**
- * 将指定类型的数据和视图生成为ViewHolder
+ * 视图-数据封装
  *
  * @author zhouchunjie
  * @date 2017/9/25
  */
-
 public abstract class ViewHolderWrapper<T> {
 
-    private @Nullable
-    MultiTypeAdapter multiTypeAdapter;
-    private @Nullable OnItemClickListener onItemClickListener;
-    private @Nullable SparseArray<OnItemChildClickListener> onItemChildClickListeners;
+    private @Nullable MultiTypeAdapter multiTypeAdapter;
+    private @Nullable OnItemClickListener<T> onItemClickListener;
+    private @Nullable OnItemLongClickListener<T> onItemLongClickListener;
+    private @Nullable SparseArray<OnChildClickListener<T>> onChildClickListeners;
+    private @Nullable SparseArray<OnChildLongClickListener<T>> onChildLongClickListeners;
 
     @NonNull
-    final RVHolder getViewHolder(@NonNull ViewGroup parent) {
-        final RVHolder holder = onCreateViewHolder(parent);
+    final ViewHolder generateViewHolder(@NonNull ViewGroup parent,
+                                        @NonNull MultiTypeAdapter multiTypeAdapter) {
+        setMultiTypeAdapter(multiTypeAdapter);
+        // 创建视图
+        final ViewHolder holder = onCreateViewHolder(parent);
+        // 绑定列表项点击事件
         if (onItemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onItemClickListener.onClick(holder, holder.getLayoutPosition());
-                }
-            });
-            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    return onItemClickListener.onLongClick(holder, holder.getLayoutPosition());
+                    int position = holder.getLayoutPosition();
+                    onItemClickListener.onClick(holder, position, getItemData(position));
                 }
             });
         }
-        if (onItemChildClickListeners != null) {
-            for (int i = 0; i < onItemChildClickListeners.size(); i++) {
-                int key = onItemChildClickListeners.keyAt(i);
-                final OnItemChildClickListener onItemChildClickListener = onItemChildClickListeners.get(key);
-                View childView = holder.getView(key);
-                if (childView != null && onItemChildClickListener != null) {
+        // 绑定列表项长按事件
+        if (onItemLongClickListener != null) {
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    int position = holder.getLayoutPosition();
+                    return onItemLongClickListener.onLongClick(holder, position, getItemData(position));
+                }
+            });
+        }
+        // 绑定子视图点击事件
+        if (onChildClickListeners != null && onChildClickListeners.size() > 0) {
+            for (int i = 0; i < onChildClickListeners.size(); i++) {
+                int key = onChildClickListeners.keyAt(i);
+                final OnChildClickListener<T> onChildClickListener = onChildClickListeners.get(key);
+                View childView = holder.findView(key);
+                if (onChildClickListener != null && childView != null) {
                     childView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            onItemChildClickListener.onClick(holder, view, holder.getLayoutPosition());
+                            int position = holder.getLayoutPosition();
+                            onChildClickListener.onClick(holder, view, position, getItemData(position));
                         }
                     });
-                    childView.setOnLongClickListener(new View.OnLongClickListener() {
+                }
+            }
+        }
+        // 绑定子视图长按事件
+        if (onChildLongClickListeners != null && onChildLongClickListeners.size() > 0) {
+            for (int i = 0; i < onChildLongClickListeners.size(); i++) {
+                int key = onChildLongClickListeners.keyAt(i);
+                final OnChildLongClickListener<T> onChildLongClickListener = onChildLongClickListeners.get(key);
+                View childView = holder.findView(key);
+                if (onChildLongClickListener != null && childView != null) {
+                    childView.setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public boolean onLongClick(View view) {
-                            return onItemChildClickListener.onLongClick(holder, view, holder.getLayoutPosition());
+                        public void onClick(View view) {
+                            int position = holder.getLayoutPosition();
+                            onChildLongClickListener.onLongClick(holder, view, position, getItemData(position));
                         }
                     });
                 }
@@ -65,91 +92,104 @@ public abstract class ViewHolderWrapper<T> {
         return holder;
     }
 
+    final void setMultiTypeAdapter(@NonNull MultiTypeAdapter multiTypeAdapter) {
+        this.multiTypeAdapter = multiTypeAdapter;
+    }
+
+    @Nullable
+    @SuppressWarnings("unchecked")
+    private T getItemData(int position) {
+        if (multiTypeAdapter == null) return null;
+        try {
+            return (T) multiTypeAdapter.getDataList().get(position);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Nullable
+    public final MultiTypeAdapter getMultiTypeAdapter() {
+        return multiTypeAdapter;
+    }
+
     public long getItemId(T item) {
         return RecyclerView.NO_ID;
     }
 
-    public void onViewRecycled(RVHolder holder) {}
+    public void onViewRecycled(ViewHolder holder) {}
 
-    public boolean onFailedToRecycleView(RVHolder holder) {
+    public boolean onFailedToRecycleView(ViewHolder holder) {
         return false;
     }
 
-    public void onViewAttachedToWindow(RVHolder holder) {}
+    public void onViewAttachedToWindow(ViewHolder holder) {}
 
-    public void onViewDetachedFromWindow(RVHolder holder) {}
+    public void onViewDetachedFromWindow(ViewHolder holder) {}
 
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {}
 
     public void onDetachedFromRecyclerView(RecyclerView recyclerView) {}
 
+    @NonNull
+    public abstract ViewHolder onCreateViewHolder(@NonNull ViewGroup parent);
+
+    public abstract void onBindViewHolder(@NonNull ViewHolder holder, @NonNull T item);
+
+    public void onBindViewHolder(@NonNull ViewHolder holder, @NonNull T item, @NonNull List<Object> payloads) {
+        onBindViewHolder(holder, item);
+    }
+
+    /**
+     * 获取当前项所占列数
+     *
+     * @param item 数据项
+     * @return 默认为1，超过最大列数为全行
+     */
     public int getSpanSize(T item) {
         return 1;
     }
 
-    @NonNull
-    public abstract  RVHolder onCreateViewHolder(@NonNull ViewGroup parent);
-
-    public abstract void onBindViewHolder(@NonNull RVHolder holder, @NonNull T item);
-
-    public void onBindViewHolder(@NonNull RVHolder holder, @NonNull T item, @NonNull List<Object> payloads) {
-        onBindViewHolder(holder, item);
-    }
-
-    public final void setAdapter(@Nullable MultiTypeAdapter multiTypeAdapter) {
-        this.multiTypeAdapter = multiTypeAdapter;
-    }
-
     @Nullable
-    public final MultiTypeAdapter getAdapter() {
-        return multiTypeAdapter;
-    }
-
-    @Nullable
-    public final OnItemClickListener getOnItemClickListener() {
+    public OnItemClickListener<T> getOnItemClickListener() {
         return onItemClickListener;
     }
 
-    public final void setOnItemClickListener(@Nullable OnItemClickListener onItemClickListener) {
+    public void setOnItemClickListener(@Nullable OnItemClickListener<T> onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
 
     @Nullable
-    public final OnItemChildClickListener getOnItemChildClickListener(@IdRes int childId) {
-        if (onItemChildClickListeners != null) {
-            return onItemChildClickListeners.get(childId);
-        }
-        return null;
+    public OnItemLongClickListener<T> getOnItemLongClickListener() {
+        return onItemLongClickListener;
     }
 
-    public final void setOnItemChildClickListener(@IdRes int childId, @NonNull OnItemChildClickListener onItemChildClickListener) {
-        if (onItemChildClickListeners == null) {
-            onItemChildClickListeners = new SparseArray<>();
-        }
-        onItemChildClickListeners.put(childId, onItemChildClickListener);
+    public void setOnItemLongClickListener(@Nullable OnItemLongClickListener<T> onItemLongClickListener) {
+        this.onItemLongClickListener = onItemLongClickListener;
     }
 
-    /**
-     * 列表项点击事件
-     */
-    public static abstract class OnItemClickListener {
-
-        public void onClick(RVHolder viewHolder, int position) {}
-
-        public boolean onLongClick(RVHolder viewHolder, int position) {
-            return false;
-        }
+    @Nullable
+    public OnChildClickListener<T> getOnChildClickListener(@IdRes int childId) {
+        if (onChildClickListeners == null) return null;
+        return onChildClickListeners.get(childId);
     }
 
-    /**
-     * 子控件点击事件
-     */
-    public static abstract class OnItemChildClickListener {
-
-        public void onClick(RVHolder viewHolder, View view, int position) {}
-
-        public boolean onLongClick(RVHolder viewHolder, View view, int position) {
-            return false;
+    public void setOnChildClickListener(@IdRes int childId, @Nullable OnChildClickListener<T> onChildClickListener) {
+        if (onChildClickListeners == null) {
+            onChildClickListeners = new SparseArray<>();
         }
+        onChildClickListeners.put(childId, onChildClickListener);
+    }
+
+    @Nullable
+    public OnChildLongClickListener<T> getOnChildLongClickListener(@IdRes int childId) {
+        if (onChildLongClickListeners == null) return null;
+        return onChildLongClickListeners.get(childId);
+    }
+
+    public void setOnChildLongClickListener(@IdRes int childId, @Nullable OnChildLongClickListener<T> onChildLongClickListener) {
+        if (onChildLongClickListeners == null) {
+            onChildLongClickListeners = new SparseArray<>();
+        }
+        onChildLongClickListeners.put(childId, onChildLongClickListener);
     }
 }
