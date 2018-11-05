@@ -47,8 +47,8 @@ public abstract class BaseStateWrapper extends ViewHolderWrapper<StateBean> {
         stateBean.setState(state);
         MultiTypeAdapter multiTypeAdapter = getMultiTypeAdapter();
         if (multiTypeAdapter != null && recyclerView != null) {
-            multiTypeAdapter.getDataList().clear();
-            multiTypeAdapter.getDataList().add(stateBean);
+            multiTypeAdapter.getData().clear();
+            multiTypeAdapter.getData().add(stateBean);
             multiTypeAdapter.notifyDataSetChanged();
             RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
             if (layoutManager != null) {

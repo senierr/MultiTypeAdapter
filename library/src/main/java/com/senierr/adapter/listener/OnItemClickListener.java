@@ -1,5 +1,7 @@
 package com.senierr.adapter.listener;
 
+import android.support.annotation.NonNull;
+
 import com.senierr.adapter.internal.ViewHolder;
 
 /**
@@ -10,5 +12,5 @@ import com.senierr.adapter.internal.ViewHolder;
  */
 public interface OnItemClickListener<T> {
 
-    void onClick(ViewHolder viewHolder, int position, T t);
+    void onClick(@NonNull ViewHolder viewHolder, int position, @NonNull T t);
 }

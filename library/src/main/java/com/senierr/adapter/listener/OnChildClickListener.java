@@ -1,5 +1,6 @@
 package com.senierr.adapter.listener;
 
+import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.senierr.adapter.internal.ViewHolder;
@@ -12,5 +13,5 @@ import com.senierr.adapter.internal.ViewHolder;
  */
 public interface OnChildClickListener<T> {
 
-    void onClick(ViewHolder viewHolder, View view, int position, T t);
+    void onClick(@NonNull ViewHolder viewHolder, @NonNull View view, int position, @NonNull T t);
 }

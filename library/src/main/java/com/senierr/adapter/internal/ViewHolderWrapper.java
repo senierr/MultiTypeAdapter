@@ -41,7 +41,10 @@ public abstract class ViewHolderWrapper<T> {
                 @Override
                 public void onClick(View view) {
                     int position = holder.getLayoutPosition();
-                    onItemClickListener.onClick(holder, position, getItemData(position));
+                    T t = getItemData(position);
+                    if (t != null) {
+                        onItemClickListener.onClick(holder, position, t);
+                    }
                 }
             });
         }
@@ -51,7 +54,8 @@ public abstract class ViewHolderWrapper<T> {
                 @Override
                 public boolean onLongClick(View view) {
                     int position = holder.getLayoutPosition();
-                    return onItemLongClickListener.onLongClick(holder, position, getItemData(position));
+                    T t = getItemData(position);
+                    return t != null && onItemLongClickListener.onLongClick(holder, position, t);
                 }
             });
         }
@@ -66,7 +70,10 @@ public abstract class ViewHolderWrapper<T> {
                         @Override
                         public void onClick(View view) {
                             int position = holder.getLayoutPosition();
-                            onChildClickListener.onClick(holder, view, position, getItemData(position));
+                            T t = getItemData(position);
+                            if (t != null) {
+                                onChildClickListener.onClick(holder, view, position, t);
+                            }
                         }
                     });
                 }
@@ -79,11 +86,12 @@ public abstract class ViewHolderWrapper<T> {
                 final OnChildLongClickListener<T> onChildLongClickListener = onChildLongClickListeners.get(key);
                 View childView = holder.findView(key);
                 if (onChildLongClickListener != null && childView != null) {
-                    childView.setOnClickListener(new View.OnClickListener() {
+                    childView.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
-                        public void onClick(View view) {
+                        public boolean onLongClick(View v) {
                             int position = holder.getLayoutPosition();
-                            onChildLongClickListener.onLongClick(holder, view, position, getItemData(position));
+                            T t = getItemData(position);
+                            return t != null && onChildLongClickListener.onLongClick(holder, v, position, t);
                         }
                     });
                 }
@@ -101,7 +109,7 @@ public abstract class ViewHolderWrapper<T> {
     private T getItemData(int position) {
         if (multiTypeAdapter == null) return null;
         try {
-            return (T) multiTypeAdapter.getDataList().get(position);
+            return (T) multiTypeAdapter.getData().get(position);
         } catch (Exception e) {
             return null;
         }
@@ -150,7 +158,7 @@ public abstract class ViewHolderWrapper<T> {
     }
 
     @Nullable
-    public OnItemClickListener<T> getOnItemClickListener() {
+    public final OnItemClickListener<T> getOnItemClickListener() {
         return onItemClickListener;
     }
 
@@ -159,21 +167,21 @@ public abstract class ViewHolderWrapper<T> {
     }
 
     @Nullable
-    public OnItemLongClickListener<T> getOnItemLongClickListener() {
+    public final OnItemLongClickListener<T> getOnItemLongClickListener() {
         return onItemLongClickListener;
     }
 
-    public void setOnItemLongClickListener(@Nullable OnItemLongClickListener<T> onItemLongClickListener) {
+    public final void setOnItemLongClickListener(@Nullable OnItemLongClickListener<T> onItemLongClickListener) {
         this.onItemLongClickListener = onItemLongClickListener;
     }
 
     @Nullable
-    public OnChildClickListener<T> getOnChildClickListener(@IdRes int childId) {
+    public final OnChildClickListener<T> getOnChildClickListener(@IdRes int childId) {
         if (onChildClickListeners == null) return null;
         return onChildClickListeners.get(childId);
     }
 
-    public void setOnChildClickListener(@IdRes int childId, @Nullable OnChildClickListener<T> onChildClickListener) {
+    public final void setOnChildClickListener(@IdRes int childId, @Nullable OnChildClickListener<T> onChildClickListener) {
         if (onChildClickListeners == null) {
             onChildClickListeners = new SparseArray<>();
         }
@@ -181,12 +189,12 @@ public abstract class ViewHolderWrapper<T> {
     }
 
     @Nullable
-    public OnChildLongClickListener<T> getOnChildLongClickListener(@IdRes int childId) {
+    public final OnChildLongClickListener<T> getOnChildLongClickListener(@IdRes int childId) {
         if (onChildLongClickListeners == null) return null;
         return onChildLongClickListeners.get(childId);
     }
 
-    public void setOnChildLongClickListener(@IdRes int childId, @Nullable OnChildLongClickListener<T> onChildLongClickListener) {
+    public final void setOnChildLongClickListener(@IdRes int childId, @Nullable OnChildLongClickListener<T> onChildLongClickListener) {
         if (onChildLongClickListeners == null) {
             onChildLongClickListeners = new SparseArray<>();
         }

@@ -62,7 +62,7 @@ public abstract class BaseLoadMoreWrapper extends ViewHolderWrapper<LoadMoreBean
         boolean hasLoadMoreBean = false;
         MultiTypeAdapter multiTypeAdapter = getMultiTypeAdapter();
         if (multiTypeAdapter != null) {
-            hasLoadMoreBean = multiTypeAdapter.getDataList().indexOf(loadMoreBean) != -1;
+            hasLoadMoreBean = multiTypeAdapter.getData().indexOf(loadMoreBean) != -1;
         }
 
         if (!hasLoadMoreBean || loadMoreBean.getLoadState() == LoadMoreBean.STATUS_LOADING) {
@@ -108,7 +108,7 @@ public abstract class BaseLoadMoreWrapper extends ViewHolderWrapper<LoadMoreBean
     private void refreshLoadMoreView() {
         MultiTypeAdapter multiTypeAdapter = getMultiTypeAdapter();
         if (multiTypeAdapter != null) {
-            int loadMoreIndex = multiTypeAdapter.getDataList().indexOf(loadMoreBean);
+            int loadMoreIndex = multiTypeAdapter.getData().indexOf(loadMoreBean);
             if (loadMoreIndex >= 0) {
                 multiTypeAdapter.notifyItemChanged(loadMoreIndex);
             }

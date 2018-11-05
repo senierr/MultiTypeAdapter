@@ -10,9 +10,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.senierr.adapter.internal.DataBinder;
+import com.senierr.adapter.internal.Linker;
 import com.senierr.adapter.internal.MultiTypeAdapter;
 import com.senierr.adapter.internal.ViewHolder;
+import com.senierr.adapter.internal.ViewHolderWrapper;
 import com.senierr.adapter.listener.OnChildClickListener;
 import com.senierr.adapter.listener.OnChildLongClickListener;
 import com.senierr.adapter.listener.OnItemClickListener;
@@ -25,6 +26,7 @@ import com.senierr.demo.wrapper.LoadMoreWrapper;
 import com.senierr.demo.wrapper.SecondWrapper;
 import com.senierr.demo.wrapper.StateWrapper;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -68,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         });
         firstWrapper.setOnItemLongClickListener(new OnItemLongClickListener<DataBean>() {
             @Override
-            public boolean onLongClick(ViewHolder viewHolder, int position, DataBean dataBean) {
+            public boolean onLongClick(@NonNull ViewHolder viewHolder, int position, @NonNull DataBean dataBean) {
                 showToast("ItemLongClick: " + dataBean.getContent());
                 return true;
             }
@@ -76,13 +78,13 @@ public class MainActivity extends AppCompatActivity {
         // 子控件点击事件
         firstWrapper.setOnChildClickListener(R.id.btn_click, new OnChildClickListener<DataBean>() {
             @Override
-            public void onClick(ViewHolder viewHolder, View view, int position, DataBean dataBean) {
+            public void onClick(@NonNull ViewHolder viewHolder, @NonNull View view, int position, @NonNull DataBean dataBean) {
                 showToast("ChildClick: " + dataBean.getContent());
             }
         });
         firstWrapper.setOnChildLongClickListener(R.id.btn_click, new OnChildLongClickListener<DataBean>() {
             @Override
-            public boolean onLongClick(ViewHolder viewHolder, View view, int position, DataBean dataBean) {
+            public boolean onLongClick(@NonNull ViewHolder viewHolder, @NonNull View view, int position, @NonNull DataBean dataBean) {
                 showToast("ChildLongClick: " + dataBean.getContent());
                 return true;
             }
@@ -101,24 +103,23 @@ public class MainActivity extends AppCompatActivity {
         stateWrapper = new StateWrapper();
         stateWrapper.setOnItemClickListener(new OnItemClickListener<StateBean>() {
             @Override
-            public void onClick(ViewHolder viewHolder, int position, StateBean stateBean) {
+            public void onClick(@NonNull ViewHolder viewHolder, int position, @NonNull StateBean stateBean) {
                 pageIndex = 1;
                 loadData();
             }
         });
 
-        multiTypeAdapter.bind(DataBean.class, firstWrapper, secondWrapper)
-                .with(new DataBinder<DataBean>() {
-                    @Override
-                    public int onBindIndex(@NonNull DataBean item) {
-                        if (item.getId() % 2 == 0) {
-                            return 0;
-                        }
-                        return 1;
-                    }
-                });
-        multiTypeAdapter.bind(StateBean.class, stateWrapper);
-        multiTypeAdapter.bind(LoadMoreBean.class, loadMoreWrapper);
+        multiTypeAdapter.register(DataBean.class, Arrays.asList(firstWrapper, secondWrapper), new Linker<DataBean>() {
+            @Override
+            public Class<? extends ViewHolderWrapper> getItemViewType(@NonNull DataBean item) {
+                if (item.getId() == 0) {
+                    return FirstWrapper.class;
+                }
+                return SecondWrapper.class;
+            }
+        });
+        multiTypeAdapter.register(StateBean.class, stateWrapper);
+        multiTypeAdapter.register(LoadMoreBean.class, loadMoreWrapper);
         recyclerView.setAdapter(multiTypeAdapter);
     }
 
@@ -146,9 +147,9 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 List<DataBean> dataBeanList = DataBean.getData(pageIndex, pageSize);
                 if (pageIndex == 1) {
-                    multiTypeAdapter.clearData();
-                    multiTypeAdapter.addDatas(dataBeanList);
-                    multiTypeAdapter.addData(loadMoreWrapper.getLoadMoreBean());
+                    multiTypeAdapter.getData().clear();
+                    multiTypeAdapter.getData().addAll(dataBeanList);
+                    multiTypeAdapter.getData().add(loadMoreWrapper.getLoadMoreBean());
                     multiTypeAdapter.notifyDataSetChanged();
                     pageIndex++;
                 } else if (pageIndex == 3) {
@@ -156,8 +157,8 @@ public class MainActivity extends AppCompatActivity {
 //                        loadMoreWrapper.loadMoreFailure();
                 } else {
                     loadMoreWrapper.loadCompleted();
-                    int startPosition = multiTypeAdapter.getDataList().size() - 1;
-                    multiTypeAdapter.addDatas(startPosition, dataBeanList);
+                    int startPosition = multiTypeAdapter.getData().size() - 1;
+                    multiTypeAdapter.getData().addAll(startPosition, dataBeanList);
                     multiTypeAdapter.notifyItemRangeInserted(startPosition, dataBeanList.size());
                     pageIndex++;
                 }
