@@ -9,7 +9,8 @@
 * 多类型视图
 * 数据与视图一对一组合
 * 数据与视图一对多组合
-* 列表项及子控件点击长按事件
+* 列表项点击长按事件
+* 子控件点击长按事件
 * 自定义事件
 * 自定义列表项所占列数
 * 其他
@@ -32,14 +33,14 @@ compile 'com.github.senierr:MultiTypeAdapter:<release_version>'
 #### 注意：
 `MultiTypeAdapter`内部依赖了:
 ```jaba
-compile 'com.android.support:support-annotations:25.3.1'
-compile 'com.android.support:recyclerview-v7:25.3.1'
+compile 'com.android.support:support-annotations:28.0.0'
+compile 'com.android.support:recyclerview-v7:28.0.0'
 ```
 依赖关系如下：
 ```java
 +--- com.github.senierr:MultiTypeAdapter:<release_version>
-|    |    +--- com.android.support:support-annotations:25.3.1
-|    |    +--- com.android.support:recyclerview-v7:25.3.1
+|    |    +--- com.android.support:support-annotations:28.0.0
+|    |    +--- com.android.support:recyclerview-v7:28.0.0
 ```
 如不需要，可通过以下方式关闭**传递性依赖**：
 ```java
@@ -66,8 +67,7 @@ public class FirstWrapper extends ViewHolderWrapper<DataBean> {
 }
 
 MultiTypeAdapter multiTypeAdapter = new MultiTypeAdapter();
-multiTypeAdapter.bind(DataBean.class, new FirstWrapper())
-multiTypeAdapter.setDataList(list);
+multiTypeAdapter.register(DataBean.class, new FirstWrapper())
 recyclerView.setAdapter(multiTypeAdapter);
 ```
 
@@ -75,20 +75,25 @@ recyclerView.setAdapter(multiTypeAdapter);
 
 ### 1. 点击长按事件
 ```java
-// 1. 列表项点击长按事件
-setOnItemClickListener(OnItemClickListener onItemClickListener)
+// 列表项点击事件
+setOnItemClickListener(OnItemClickListener<T> onItemClickListener)
+// 列表项长按事件
+setOnItemLongClickListener(OnItemLongClickListener<T> onItemLongClickListener)
 
-// 2. 子控件点击长按事件
-setOnItemChildClickListener(int childId, OnItemChildClickListener onItemChildClickListener)
+// 子控件点击事件
+setOnChildClickListener(int childId, OnChildClickListener<T> onChildClickListener)
+// 子控件长按事件
+setOnChildLongClickListener(int childId, OnChildLongClickListener<T> onChildLongClickListener)
 ```
 
 ### 2. 自定义占据列数
 
 ```java
 /**
- * 自定义占据列数
+ * 获取当前项所占列数
  *
- * 默认返回1。
+ * @param item 数据项
+ * @return 默认为1，超过最大列数为全行
  */
 @Override
 public int getSpanSize(T item) {
@@ -96,25 +101,22 @@ public int getSpanSize(T item) {
 }
 ```
 
-### 3. 协同/一对多
-
-> **协同/一对多**：即共同处理相同指定类型数据；
-> 例如：聊天列表界面，相同的聊天数据（ChatBean），对应不同的布局（**当前用户**和**其他用户**）。
+### 3. 一对多
 
 ```java
 /**
- * 注册多种处理处理器时，指定数据绑定方式
+ * 当一种数据类型，包含多种布局时，可指定每项所使用的布局类型。
  */
-multiTypeAdapter.bind(DataBean.class, firstWrapper, secondWrapper)
-            .with(new DataBinder<DataBean>() {
-                @Override
-                public int onBindIndex(@NonNull DataBean item) {
-                    if (item.getId() % 2 == 0) {
-                        return 0;   // 返回注册的处理器的索引
-                    }
-                    return 1;
+multiTypeAdapter.register(DataBean.class, Arrays.asList(firstWrapper, secondWrapper), new Linker<DataBean>() {
+            // 指定Item对应的布局
+            @Override
+            public Class<? extends ViewHolderWrapper> getItemViewType(@NonNull DataBean item) {
+                if (item.getId() == 0) {
+                    return FirstWrapper.class;
                 }
-            });
+                return SecondWrapper.class;
+            }
+        });
 ```
 
 ## 其他
@@ -129,7 +131,7 @@ multiTypeAdapter.bind(DataBean.class, firstWrapper, secondWrapper)
 
 ### 2. 状态显示
 
-`BaseStateWrapper`内部支持`正在加载`、`空数据`、`加载错误`、`没有网络`及`自定义状态`状态显示。
+`BaseStateWrapper`支持`自定义状态`显示。
 
 **注意：**调用`stateWrapper.show...()`时，会清空`MultiTypeAdapter`内部数据，并增加一条新数据`stateBean`，重新加载数据时记得先**clear()、clear()、clear()**!
 
@@ -144,29 +146,15 @@ public class StateWrapper extends BaseStateWrapper {
     @Override
     public void onBindViewHolder(@NonNull RVHolder holder, @NonNull StateBean item) {
         switch (item.getState()) {
-            case StateBean.STATE_LOADING:
-                ......
-                break;
-            case StateBean.STATE_EMPTY:
-                ......
-                break;
-            case StateBean.STATE_ERROR:
-                ......
-                break;
-            case StateBean.STATE_NO_NETWORK:
+            case StateBean.STATE_DEFAULT:
                 ......
                 break;
         }
     }
 }
 
-multiTypeAdapter.bind(StateBean.class, stateWrapper);
-stateWrapper.showLoading();         // 正在加载
-stateWrapper.showEmpty();           // 空数据
-stateWrapper.showError();           // 加载错误
-stateWrapper.showNoNetwork();       // 没有网络
-stateWrapper.show(state);           // 自定义状态，state必须大于等于0
-stateWrapper.hide()                 // 隐藏状态页
+multiTypeAdapter.register(StateBean.class, stateWrapper);
+stateWrapper.setState(StateWrapper.STATE_DEFAULT);
 ```
 
 ### 3. 加载更多
@@ -187,13 +175,13 @@ public class LoadMoreWrapper extends BaseLoadMoreWrapper {
             case LoadMoreBean.STATUS_LOADING:
                 ......
                 break;
-            case LoadMoreBean.STATUS_LOADING_COMPLETED:
+            case LoadMoreBean.STATUS_COMPLETED:
                 ......
                 break;
-            case LoadMoreBean.STATUS_LOAD_NO_MORE:
+            case LoadMoreBean.STATUS_NO_MORE:
                 ......
                 break;
-            case LoadMoreBean.STATUS_LOAD_FAILURE:
+            case LoadMoreBean.STATUS_FAILURE:
                 ......
                 break;
         }
@@ -201,7 +189,7 @@ public class LoadMoreWrapper extends BaseLoadMoreWrapper {
 }
 
 setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener)
-multiTypeAdapter.bind(LoadMoreBean.class, loadMoreWrapper);
+multiTypeAdapter.register(LoadMoreBean.class, loadMoreWrapper);
 list.add(loadMoreWrapper.getLoadMoreBean());
 ```
 
