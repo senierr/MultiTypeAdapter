@@ -27,14 +27,14 @@ maven { url 'https://jitpack.io' }
 
 ### 2. 添加依赖
 ```java
-compile 'com.github.senierr:MultiTypeAdapter:<release_version>'
+implementation 'com.github.senierr:MultiTypeAdapter:<release_version>'
 ```
 
 #### 注意：
 `MultiTypeAdapter`内部依赖了:
 ```jaba
-compile 'com.android.support:support-annotations:28.0.0'
-compile 'com.android.support:recyclerview-v7:28.0.0'
+implementation 'com.android.support:support-annotations:28.0.0'
+implementation 'com.android.support:recyclerview-v7:28.0.0'
 ```
 依赖关系如下：
 ```java
@@ -44,11 +44,11 @@ compile 'com.android.support:recyclerview-v7:28.0.0'
 ```
 如不需要，可通过以下方式关闭**传递性依赖**：
 ```java
-compile ('com.github.senierr:MultiTypeAdapter:<release_version>', {
+implementation ('com.github.senierr:MultiTypeAdapter:<release_version>', {
     transitive = false
 })
 或者
-compile 'com.github.senierr:MultiTypeAdapter:RELEASE_VERSION@aar'
+implementation 'com.github.senierr:MultiTypeAdapter:RELEASE_VERSION@aar'
 ```
 
 ## 基本使用
