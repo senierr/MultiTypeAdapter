@@ -107,16 +107,9 @@ public int getSpanSize(T item) {
 /**
  * 当一种数据类型，包含多种布局时，可指定每项所使用的布局类型。
  */
-multiTypeAdapter.register(DataBean.class, Arrays.asList(firstWrapper, secondWrapper), new Linker<DataBean>() {
-            // 指定Item对应的布局
-            @Override
-            public Class<? extends ViewHolderWrapper> getItemViewType(@NonNull DataBean item) {
-                if (item.getId() == 0) {
-                    return FirstWrapper.class;
-                }
-                return SecondWrapper.class;
-            }
-        });
+multiTypeAdapter.register(DataBean::class.java, firstWrapper, secondWrapper)
+                .with { item -> if (item.id == 0) firstWrapper else secondWrapper
+        }
 ```
 
 ## 其他

@@ -1,5 +1,6 @@
 package com.senierr.adapter.internal;
 
+import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
@@ -23,7 +24,7 @@ public class MultiTypeAdapter extends RecyclerView.Adapter<ViewHolder> {
     private @Nullable RecyclerView recyclerView;
     private @NonNull List<Object> data;
     // 视图集合：对应的Index即为ItemViewType
-    private List<ViewHolderWrapper<?>> viewHolderWrappers;
+    private List<ViewHolderWrapper<?>> wrapperList;
     // 数据类型对应的连接器
     private Map<Class<?>, Linker<?>> linkerMap;
 
@@ -33,7 +34,7 @@ public class MultiTypeAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     public MultiTypeAdapter(@NonNull List<Object> data) {
         this.data = data;
-        viewHolderWrappers = new ArrayList<>();
+        wrapperList = new ArrayList<>();
         linkerMap = new HashMap<>();
     }
 
@@ -46,31 +47,25 @@ public class MultiTypeAdapter extends RecyclerView.Adapter<ViewHolder> {
             throw new UnregisteredException(item.getClass());
         }
         // 根据连接器，获取对应的视图类型
-        Class cls = linker.getItemViewType(item);
+        ViewHolderWrapper viewHolderWrapper = linker.getItemViewType(item);
         // 根据视图类型转换为Type
-        int itemViewType = -1;
-        for (int i = 0; i < viewHolderWrappers.size(); i++) {
-            if (viewHolderWrappers.get(i).getClass().equals(cls)) {
-                itemViewType = i;
-                break;
-            }
-        }
-        if (itemViewType == -1) {
-            throw new UnregisteredException(cls);
+        int itemViewType = wrapperList.indexOf(viewHolderWrapper);
+        if (itemViewType < 0 || itemViewType > wrapperList.size() - 1) {
+            throw new UnregisteredException(viewHolderWrapper.getClass());
         }
         return itemViewType;
     }
 
     @Override
     public final ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ViewHolderWrapper<?> viewHolderWrapper = viewHolderWrappers.get(viewType);
+        ViewHolderWrapper<?> viewHolderWrapper = wrapperList.get(viewType);
         return viewHolderWrapper.generateViewHolder(parent, this);
     }
 
     @Override @SuppressWarnings("unchecked")
     public final void onBindViewHolder(ViewHolder holder, int position, @NonNull List<Object> payloads) {
         Object item = data.get(position);
-        ViewHolderWrapper viewHolderWrapper = viewHolderWrappers.get(holder.getItemViewType());
+        ViewHolderWrapper viewHolderWrapper = wrapperList.get(holder.getItemViewType());
         viewHolderWrapper.onBindViewHolder(holder, item, payloads);
     }
 
@@ -84,20 +79,20 @@ public class MultiTypeAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     @Override @SuppressWarnings("unchecked")
     public final long getItemId(int position) {
-        ViewHolderWrapper viewHolderWrapper = viewHolderWrappers.get(getItemViewType(position));
+        ViewHolderWrapper viewHolderWrapper = wrapperList.get(getItemViewType(position));
         return viewHolderWrapper.getItemId(data.get(position));
     }
 
     @Override
     public final void onViewRecycled(@NonNull ViewHolder holder) {
         super.onViewRecycled(holder);
-        ViewHolderWrapper viewHolderWrapper = viewHolderWrappers.get(holder.getItemViewType());
+        ViewHolderWrapper viewHolderWrapper = wrapperList.get(holder.getItemViewType());
         viewHolderWrapper.onViewRecycled(holder);
     }
 
     @Override
     public final boolean onFailedToRecycleView(ViewHolder holder) {
-        ViewHolderWrapper viewHolderWrapper = viewHolderWrappers.get(holder.getItemViewType());
+        ViewHolderWrapper viewHolderWrapper = wrapperList.get(holder.getItemViewType());
         return viewHolderWrapper.onFailedToRecycleView(holder);
     }
 
@@ -108,7 +103,7 @@ public class MultiTypeAdapter extends RecyclerView.Adapter<ViewHolder> {
             return;
         }
 
-        ViewHolderWrapper viewHolderWrapper = viewHolderWrappers.get(holder.getItemViewType());
+        ViewHolderWrapper viewHolderWrapper = wrapperList.get(holder.getItemViewType());
         viewHolderWrapper.onViewAttachedToWindow(holder);
 
         ViewGroup.LayoutParams lp = holder.itemView.getLayoutParams();
@@ -126,7 +121,7 @@ public class MultiTypeAdapter extends RecyclerView.Adapter<ViewHolder> {
     @Override
     public final void onViewDetachedFromWindow(@NonNull ViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
-        ViewHolderWrapper viewHolderWrapper = viewHolderWrappers.get(holder.getItemViewType());
+        ViewHolderWrapper viewHolderWrapper = wrapperList.get(holder.getItemViewType());
         viewHolderWrapper.onViewDetachedFromWindow(holder);
     }
 
@@ -141,7 +136,7 @@ public class MultiTypeAdapter extends RecyclerView.Adapter<ViewHolder> {
             gridManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                 @Override
                 public int getSpanSize(int position) {
-                    ViewHolderWrapper viewHolderWrapper = viewHolderWrappers.get(getItemViewType(position));
+                    ViewHolderWrapper viewHolderWrapper = wrapperList.get(getItemViewType(position));
                     int spanSize = viewHolderWrapper.getSpanSize(data.get(position));
                     int spanCount = gridManager.getSpanCount();
                     return spanSize > spanCount ? spanCount : spanSize;
@@ -149,7 +144,7 @@ public class MultiTypeAdapter extends RecyclerView.Adapter<ViewHolder> {
             });
         }
 
-        for (ViewHolderWrapper<?> viewHolderWrapper : viewHolderWrappers) {
+        for (ViewHolderWrapper<?> viewHolderWrapper : wrapperList) {
             viewHolderWrapper.onAttachedToRecyclerView(recyclerView);
         }
     }
@@ -159,7 +154,7 @@ public class MultiTypeAdapter extends RecyclerView.Adapter<ViewHolder> {
         super.onDetachedFromRecyclerView(recyclerView);
         this.recyclerView = null;
 
-        for (ViewHolderWrapper<?> viewHolderWrapper : viewHolderWrappers) {
+        for (ViewHolderWrapper<?> viewHolderWrapper : wrapperList) {
             viewHolderWrapper.onDetachedFromRecyclerView(recyclerView);
         }
     }
@@ -173,24 +168,38 @@ public class MultiTypeAdapter extends RecyclerView.Adapter<ViewHolder> {
         this.data = data;
     }
 
-    public <T> void register(@NonNull Class<T> cls, @NonNull final ViewHolderWrapper<T> viewHolderWrapper) {
-        List<ViewHolderWrapper<T>> list = new ArrayList<>();
-        list.add(viewHolderWrapper);
-        register(cls, list, new Linker<T>() {
+    public final <T> void register(@NonNull Class<T> cls, @NonNull final ViewHolderWrapper<T> viewHolderWrapper) {
+        new RegisterHelper<>(cls, viewHolderWrapper).with(new Linker<T>() {
+            @NonNull
             @Override
-            public Class<? extends ViewHolderWrapper> getItemViewType(@NonNull T item) {
-                return viewHolderWrapper.getClass();
+            public ViewHolderWrapper<T> getItemViewType(@NonNull T item) {
+                return viewHolderWrapper;
             }
         });
     }
 
-    public <T> void register(@NonNull Class<T> cls,
-                             @NonNull List<ViewHolderWrapper<T>> wrapperList,
-                             @NonNull Linker<T> linker) {
-        for (ViewHolderWrapper<T> viewHolderWrapper : wrapperList) {
-            viewHolderWrapper.setMultiTypeAdapter(this);
-            viewHolderWrappers.add(viewHolderWrapper);
+    @NonNull @SafeVarargs @CheckResult
+    public final <T> RegisterHelper<T> register(@NonNull Class<T> cls, @NonNull ViewHolderWrapper<T>... viewHolderWrappers) {
+        return new RegisterHelper<>(cls, viewHolderWrappers);
+    }
+
+    public final class RegisterHelper<T> {
+
+        private Class<T> cls;
+        private ViewHolderWrapper<T>[] viewHolderWrappers;
+
+        @SafeVarargs
+        RegisterHelper(Class<T> cls, ViewHolderWrapper<T>... viewHolderWrappers) {
+            this.cls = cls;
+            this.viewHolderWrappers = viewHolderWrappers;
         }
-        linkerMap.put(cls, linker);
+
+        public final void with(@NonNull Linker<T> linker) {
+            for (ViewHolderWrapper<T> viewHolderWrapper : viewHolderWrappers) {
+                viewHolderWrapper.setMultiTypeAdapter(MultiTypeAdapter.this);
+                wrapperList.add(viewHolderWrapper);
+            }
+            linkerMap.put(cls, linker);
+        }
     }
 }

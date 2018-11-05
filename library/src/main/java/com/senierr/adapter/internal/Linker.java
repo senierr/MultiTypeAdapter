@@ -11,6 +11,6 @@ import android.support.annotation.NonNull;
  * @date 2018/11/5
  */
 public interface Linker<T> {
-
-    Class<? extends ViewHolderWrapper> getItemViewType(@NonNull T item);
+    @NonNull
+    ViewHolderWrapper<T> getItemViewType(@NonNull T item);
 }
