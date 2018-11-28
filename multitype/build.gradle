@@ -27,6 +27,10 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:28.0.0'
 }
 
+/*
+ * 1. gradlew install
+ * 2. gradlew bintrayUpload
+ */
 
 //项目主页
 def siteUrl = 'https://github.com/senierr/MultiTypeAdapter'
@@ -36,10 +40,10 @@ def gitUrl = 'https://github.com/senierr/MultiTypeAdapter.git'
 def libName = "MultiTypeAdapter"
 
 //发布到组织名称名字，必须填写
-group = "com.senierr.MultiTypeAdapter"
+group = "com.senierr.adapter"
 // 版本号，下次更新是只需要更改版本号即可
 version = "1.0.0"
-//上面配置后上传至JCenter后的编译路径是这样的： compile 'com.senierr.MultiTypeAdapter:library:1.0.0'
+//上面配置后上传至JCenter后的编译路径是这样的： compile 'com.senierr.adapter:multitype:1.0.0'
 
 //生成源文件
 task sourcesJar(type: Jar) {

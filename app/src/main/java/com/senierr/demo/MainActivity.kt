@@ -71,8 +71,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         multiTypeAdapter.register(DataBean::class.java, firstWrapper, secondWrapper)
-                .with { item -> if (item.id == 0) firstWrapper else secondWrapper
-        }
+                .with { item ->
+                    if (item.id == 0) firstWrapper else secondWrapper
+                }
 
         multiTypeAdapter.register(StateBean::class.java, stateWrapper)
         multiTypeAdapter.register(LoadMoreBean::class.java, loadMoreWrapper)

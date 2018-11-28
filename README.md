@@ -1,7 +1,8 @@
 # MultiTypeAdapter
 
-[![](https://jitpack.io/v/senierr/MultiTypeAdapter.svg)](https://jitpack.io/#senierr/MultiTypeAdapter)
-[![](https://img.shields.io/travis/rust-lang/rust.svg)](https://github.com/senierr/SeHttp)
+[![](https://img.shields.io/badge/release-v1.0.0-blue.svg)](https://github.com/senierr/MultiTypeAdapter)
+[![](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/senierr/MultiTypeAdapter)
+[![](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
 ## 目前支持
 
@@ -20,38 +21,50 @@
 
 ## 架包引入
 
-### 1. 添加仓库
-```java
-maven { url 'https://jitpack.io' }
+#### Maven
+```
+<dependency>
+    <groupId>com.senierr.adapter</groupId>
+    <artifactId>multitype</artifactId>
+    <version>1.0.0</version>
+    <type>pom</type>
+</dependency>
 ```
 
-### 2. 添加依赖
-```java
-implementation 'com.github.senierr:MultiTypeAdapter:<release_version>'
+#### Gradle
+```
+implementation 'com.senierr.adapter:multitype:1.0.0'
 ```
 
-#### 注意：
-`MultiTypeAdapter`内部依赖了:
+**注意：`MultiTypeAdapter`内部依赖了:**
+
 ```jaba
 implementation 'com.android.support:support-annotations:28.0.0'
 implementation 'com.android.support:recyclerview-v7:28.0.0'
 ```
+
 依赖关系如下：
+
 ```java
-+--- com.github.senierr:MultiTypeAdapter:<release_version>
++--- com.senierr.adapter:multitype:<release_version>
 |    |    +--- com.android.support:support-annotations:28.0.0
 |    |    +--- com.android.support:recyclerview-v7:28.0.0
 ```
+
 如不需要，可通过以下方式关闭**传递性依赖**：
+
 ```java
-implementation ('com.github.senierr:MultiTypeAdapter:<release_version>', {
+implementation ('com.senierr.adapter:multitype:<release_version>', {
     transitive = false
 })
+
 或者
-implementation 'com.github.senierr:MultiTypeAdapter:RELEASE_VERSION@aar'
+
+implementation 'com.senierr.adapter:multitype:RELEASE_VERSION@aar'
 ```
 
 ## 基本使用
+
 ```java
 public class FirstWrapper extends ViewHolderWrapper<DataBean> {
 
@@ -74,6 +87,7 @@ recyclerView.setAdapter(multiTypeAdapter);
 ## 进阶使用
 
 ### 1. 点击长按事件
+
 ```java
 // 列表项点击事件
 setOnItemClickListener(OnItemClickListener<T> onItemClickListener)
@@ -108,8 +122,9 @@ public int getSpanSize(T item) {
  * 当一种数据类型，包含多种布局时，可指定每项所使用的布局类型。
  */
 multiTypeAdapter.register(DataBean::class.java, firstWrapper, secondWrapper)
-                .with { item -> if (item.id == 0) firstWrapper else secondWrapper
-        }
+                .with { item ->
+                    if (item.id == 0) firstWrapper else secondWrapper
+                }
 ```
 
 ## 其他
