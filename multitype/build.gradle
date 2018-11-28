@@ -65,7 +65,7 @@ task copyDoc(type: Copy) {
     into "docs"
 }
 
-tasks.getByPath(":library:javadoc").enabled = false
+tasks.getByPath(":multitype:javadoc").enabled = false
 
 //上传到JCenter所需要的源码文件
 artifacts {
