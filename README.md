@@ -208,6 +208,14 @@ list.add(loadMoreWrapper.getLoadMoreBean());
 -keep class com.senierr.adapter.** { *; }
 ```
 
+## Release Notes
+
+v1.0.1
+适配最低版本(minSdkVersion)至11
+
+v1.0.0
+稳定版本
+
 ## License
 ```
 Copyright 2017 senierr
