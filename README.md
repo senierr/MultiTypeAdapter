@@ -1,6 +1,6 @@
 # MultiTypeAdapter
 
-[![](https://img.shields.io/badge/release-v1.0.0-blue.svg)](https://github.com/senierr/MultiTypeAdapter)
+[![](https://img.shields.io/badge/release-v1.0.1-blue.svg)](https://github.com/senierr/MultiTypeAdapter)
 [![](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/senierr/MultiTypeAdapter)
 [![](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -26,14 +26,14 @@
 <dependency>
     <groupId>com.senierr.adapter</groupId>
     <artifactId>multitype</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <type>pom</type>
 </dependency>
 ```
 
 #### Gradle
 ```
-implementation 'com.senierr.adapter:multitype:1.0.0'
+implementation 'com.senierr.adapter:multitype:1.0.1'
 ```
 
 **注意：`MultiTypeAdapter`内部依赖了:**
@@ -60,7 +60,7 @@ implementation ('com.senierr.adapter:multitype:<release_version>', {
 
 或者
 
-implementation 'com.senierr.adapter:multitype:RELEASE_VERSION@aar'
+implementation 'com.senierr.adapter:multitype:<release_version>@aar'
 ```
 
 ## 基本使用
@@ -211,10 +211,10 @@ list.add(loadMoreWrapper.getLoadMoreBean());
 ## Release Notes
 
 v1.0.1
-适配最低版本(minSdkVersion)至11
+> 适配最低版本(minSdkVersion)至11
 
 v1.0.0
-稳定版本
+> 稳定版本
 
 ## License
 ```
