@@ -21,7 +21,7 @@ public class SecondWrapper extends ViewHolderWrapper<DataBean> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent) {
-        final ViewHolder rvHolder = ViewHolder.create(parent, R.layout.item_second);
+        final ViewHolder rvHolder = ViewHolder.Companion.create(parent, R.layout.item_second);
         CheckBox checkBox = rvHolder.findView(R.id.cb_check);
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

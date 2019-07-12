@@ -20,7 +20,7 @@ public class LoadMoreWrapper extends BaseLoadMoreWrapper {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent) {
-        return ViewHolder.create(parent, R.layout.item_load_more);
+        return ViewHolder.Companion.create(parent, R.layout.item_load_more);
     }
 
     @Override

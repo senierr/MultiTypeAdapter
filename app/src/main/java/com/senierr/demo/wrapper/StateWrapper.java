@@ -22,7 +22,7 @@ public class StateWrapper extends BaseStateWrapper {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent) {
-        return ViewHolder.create(parent, R.layout.item_state);
+        return ViewHolder.Companion.create(parent, R.layout.item_state);
     }
 
     @Override

@@ -45,10 +45,10 @@ class MainActivity : AppCompatActivity() {
 
 
         // 列表点击事件
-        firstWrapper.setOnItemClickListener { _, _, t ->
+        firstWrapper.onItemClickListener = { _, _, t ->
             showToast("ItemClick: " + t.content)
         }
-        firstWrapper.setOnItemLongClickListener { _, _, t ->
+        firstWrapper.onItemLongClickListener = { _, _, t ->
             showToast("ItemLongClick: " + t.content)
             true
         }
@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity() {
             loadData()
         }
         // 状态切换
-        stateWrapper.setOnItemClickListener { _, _, _ ->
+        stateWrapper.onItemClickListener = { _, _, _ ->
             pageIndex = 1
             loadData()
         }

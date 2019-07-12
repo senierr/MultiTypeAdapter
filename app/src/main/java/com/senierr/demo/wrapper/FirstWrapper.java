@@ -9,16 +9,16 @@ import com.senierr.adapter.internal.ViewHolder;
 import com.senierr.demo.DataBean;
 import com.senierr.demo.R;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * @author zhouchunjie
  * @date 2017/9/25
  */
 public class FirstWrapper extends ViewHolderWrapper<DataBean> {
 
-    @NonNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent) {
-        return ViewHolder.create(parent, R.layout.item_first);
+    public FirstWrapper() {
+        super(DataBean.class, R.layout.item_first);
     }
 
     @Override
