@@ -3,10 +3,13 @@ package com.senierr.demo
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.StaggeredGridLayoutManager
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import com.senierr.adapter.internal.Delegation
 import com.senierr.adapter.internal.MultiTypeAdapter
+import com.senierr.adapter.internal.ViewHolderWrapper
 import com.senierr.adapter.support.bean.LoadMoreBean
 import com.senierr.adapter.support.bean.StateBean
 import com.senierr.demo.wrapper.FirstWrapper
@@ -44,39 +47,48 @@ class MainActivity : AppCompatActivity() {
         rv_list.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
 
-        // 列表点击事件
-        firstWrapper.onItemClickListener = { _, _, t ->
-            showToast("ItemClick: " + t.content)
-        }
-        firstWrapper.onItemLongClickListener = { _, _, t ->
-            showToast("ItemLongClick: " + t.content)
-            true
-        }
-        // 子控件点击事件
-        firstWrapper.setOnChildClickListener(R.id.btn_click) { _, _, _, dataBean ->
-            showToast("ChildClick: " + dataBean.content)
-        }
-        firstWrapper.setOnChildLongClickListener(R.id.btn_click) { _, _, _, dataBean ->
-            showToast("ChildLongClick: " + dataBean.content)
-            true
-        }
-        // 加载更多
-        loadMoreWrapper.setOnLoadMoreListener {
-            loadData()
-        }
-        // 状态切换
-        stateWrapper.onItemClickListener = { _, _, _ ->
-            pageIndex = 1
-            loadData()
-        }
+//        // 列表点击事件
+//        firstWrapper.onItemClickListener = { _, _, t ->
+//            showToast("ItemClick: " + t.content)
+//        }
+//        firstWrapper.onItemLongClickListener = { _, _, t ->
+//            showToast("ItemLongClick: " + t.content)
+//            true
+//        }
+//        // 子控件点击事件
+//        firstWrapper.setOnChildClickListener(R.id.btn_click) { _, _, _, dataBean ->
+//            showToast("ChildClick: " + dataBean.content)
+//        }
+//        firstWrapper.setOnChildLongClickListener(R.id.btn_click) { _, _, _, dataBean ->
+//            showToast("ChildLongClick: " + dataBean.content)
+//            true
+//        }
+//        // 加载更多
+//        loadMoreWrapper.setOnLoadMoreListener {
+//            loadData()
+//        }
+//        // 状态切换
+//        stateWrapper.onItemClickListener = { _, _, _ ->
+//            pageIndex = 1
+//            loadData()
+//        }
 
-        multiTypeAdapter.register(DataBean::class.java, firstWrapper, secondWrapper)
-                .with { item ->
-                    if (item.id == 0) firstWrapper else secondWrapper
-                }
+//        multiTypeAdapter.register(DataBean::class.java, firstWrapper, secondWrapper)
+//                .with { item ->
+//                    if (item.id == 0) firstWrapper else secondWrapper
+//                }
+//
+//        multiTypeAdapter.register(StateBean::class.java, stateWrapper)
+//        multiTypeAdapter.register(LoadMoreBean::class.java, loadMoreWrapper)
 
-        multiTypeAdapter.register(StateBean::class.java, stateWrapper)
-        multiTypeAdapter.register(LoadMoreBean::class.java, loadMoreWrapper)
+        multiTypeAdapter.register(firstWrapper, secondWrapper, delegation = object : Delegation<DataBean> {
+            override fun getWrapperType(item: DataBean): Class<out ViewHolderWrapper<DataBean>> {
+                return if (item.id == 0) FirstWrapper::class.java else SecondWrapper::class.java
+            }
+        })
+        multiTypeAdapter.register(loadMoreWrapper)
+        multiTypeAdapter.register(stateWrapper)
+
         rv_list.adapter = multiTypeAdapter
     }
 

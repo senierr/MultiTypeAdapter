@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 public class FirstWrapper extends ViewHolderWrapper<DataBean> {
 
     public FirstWrapper() {
-        super(DataBean.class, R.layout.item_first);
+        super(R.layout.item_first);
     }
 
     @Override

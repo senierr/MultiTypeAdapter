@@ -3,6 +3,7 @@ package com.senierr.adapter.internal
 import android.support.annotation.IdRes
 import android.support.annotation.LayoutRes
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
@@ -13,9 +14,9 @@ import android.view.ViewGroup
  * @author zhouchunjie
  * @date 2017/9/25
  */
-abstract class ViewHolderWrapper<T>(val type: Class<T>, @LayoutRes private val layoutId: Int) {
+abstract class ViewHolderWrapper<T>(@LayoutRes private val layoutId: Int = -1) {
 
-    private var multiTypeAdapter: MultiTypeAdapter? = null
+    protected lateinit var multiTypeAdapter: MultiTypeAdapter
 
     private var onItemClickListener: ((viewHolder: ViewHolder, position: Int, item: T) -> Unit)? = null
     private var onItemLongClickListener: ((viewHolder: ViewHolder, position: Int, item: T) -> Boolean)? = null
@@ -29,13 +30,6 @@ abstract class ViewHolderWrapper<T>(val type: Class<T>, @LayoutRes private val l
     open fun onRegister(multiTypeAdapter: MultiTypeAdapter) {
         this.multiTypeAdapter = multiTypeAdapter
     }
-
-    /**
-     * 是否拦截此数据
-     *
-     * @return true: 拦截，内部处理; false: 不拦截，交由其他处理
-     */
-    open fun interceptData(item: Any): Boolean = true
 
     /**
      * 创建视图
@@ -98,13 +92,10 @@ abstract class ViewHolderWrapper<T>(val type: Class<T>, @LayoutRes private val l
     @Suppress("UNCHECKED_CAST")
     private fun getItemData(position: Int): T? {
         var result: T? = null
-        multiTypeAdapter?.let {
-            if (position in 0 until it.data.size) {
-                val item = it.data[position]
-                if (item.javaClass == type) {
-                    result = item as T
-                }
-            }
+        try {
+            result = multiTypeAdapter.data[position] as T
+        } catch (e: Exception) {
+            Log.w(this.javaClass.simpleName, "The value in the position does not exist.")
         }
         return result
     }
@@ -125,11 +116,8 @@ abstract class ViewHolderWrapper<T>(val type: Class<T>, @LayoutRes private val l
 
     abstract fun onBindViewHolder(holder: ViewHolder, item: T)
 
-    @Suppress("UNCHECKED_CAST")
-    open fun onBindViewHolder(holder: ViewHolder, item: Any, payloads: List<Any>) {
-        if (item.javaClass == type) {
-            onBindViewHolder(holder, item as T)
-        }
+    open fun onBindViewHolder(holder: ViewHolder, item: T, payloads: List<Any>) {
+        onBindViewHolder(holder, item)
     }
 
     /**
@@ -138,7 +126,7 @@ abstract class ViewHolderWrapper<T>(val type: Class<T>, @LayoutRes private val l
      * @param item 数据项
      * @return 默认为1，超过最大列数为全行
      */
-    open fun getSpanSize(item: Any): Int = 1
+    open fun getSpanSize(item: T): Int = 1
 
     fun setOnItemClickListener(listener: (viewHolder: ViewHolder, position: Int, item: T) -> Unit) {
         onItemClickListener = listener
