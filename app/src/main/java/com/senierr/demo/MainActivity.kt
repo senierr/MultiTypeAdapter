@@ -47,39 +47,31 @@ class MainActivity : AppCompatActivity() {
         rv_list.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
 
-//        // 列表点击事件
-//        firstWrapper.onItemClickListener = { _, _, t ->
-//            showToast("ItemClick: " + t.content)
-//        }
-//        firstWrapper.onItemLongClickListener = { _, _, t ->
-//            showToast("ItemLongClick: " + t.content)
-//            true
-//        }
-//        // 子控件点击事件
-//        firstWrapper.setOnChildClickListener(R.id.btn_click) { _, _, _, dataBean ->
-//            showToast("ChildClick: " + dataBean.content)
-//        }
-//        firstWrapper.setOnChildLongClickListener(R.id.btn_click) { _, _, _, dataBean ->
-//            showToast("ChildLongClick: " + dataBean.content)
-//            true
-//        }
-//        // 加载更多
-//        loadMoreWrapper.setOnLoadMoreListener {
-//            loadData()
-//        }
-//        // 状态切换
-//        stateWrapper.onItemClickListener = { _, _, _ ->
-//            pageIndex = 1
-//            loadData()
-//        }
-
-//        multiTypeAdapter.register(DataBean::class.java, firstWrapper, secondWrapper)
-//                .with { item ->
-//                    if (item.id == 0) firstWrapper else secondWrapper
-//                }
-//
-//        multiTypeAdapter.register(StateBean::class.java, stateWrapper)
-//        multiTypeAdapter.register(LoadMoreBean::class.java, loadMoreWrapper)
+        // 列表点击事件
+        firstWrapper.setOnItemClickListener { _, _, item ->
+            showToast("ItemClick: " + item.content)
+        }
+        firstWrapper.setOnItemLongClickListener { _, _, item ->
+            showToast("ItemLongClick: " + item.content)
+            true
+        }
+        // 子控件点击事件
+        firstWrapper.setOnChildClickListener(R.id.btn_click) { _, _, _, dataBean ->
+            showToast("ChildClick: " + dataBean.content)
+        }
+        firstWrapper.setOnChildLongClickListener(R.id.btn_click) { _, _, _, dataBean ->
+            showToast("ChildLongClick: " + dataBean.content)
+            true
+        }
+        // 加载更多
+        loadMoreWrapper.onLoadMoreListener = {
+            loadData()
+        }
+        // 状态切换
+        stateWrapper.setOnItemClickListener { _, _, _ ->
+            pageIndex = 1
+            loadData()
+        }
 
         multiTypeAdapter.register(firstWrapper, secondWrapper, delegation = object : Delegation<DataBean> {
             override fun getWrapperType(item: DataBean): Class<out ViewHolderWrapper<DataBean>> {
@@ -111,12 +103,12 @@ class MainActivity : AppCompatActivity() {
             if (pageIndex == 1) {
                 multiTypeAdapter.data.clear()
                 multiTypeAdapter.data.addAll(dataBeanList)
-                multiTypeAdapter.data.add(loadMoreWrapper!!.loadMoreBean)
+                multiTypeAdapter.data.add(loadMoreWrapper.loadMoreBean)
                 multiTypeAdapter.notifyDataSetChanged()
                 pageIndex++
             } else if (pageIndex == 3) {
-                loadMoreWrapper.loadNoMore()
-//                loadMoreWrapper.loadFailure()
+//                loadMoreWrapper.loadNoMore()
+                loadMoreWrapper.loadFailure()
             } else {
                 loadMoreWrapper.loadCompleted()
                 val startPosition = multiTypeAdapter.data.size - 1

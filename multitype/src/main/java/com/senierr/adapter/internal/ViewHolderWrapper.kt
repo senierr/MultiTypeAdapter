@@ -36,7 +36,6 @@ abstract class ViewHolderWrapper<T>(@LayoutRes private val layoutId: Int = -1) {
      */
     open fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val holder = ViewHolder.create(parent, layoutId)
-
         // 绑定列表项点击事件
         onItemClickListener?.let { listener ->
             holder.itemView.setOnClickListener {

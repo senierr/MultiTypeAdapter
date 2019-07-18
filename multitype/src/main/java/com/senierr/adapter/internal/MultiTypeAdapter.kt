@@ -14,7 +14,7 @@ import android.view.ViewGroup
 class MultiTypeAdapter(var data: MutableList<Any> = mutableListOf()) : RecyclerView.Adapter<ViewHolder>() {
 
     private var recyclerView: RecyclerView? = null
-    private val linkers = mutableListOf<Linker<*>>()
+    private val itemBinders = mutableListOf<ItemBinder<*>>()
     private val wrapperCache = mutableListOf<ViewHolderWrapper<*>>()
 
     override fun getItemViewType(position: Int): Int {
@@ -115,7 +115,7 @@ class MultiTypeAdapter(var data: MutableList<Any> = mutableListOf()) : RecyclerV
     @Suppress("UNCHECKED_CAST")
     private fun indexOf(item: Any): Int {
         var index = 0
-        linkers.forEach {
+        itemBinders.forEach {
             if (it.type == item::class.java) {
                 val delegation = it.delegation as Delegation<Any>
                 val wrapperType = delegation.getWrapperType(item)
@@ -129,7 +129,7 @@ class MultiTypeAdapter(var data: MutableList<Any> = mutableListOf()) : RecyclerV
                 index += it.viewHolderWrappers.size
             }
         }
-        return index
+        return -1
     }
 
     /**
@@ -145,7 +145,7 @@ class MultiTypeAdapter(var data: MutableList<Any> = mutableListOf()) : RecyclerV
      */
     private fun resetWrapperCache() {
         wrapperCache.clear()
-        linkers.forEach {
+        itemBinders.forEach {
             wrapperCache.addAll(it.viewHolderWrappers)
         }
     }
@@ -154,7 +154,7 @@ class MultiTypeAdapter(var data: MutableList<Any> = mutableListOf()) : RecyclerV
      * 解除注册
      */
     fun <T> unregister(type: Class<T>) {
-        val iterator = linkers.iterator()
+        val iterator = itemBinders.iterator()
         while (iterator.hasNext()) {
             val item = iterator.next()
             if (item.type == type) {
@@ -171,7 +171,7 @@ class MultiTypeAdapter(var data: MutableList<Any> = mutableListOf()) : RecyclerV
         // 解除相同数据类型的注册
         unregister(type)
         // 注册
-        linkers.add(Linker(type, mutableListOf(*viewHolderWrapper), delegation))
+        itemBinders.add(ItemBinder(type, mutableListOf(*viewHolderWrapper), delegation))
         viewHolderWrapper.forEach {
             it.onRegister(this)
         }

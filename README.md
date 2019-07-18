@@ -1,6 +1,6 @@
 # MultiTypeAdapter
 
-[![](https://img.shields.io/badge/release-v1.0.1-blue.svg)](https://github.com/senierr/MultiTypeAdapter)
+[![](https://img.shields.io/badge/release-v1.1.0-blue.svg)](https://github.com/senierr/MultiTypeAdapter)
 [![](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/senierr/MultiTypeAdapter)
 [![](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -19,53 +19,26 @@
     * 正在加载/空数据/加载错误/没有网络/自定义状态
     * 加载更多
 
+**[更新日志](CHANGE_LOG.md)**
+
 ## 架包引入
 
-#### Maven
-```
-<dependency>
-    <groupId>com.senierr.adapter</groupId>
-    <artifactId>multitype</artifactId>
-    <version>1.0.1</version>
-    <type>pom</type>
-</dependency>
-```
-
 #### Gradle
+
 ```
-implementation 'com.senierr.adapter:multitype:1.0.1'
+implementation 'com.senierr.adapter:multitype:<release_version>'
 ```
 
 **注意：`MultiTypeAdapter`内部依赖了:**
 
-```jaba
-implementation 'com.android.support:support-annotations:28.0.0'
+```
+implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.40'
 implementation 'com.android.support:recyclerview-v7:28.0.0'
-```
-
-依赖关系如下：
-
-```java
-+--- com.senierr.adapter:multitype:<release_version>
-|    |    +--- com.android.support:support-annotations:28.0.0
-|    |    +--- com.android.support:recyclerview-v7:28.0.0
-```
-
-如不需要，可通过以下方式关闭**传递性依赖**：
-
-```java
-implementation ('com.senierr.adapter:multitype:<release_version>', {
-    transitive = false
-})
-
-或者
-
-implementation 'com.senierr.adapter:multitype:<release_version>@aar'
 ```
 
 ## 基本使用
 
-```java
+```
 public class FirstWrapper extends ViewHolderWrapper<DataBean> {
 
     @NonNull @Override
@@ -80,7 +53,7 @@ public class FirstWrapper extends ViewHolderWrapper<DataBean> {
 }
 
 MultiTypeAdapter multiTypeAdapter = new MultiTypeAdapter();
-multiTypeAdapter.register(DataBean.class, new FirstWrapper())
+multiTypeAdapter.register(new FirstWrapper())
 recyclerView.setAdapter(multiTypeAdapter);
 ```
 
@@ -88,7 +61,7 @@ recyclerView.setAdapter(multiTypeAdapter);
 
 ### 1. 点击长按事件
 
-```java
+```
 // 列表项点击事件
 setOnItemClickListener(OnItemClickListener<T> onItemClickListener)
 // 列表项长按事件
@@ -102,7 +75,7 @@ setOnChildLongClickListener(int childId, OnChildLongClickListener<T> onChildLong
 
 ### 2. 自定义占据列数
 
-```java
+```
 /**
  * 获取当前项所占列数
  *
@@ -117,14 +90,12 @@ public int getSpanSize(T item) {
 
 ### 3. 一对多
 
-```java
-/**
- * 当一种数据类型，包含多种布局时，可指定每项所使用的布局类型。
- */
-multiTypeAdapter.register(DataBean::class.java, firstWrapper, secondWrapper)
-                .with { item ->
-                    if (item.id == 0) firstWrapper else secondWrapper
-                }
+```
+multiTypeAdapter.register(firstWrapper, secondWrapper, delegation = object : Delegation<DataBean> {
+            override fun getWrapperType(item: DataBean): Class<out ViewHolderWrapper<DataBean>> {
+                return if (item.id == 0) FirstWrapper::class.java else SecondWrapper::class.java
+            }
+        })
 ```
 
 ## 其他
@@ -143,7 +114,7 @@ multiTypeAdapter.register(DataBean::class.java, firstWrapper, secondWrapper)
 
 **注意：**调用`stateWrapper.show...()`时，会清空`MultiTypeAdapter`内部数据，并增加一条新数据`stateBean`，重新加载数据时记得先**clear()、clear()、clear()**!
 
-```java
+```
 public class StateWrapper extends BaseStateWrapper {
 
     @NonNull @Override
@@ -169,7 +140,7 @@ stateWrapper.setState(StateWrapper.STATE_DEFAULT);
 
 **注意：** 要在列表数据末添加`加载更多（LoadMoreBean）`类型数据。
 
-```java
+```
 public class LoadMoreWrapper extends BaseLoadMoreWrapper {
 
     @NonNull @Override
@@ -203,18 +174,10 @@ list.add(loadMoreWrapper.getLoadMoreBean());
 
 ## 混淆
 
-```java
+```
 -dontwarn com.senierr.adapter.**
 -keep class com.senierr.adapter.** { *; }
 ```
-
-## Release Notes
-
-v1.0.1
-> 适配最低版本(minSdkVersion)至11
-
-v1.0.0
-> 稳定版本
 
 ## License
 ```

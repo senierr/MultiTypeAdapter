@@ -3,7 +3,7 @@ package com.senierr.adapter.internal
 /**
  * 委托
  *
- * 数据类型委托给封装器的描述
+ * 数据类型委托给何种封装器的描述
  *
  * @author zhouchunjie
  * @date 2019/7/17
