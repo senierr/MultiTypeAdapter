@@ -1,6 +1,6 @@
 # MultiTypeAdapter
 
-[![](https://img.shields.io/badge/release-v1.1.0-blue.svg)](https://github.com/senierr/MultiTypeAdapter)
+[![](https://img.shields.io/badge/release-v2.0.0-blue.svg)](https://github.com/senierr/MultiTypeAdapter)
 [![](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/senierr/MultiTypeAdapter)
 [![](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -33,7 +33,7 @@ implementation 'com.senierr.adapter:multitype:<release_version>'
 
 ```
 implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.40'
-implementation 'com.android.support:recyclerview-v7:28.0.0'
+implementation 'androidx.recyclerview:recyclerview:1.0.0'
 ```
 
 ## 基本使用
@@ -181,7 +181,7 @@ list.add(loadMoreWrapper.getLoadMoreBean());
 
 ## License
 ```
-Copyright 2017 senierr
+Copyright 2019 senierr
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

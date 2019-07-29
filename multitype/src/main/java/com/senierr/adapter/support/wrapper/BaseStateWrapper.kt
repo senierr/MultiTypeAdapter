@@ -1,8 +1,8 @@
 package com.senierr.adapter.support.wrapper
 
-import android.support.annotation.LayoutRes
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.StaggeredGridLayoutManager
+import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.senierr.adapter.internal.ViewHolderWrapper
 import com.senierr.adapter.support.bean.StateBean
 

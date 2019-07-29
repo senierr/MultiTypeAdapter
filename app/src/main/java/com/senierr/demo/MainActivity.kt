@@ -1,17 +1,14 @@
 package com.senierr.demo
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.StaggeredGridLayoutManager
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.senierr.adapter.internal.Delegation
 import com.senierr.adapter.internal.MultiTypeAdapter
 import com.senierr.adapter.internal.ViewHolderWrapper
-import com.senierr.adapter.support.bean.LoadMoreBean
-import com.senierr.adapter.support.bean.StateBean
 import com.senierr.demo.wrapper.FirstWrapper
 import com.senierr.demo.wrapper.LoadMoreWrapper
 import com.senierr.demo.wrapper.SecondWrapper

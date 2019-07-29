@@ -1,7 +1,7 @@
 package com.senierr.adapter.support.wrapper
 
-import android.support.annotation.LayoutRes
-import android.support.v7.widget.*
+import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.*
 import com.senierr.adapter.internal.ViewHolderWrapper
 import com.senierr.adapter.support.bean.LoadMoreBean
 import kotlin.math.max
