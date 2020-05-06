@@ -1,6 +1,6 @@
 # MultiTypeAdapter
 
-[![](https://img.shields.io/badge/release-v2.0.0-blue.svg)](https://github.com/senierr/MultiTypeAdapter)
+[![](https://img.shields.io/badge/release-v2.1.0-blue.svg)](https://github.com/senierr/MultiTypeAdapter)
 [![](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/senierr/MultiTypeAdapter)
 [![](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -32,8 +32,8 @@ implementation 'com.senierr.adapter:multitype:<release_version>'
 **注意：`MultiTypeAdapter`内部依赖了:**
 
 ```
-implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.40'
-implementation 'androidx.recyclerview:recyclerview:1.0.0'
+implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.71'
+implementation 'androidx.recyclerview:recyclerview:1.1.0'
 ```
 
 ## 基本使用
@@ -91,11 +91,9 @@ public int getSpanSize(T item) {
 ### 3. 一对多
 
 ```
-multiTypeAdapter.register(firstWrapper, secondWrapper, delegation = object : Delegation<DataBean> {
-            override fun getWrapperType(item: DataBean): Class<out ViewHolderWrapper<DataBean>> {
-                return if (item.id == 0) FirstWrapper::class.java else SecondWrapper::class.java
-            }
-        })
+multiTypeAdapter.register(firstWrapper, secondWrapper) {
+            return@register if (item.id == 0) FirstWrapper::class.java else SecondWrapper::class.java
+        }
 ```
 
 ## 其他
@@ -181,7 +179,7 @@ list.add(loadMoreWrapper.getLoadMoreBean());
 
 ## License
 ```
-Copyright 2019 senierr
+Copyright 2020 senierr
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
