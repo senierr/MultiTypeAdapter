@@ -70,11 +70,9 @@ class MainActivity : AppCompatActivity() {
             loadData()
         }
 
-        multiTypeAdapter.register(firstWrapper, secondWrapper, delegation = object : Delegation<DataBean> {
-            override fun getWrapperType(item: DataBean): Class<out ViewHolderWrapper<DataBean>> {
-                return if (item.id == 0) FirstWrapper::class.java else SecondWrapper::class.java
-            }
-        })
+        multiTypeAdapter.register(firstWrapper, secondWrapper) {
+            return@register if (it.id == 0) FirstWrapper::class.java else SecondWrapper::class.java
+        }
         multiTypeAdapter.register(loadMoreWrapper)
         multiTypeAdapter.register(stateWrapper)
 

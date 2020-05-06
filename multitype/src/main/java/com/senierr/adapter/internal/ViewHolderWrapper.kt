@@ -16,6 +16,7 @@ import android.view.ViewGroup
  */
 abstract class ViewHolderWrapper<T>(@LayoutRes private val layoutId: Int = -1) {
 
+    protected var recyclerView: RecyclerView? = null
     protected lateinit var multiTypeAdapter: MultiTypeAdapter
 
     private var onItemClickListener: ((viewHolder: ViewHolder, position: Int, item: T) -> Unit)? = null
@@ -99,19 +100,17 @@ abstract class ViewHolderWrapper<T>(@LayoutRes private val layoutId: Int = -1) {
         return result
     }
 
-    open fun getItemId(item: T): Long = RecyclerView.NO_ID
-
-    open fun onViewRecycled(holder: ViewHolder) {}
-
-    open fun onFailedToRecycleView(holder: ViewHolder): Boolean = false
-
     open fun onViewAttachedToWindow(holder: ViewHolder) {}
 
     open fun onViewDetachedFromWindow(holder: ViewHolder) {}
 
-    open fun onAttachedToRecyclerView(recyclerView: RecyclerView) {}
+    open fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        this.recyclerView = recyclerView
+    }
 
-    open fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {}
+    open fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        this.recyclerView = null
+    }
 
     abstract fun onBindViewHolder(holder: ViewHolder, item: T)
 

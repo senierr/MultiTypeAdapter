@@ -1,7 +1,6 @@
 package com.senierr.adapter.support.wrapper
 
 import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.senierr.adapter.internal.ViewHolderWrapper
 import com.senierr.adapter.support.bean.StateBean
@@ -14,15 +13,9 @@ import com.senierr.adapter.support.bean.StateBean
  */
 abstract class BaseStateWrapper(@LayoutRes private val layoutId: Int = -1) : ViewHolderWrapper<StateBean>(layoutId) {
 
-    private var recyclerView: RecyclerView? = null
     private val stateBean = StateBean()
 
     override fun getSpanSize(item: StateBean): Int = Integer.MAX_VALUE
-
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        super.onAttachedToRecyclerView(recyclerView)
-        this.recyclerView = recyclerView
-    }
 
     /**
      * 更新状态

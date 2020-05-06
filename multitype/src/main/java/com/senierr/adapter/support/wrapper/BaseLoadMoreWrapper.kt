@@ -14,14 +14,11 @@ import kotlin.math.max
  */
 abstract class BaseLoadMoreWrapper(@LayoutRes private val layoutId: Int = -1) : ViewHolderWrapper<LoadMoreBean>(layoutId) {
 
-    private var recyclerView: RecyclerView? = null
-
     val loadMoreBean = LoadMoreBean()
     var onLoadMoreListener: (() -> Unit)? = null
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
-        this.recyclerView = recyclerView
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (checkCanLoadMore(recyclerView, dx, dy)) startLoadMore()
@@ -33,8 +30,6 @@ abstract class BaseLoadMoreWrapper(@LayoutRes private val layoutId: Int = -1) : 
 
     /**
      * 判断是否可以加载更多
-     *
-     * @param recyclerView
      */
     private fun checkCanLoadMore(recyclerView: RecyclerView, dx: Int, dy: Int): Boolean {
         // 判断是否有加载更多项

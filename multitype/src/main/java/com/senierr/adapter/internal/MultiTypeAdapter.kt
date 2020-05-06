@@ -40,22 +40,6 @@ class MultiTypeAdapter(var data: MutableList<Any> = mutableListOf()) : RecyclerV
 
     override fun getItemCount(): Int = data.size
 
-    override fun getItemId(position: Int): Long {
-        val viewHolderWrapper = getViewHolderWrapper<Any>(getItemViewType(position))
-        return viewHolderWrapper.getItemId(data[position])
-    }
-
-    override fun onViewRecycled(holder: ViewHolder) {
-        super.onViewRecycled(holder)
-        val viewHolderWrapper = getViewHolderWrapper<Any>(holder.itemViewType)
-        viewHolderWrapper.onViewRecycled(holder)
-    }
-
-    override fun onFailedToRecycleView(holder: ViewHolder): Boolean {
-        val viewHolderWrapper = getViewHolderWrapper<Any>(holder.itemViewType)
-        return viewHolderWrapper.onFailedToRecycleView(holder)
-    }
-
     override fun onViewAttachedToWindow(holder: ViewHolder) {
         super.onViewAttachedToWindow(holder)
         val viewHolderWrapper = getViewHolderWrapper<Any>(holder.itemViewType)
@@ -196,5 +180,14 @@ class MultiTypeAdapter(var data: MutableList<Any> = mutableListOf()) : RecyclerV
 
     inline fun <reified T> register(vararg viewHolderWrapper: ViewHolderWrapper<T>, delegation: Delegation<T>) {
         register(T::class.java, *viewHolderWrapper, delegation = delegation)
+    }
+
+    inline fun <reified T> register(vararg viewHolderWrapper: ViewHolderWrapper<T>,
+                                    crossinline delegation: (item: T) -> Class<out ViewHolderWrapper<T>>) {
+        register(T::class.java, *viewHolderWrapper, delegation = object : Delegation<T> {
+            override fun getWrapperType(item: T): Class<out ViewHolderWrapper<T>> {
+                return delegation.invoke(item)
+            }
+        })
     }
 }
