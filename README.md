@@ -1,6 +1,6 @@
 # MultiTypeAdapter
 
-[![](https://img.shields.io/badge/release-v2.1.0-blue.svg)](https://github.com/senierr/MultiTypeAdapter)
+[![](https://img.shields.io/badge/release-v2.2.0-blue.svg)](https://github.com/senierr/MultiTypeAdapter)
 [![](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/senierr/MultiTypeAdapter)
 [![](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -39,22 +39,16 @@ implementation 'androidx.recyclerview:recyclerview:1.1.0'
 ## 基本使用
 
 ```
-public class FirstWrapper extends ViewHolderWrapper<DataBean> {
+class FirstWrapper : ViewHolderWrapper<DataBean>(R.layout.item_first) {
 
-    @NonNull @Override
-    public RVHolder onCreateViewHolder(@NonNull ViewGroup parent) {
-        return RVHolder.create(parent, R.layout.item_first);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull RVHolder holder, @NonNull DataBean item) {
+    override fun onBindViewHolder(holder: ViewHolder, item: DataBean) {
         ......
     }
 }
 
-MultiTypeAdapter multiTypeAdapter = new MultiTypeAdapter();
-multiTypeAdapter.register(new FirstWrapper())
-recyclerView.setAdapter(multiTypeAdapter);
+val multiTypeAdapter = MultiTypeAdapter()
+multiTypeAdapter.register(FirstWrapper())
+recyclerView.adapter = multiTypeAdapter
 ```
 
 ## 进阶使用
