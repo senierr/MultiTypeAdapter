@@ -7,9 +7,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.6.3'
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.71'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -20,6 +18,24 @@ allprojects {
     repositories {
         jcenter()
         google()
+
+        maven {
+            url 'https://maven.aliyun.com/repository/public'
+        }
+        maven {
+            credentials {
+                username ALIYUN_USERNAME
+                password ALIYUN_PASSWORD
+            }
+            url ALIYUN_MAVEN_URL
+        }
+        maven {
+            credentials {
+                username ALIYUN_USERNAME
+                password ALIYUN_PASSWORD
+            }
+            url ALIYUN_MAVEN_URL_SNAPSHOT
+        }
     }
 }
 
@@ -29,8 +45,8 @@ task clean(type: Delete) {
 
 ext {
     // 语言
-    kotlin = "1.3.71"
+    kotlin = "1.4.32"
     // androidx
-    appcompat = "1.1.0"
+    appcompat = "1.2.0"
     recyclerview = "1.1.0"
 }

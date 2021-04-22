@@ -1,5 +1,9 @@
 ## 更新日志
 
+#### 2.3.0
+
+* Maven迁移至**[阿里云仓库](https://packages.aliyun.com/maven)**
+
 #### 2.2.0
 
 * 新增ViewHolder简便操作View方法；

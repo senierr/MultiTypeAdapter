@@ -26,6 +26,10 @@
 #### Gradle
 
 ```
+maven { url 'https://maven.aliyun.com/repository/public' }
+```
+
+```
 implementation 'com.senierr.adapter:multitype:<release_version>'
 ```
 
