@@ -6,14 +6,14 @@ import android.widget.TextView
 import android.widget.Toast
 import com.senierr.adapter.internal.ViewHolder
 import com.senierr.adapter.internal.ViewHolderWrapper
-import com.senierr.demo.DataBean
 import com.senierr.demo.R
+import com.senierr.demo.entity.Data2
 
 /**
  * @author zhouchunjie
  * @date 2017/9/25
  */
-class SecondWrapper : ViewHolderWrapper<DataBean>() {
+class Data2Wrapper : ViewHolderWrapper<Data2>() {
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val rvHolder = ViewHolder.create(parent, R.layout.item_second)
@@ -24,7 +24,7 @@ class SecondWrapper : ViewHolderWrapper<DataBean>() {
         return rvHolder
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, item: DataBean) {
+    override fun onBindViewHolder(holder: ViewHolder, item: Data2) {
         val textView = holder.findView<TextView>(R.id.tv_text)
         textView?.text = item.content
         textView?.height = item.height

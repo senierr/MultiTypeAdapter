@@ -26,7 +26,11 @@
 #### Gradle
 
 ```
-maven { url 'https://maven.aliyun.com/repository/public' }
+// 正式版本
+mavenCentral()
+
+// 快照版本
+maven { url = "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
 ```
 
 ```
@@ -36,23 +40,18 @@ implementation 'com.senierr.adapter:multitype:<release_version>'
 **注意：`MultiTypeAdapter`内部依赖了:**
 
 ```
-implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.71'
-implementation 'androidx.recyclerview:recyclerview:1.1.0'
+implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.6.10'
+implementation 'androidx.recyclerview:recyclerview:1.2.1'
 ```
 
 ## 基本使用
 
 ```
-class FirstWrapper : ViewHolderWrapper<DataBean>(R.layout.item_first) {
+// 1. 定义视图包装器
+class DefaultWrapper : ViewHolderWrapper<T>(R.layout.item_layout)
 
-    override fun onBindViewHolder(holder: ViewHolder, item: DataBean) {
-        ......
-    }
-}
-
-val multiTypeAdapter = MultiTypeAdapter()
-multiTypeAdapter.register(FirstWrapper())
-recyclerView.adapter = multiTypeAdapter
+// 2. 将包装器注册至适配器
+multiTypeAdapter.register(DefaultWrapper())
 ```
 
 ## 进阶使用
@@ -177,7 +176,7 @@ list.add(loadMoreWrapper.getLoadMoreBean());
 
 ## License
 ```
-Copyright 2020 senierr
+Copyright 2022 senierr
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

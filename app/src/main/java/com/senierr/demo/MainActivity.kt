@@ -1,25 +1,34 @@
 package com.senierr.demo
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.senierr.adapter.internal.Delegation
 import com.senierr.adapter.internal.MultiTypeAdapter
-import com.senierr.adapter.internal.ViewHolderWrapper
-import com.senierr.demo.wrapper.FirstWrapper
+import com.senierr.demo.databinding.ActivityMainBinding
+import com.senierr.demo.entity.Data1
+import com.senierr.demo.entity.Data2
+import com.senierr.demo.entity.IData
+import com.senierr.demo.wrapper.Data1Wrapper
+import com.senierr.demo.wrapper.Data2Wrapper
 import com.senierr.demo.wrapper.LoadMoreWrapper
-import com.senierr.demo.wrapper.SecondWrapper
 import com.senierr.demo.wrapper.StateWrapper
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityMainBinding
+
     private val multiTypeAdapter = MultiTypeAdapter()
-    private val firstWrapper = FirstWrapper()
-    private val secondWrapper = SecondWrapper()
+
+    private val data1Wrapper = Data1Wrapper()
+    private val data2Wrapper = Data2Wrapper()
 
     private var loadMoreWrapper = LoadMoreWrapper()
     private var stateWrapper = StateWrapper()
@@ -29,8 +38,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initView()
         loadData()
     }
@@ -41,22 +50,21 @@ class MainActivity : AppCompatActivity() {
     private fun initView() {
 //        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 //        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-        rv_list.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-
+        binding.rvList.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
         // 列表点击事件
-        firstWrapper.setOnItemClickListener { _, _, item ->
+        data1Wrapper.setOnItemClickListener { _, _, item ->
             showToast("ItemClick: " + item.content)
         }
-        firstWrapper.setOnItemLongClickListener { _, _, item ->
+        data1Wrapper.setOnItemLongClickListener { _, _, item ->
             showToast("ItemLongClick: " + item.content)
             true
         }
         // 子控件点击事件
-        firstWrapper.setOnChildClickListener(R.id.btn_click) { _, _, _, dataBean ->
+        data1Wrapper.setOnChildClickListener(R.id.btn_click) { _, _, _, dataBean ->
             showToast("ChildClick: " + dataBean.content)
         }
-        firstWrapper.setOnChildLongClickListener(R.id.btn_click) { _, _, _, dataBean ->
+        data1Wrapper.setOnChildLongClickListener(R.id.btn_click) { _, _, _, dataBean ->
             showToast("ChildLongClick: " + dataBean.content)
             true
         }
@@ -66,17 +74,16 @@ class MainActivity : AppCompatActivity() {
         }
         // 状态切换
         stateWrapper.setOnItemClickListener { _, _, _ ->
-            pageIndex = 1
-            loadData()
+            loadData(true)
         }
 
-        multiTypeAdapter.register(firstWrapper, secondWrapper) {
-            return@register if (it.id == 0) FirstWrapper::class.java else SecondWrapper::class.java
-        }
+        multiTypeAdapter.register(data1Wrapper)
+        multiTypeAdapter.register(data2Wrapper)
+
         multiTypeAdapter.register(loadMoreWrapper)
         multiTypeAdapter.register(stateWrapper)
 
-        rv_list.adapter = multiTypeAdapter
+        binding.rvList.adapter = multiTypeAdapter
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -92,26 +99,43 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun loadData() {
-        rv_list.postDelayed({
-            val dataBeanList = DataBean.getData(pageIndex, pageSize)
-            if (pageIndex == 1) {
+    @SuppressLint("NotifyDataSetChanged")
+    private fun loadData(isRefresh: Boolean = false) {
+        if (isRefresh) pageIndex = 0
+        lifecycleScope.launch {
+            delay(2000)
+            val result = fetchData(pageIndex)
+            if (pageIndex == 0) {
                 multiTypeAdapter.data.clear()
-                multiTypeAdapter.data.addAll(dataBeanList)
+                multiTypeAdapter.data.addAll(result)
                 multiTypeAdapter.data.add(loadMoreWrapper.loadMoreBean)
                 multiTypeAdapter.notifyDataSetChanged()
-                pageIndex++
-            } else if (pageIndex == 3) {
-//                loadMoreWrapper.loadNoMore()
-                loadMoreWrapper.loadFailure()
+            } else if (pageIndex > 3) {
+                if ((System.currentTimeMillis() % 2) == 0L) {
+                    loadMoreWrapper.loadFailure()
+                } else {
+                    loadMoreWrapper.loadNoMore()
+                }
             } else {
                 loadMoreWrapper.loadCompleted()
                 val startPosition = multiTypeAdapter.data.size - 1
-                multiTypeAdapter.data.addAll(startPosition, dataBeanList)
-                multiTypeAdapter.notifyItemRangeInserted(startPosition, dataBeanList.size)
+                multiTypeAdapter.data.addAll(startPosition, result)
+                multiTypeAdapter.notifyItemRangeInserted(startPosition, result.size)
                 pageIndex++
             }
-        }, 1000)
+        }
+    }
+
+    private fun fetchData(pageIndex: Int): List<IData> {
+        val result1 = mutableListOf<Data1>()
+        for (i in 0 until pageSize / 2) {
+            result1.add(Data1("$pageIndex-$i", Random().nextInt(300) + 100))
+        }
+        val result2 = mutableListOf<Data2>()
+        for (i in 0 until pageSize / 2) {
+            result2.add(Data2("$pageIndex-$i", Random().nextInt(300) + 100))
+        }
+        return result1 + result2
     }
 
     private fun showToast(toastStr: String) {

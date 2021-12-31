@@ -1,5 +1,10 @@
 ## 更新日志
 
+#### 3.0.0-SNAPSHOT
+
+* 托管仓库迁移至MavenCenter
+* 增加自定义匹配规则功能
+
 #### 2.3.0
 
 * Maven迁移至**[阿里云仓库](https://packages.aliyun.com/maven)**
