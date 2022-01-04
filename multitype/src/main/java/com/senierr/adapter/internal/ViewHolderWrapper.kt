@@ -35,8 +35,60 @@ abstract class ViewHolderWrapper<T>(@LayoutRes private val layoutId: Int = -1) {
     /**
      * 创建视图
      */
+    internal fun onCreateViewHolderInternal(parent: ViewGroup): ViewHolder {
+        val holder = onCreateViewHolder(parent)
+        registerListeners(holder)
+        return holder
+    }
+
+    /**
+     * 创建视图
+     */
     open fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val holder = ViewHolder.create(parent, layoutId)
+        return ViewHolder.create(parent, layoutId)
+    }
+
+    open fun onViewAttachedToWindow(holder: ViewHolder) {}
+
+    open fun onViewDetachedFromWindow(holder: ViewHolder) {}
+
+    open fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        this.recyclerView = recyclerView
+    }
+
+    open fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        this.recyclerView = null
+    }
+
+    abstract fun onBindViewHolder(holder: ViewHolder, item: T)
+
+    open fun onBindViewHolder(holder: ViewHolder, item: T, payloads: List<Any>) {
+        onBindViewHolder(holder, item)
+    }
+
+    /**
+     * 获取当前项所占列数
+     *
+     * @param item 数据项
+     * @return 默认为1，超过最大列数为全行
+     */
+    open fun getSpanSize(item: T): Int = 1
+
+    @Suppress("UNCHECKED_CAST")
+    private fun getItemData(position: Int): T? {
+        var result: T? = null
+        try {
+            result = multiTypeAdapter.data[position] as T
+        } catch (e: Exception) {
+            Log.w(this.javaClass.simpleName, "The value in the position does not exist.")
+        }
+        return result
+    }
+
+    /**
+     * 注册点击事件
+     */
+    private fun registerListeners(holder: ViewHolder) {
         // 绑定列表项点击事件
         onItemClickListener?.let { listener ->
             holder.itemView.setOnClickListener {
@@ -86,45 +138,7 @@ abstract class ViewHolderWrapper<T>(@LayoutRes private val layoutId: Int = -1) {
                 }
             }
         }
-        return holder
     }
-
-    @Suppress("UNCHECKED_CAST")
-    private fun getItemData(position: Int): T? {
-        var result: T? = null
-        try {
-            result = multiTypeAdapter.data[position] as T
-        } catch (e: Exception) {
-            Log.w(this.javaClass.simpleName, "The value in the position does not exist.")
-        }
-        return result
-    }
-
-    open fun onViewAttachedToWindow(holder: ViewHolder) {}
-
-    open fun onViewDetachedFromWindow(holder: ViewHolder) {}
-
-    open fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        this.recyclerView = recyclerView
-    }
-
-    open fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
-        this.recyclerView = null
-    }
-
-    abstract fun onBindViewHolder(holder: ViewHolder, item: T)
-
-    open fun onBindViewHolder(holder: ViewHolder, item: T, payloads: List<Any>) {
-        onBindViewHolder(holder, item)
-    }
-
-    /**
-     * 获取当前项所占列数
-     *
-     * @param item 数据项
-     * @return 默认为1，超过最大列数为全行
-     */
-    open fun getSpanSize(item: T): Int = 1
 
     fun setOnItemClickListener(listener: (viewHolder: ViewHolder, position: Int, item: T) -> Unit) {
         onItemClickListener = listener

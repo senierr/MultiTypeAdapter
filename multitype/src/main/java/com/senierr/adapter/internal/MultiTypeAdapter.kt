@@ -35,7 +35,7 @@ class MultiTypeAdapter(var data: MutableList<Any> = mutableListOf()) : RecyclerV
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val viewHolderWrapper = getViewHolderWrapper<Any>(viewType)
-        return viewHolderWrapper.onCreateViewHolder(parent)
+        return viewHolderWrapper.onCreateViewHolderInternal(parent)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: List<Any>) {
