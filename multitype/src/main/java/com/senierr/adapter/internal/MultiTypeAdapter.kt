@@ -16,9 +16,18 @@ class MultiTypeAdapter(var data: MutableList<Any> = mutableListOf()) : RecyclerV
     private var recyclerView: RecyclerView? = null
     private val itemBinders = mutableListOf<ItemBinder<*>>()
     private val wrapperCache = mutableListOf<ViewHolderWrapper<*>>()
+    // 自定义类型匹配
+    private var viewTypeLinker: ViewTypeLinker? = null
 
     override fun getItemViewType(position: Int): Int {
         val item = data[position]
+
+        // 优先自定义视图类型
+        val linker = viewTypeLinker
+        if (linker != null) {
+            return linker.getItemViewType(item)
+        }
+
         val index = indexOf(item)
         if (index == -1) throw UnregisteredException(item.javaClass)
         return index
@@ -121,6 +130,11 @@ class MultiTypeAdapter(var data: MutableList<Any> = mutableListOf()) : RecyclerV
      */
     @Suppress("UNCHECKED_CAST")
     private fun <T> getViewHolderWrapper(itemViewType: Int): ViewHolderWrapper<T> {
+        // 优先自定义视图类型
+        val linker = viewTypeLinker
+        if (linker != null) {
+            return linker.getViewHolderWrapper(itemViewType) as ViewHolderWrapper<T>
+        }
         return wrapperCache[itemViewType] as ViewHolderWrapper<T>
     }
 
@@ -172,6 +186,18 @@ class MultiTypeAdapter(var data: MutableList<Any> = mutableListOf()) : RecyclerV
                 return viewHolderWrapper::class.java
             }
         })
+    }
+
+    /**
+     * 注册自定义匹配规则
+     */
+    fun register(viewHolderWrapper: List<ViewHolderWrapper<*>>, viewTypeLinker: ViewTypeLinker) {
+        wrapperCache.clear()
+        wrapperCache.addAll(viewHolderWrapper)
+        wrapperCache.forEach {
+            it.onRegister(this)
+        }
+        this.viewTypeLinker = viewTypeLinker
     }
 
     inline fun <reified T> register(viewHolderWrapper: ViewHolderWrapper<T>) {

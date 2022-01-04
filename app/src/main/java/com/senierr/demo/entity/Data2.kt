@@ -7,4 +7,6 @@ package com.senierr.demo.entity
 data class Data2(
     val content: String,
     val height: Int
-) : IData
+) : IData {
+    override fun getType(): Int = 2
+}

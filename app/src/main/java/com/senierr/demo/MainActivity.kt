@@ -9,6 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.senierr.adapter.internal.MultiTypeAdapter
+import com.senierr.adapter.internal.ViewHolderWrapper
+import com.senierr.adapter.internal.ViewTypeLinker
+import com.senierr.adapter.support.bean.LoadMoreBean
 import com.senierr.demo.databinding.ActivityMainBinding
 import com.senierr.demo.entity.Data1
 import com.senierr.demo.entity.Data2
@@ -19,6 +22,7 @@ import com.senierr.demo.wrapper.LoadMoreWrapper
 import com.senierr.demo.wrapper.StateWrapper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.lang.IllegalStateException
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -33,7 +37,7 @@ class MainActivity : AppCompatActivity() {
     private var loadMoreWrapper = LoadMoreWrapper()
     private var stateWrapper = StateWrapper()
 
-    private var pageIndex = 1
+    private var pageIndex = 0
     private val pageSize = 20
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,11 +81,33 @@ class MainActivity : AppCompatActivity() {
             loadData(true)
         }
 
-        multiTypeAdapter.register(data1Wrapper)
-        multiTypeAdapter.register(data2Wrapper)
+        multiTypeAdapter.register(
+            listOf(data1Wrapper, data2Wrapper, loadMoreWrapper, stateWrapper),
+            object : ViewTypeLinker {
+                override fun getItemViewType(item: Any): Int {
+                    if (item is IData && item.getType() == 1) {
+                        return 1
+                    } else if (item is IData && item.getType() == 2) {
+                        return 2
+                    } else if (item is LoadMoreBean) {
+                        return 3
+                    } else {
+                        return 0
+                    }
+                }
 
-        multiTypeAdapter.register(loadMoreWrapper)
-        multiTypeAdapter.register(stateWrapper)
+                override fun getViewHolderWrapper(itemViewType: Int): ViewHolderWrapper<*> {
+                    return when (itemViewType) {
+                        0 -> { stateWrapper }
+                        1 -> { data1Wrapper }
+                        2 -> { data2Wrapper }
+                        3 -> { loadMoreWrapper }
+                        else -> {
+                            throw IllegalStateException("")
+                        }
+                    }
+                }
+            })
 
         binding.rvList.adapter = multiTypeAdapter
     }
@@ -110,6 +136,7 @@ class MainActivity : AppCompatActivity() {
                 multiTypeAdapter.data.addAll(result)
                 multiTypeAdapter.data.add(loadMoreWrapper.loadMoreBean)
                 multiTypeAdapter.notifyDataSetChanged()
+                pageIndex++
             } else if (pageIndex > 3) {
                 if ((System.currentTimeMillis() % 2) == 0L) {
                     loadMoreWrapper.loadFailure()
