@@ -40,6 +40,6 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
-    implementation project(':multitype')
-//    implementation 'io.github.senierr:multitype:3.0.0-SNAPSHOT'
+//    implementation project(':multitype')
+    implementation 'io.github.senierr:multitype:2.4.0'
 }

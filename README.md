@@ -1,6 +1,6 @@
 # MultiTypeAdapter
 
-[![](https://img.shields.io/badge/release-v2.2.0-blue.svg)](https://github.com/senierr/MultiTypeAdapter)
+[![](https://img.shields.io/badge/release-v2.4.0-blue.svg)](https://github.com/senierr/MultiTypeAdapter)
 [![](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/senierr/MultiTypeAdapter)
 [![](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -10,6 +10,7 @@
 * 多类型视图
 * 数据与视图一对一组合
 * 数据与视图一对多组合
+* 自定义视图类型匹配
 * 列表项点击长按事件
 * 子控件点击长按事件
 * 自定义事件
@@ -34,7 +35,7 @@ maven { url = "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
 ```
 
 ```
-implementation 'com.senierr.adapter:multitype:<release_version>'
+implementation 'io.github.senierr:multitype:2.4.0'
 ```
 
 **注意：`MultiTypeAdapter`内部依赖了:**
@@ -93,6 +94,26 @@ multiTypeAdapter.register(firstWrapper, secondWrapper) {
         }
 ```
 
+### 4. 自定义视图类型匹配
+
+**注意：**使用自定义视图类型匹配会使自动匹配失效！
+
+```
+multiTypeAdapter.register(
+    listOf(data1Wrapper, data2Wrapper, loadMoreWrapper, stateWrapper),
+    object : ViewTypeLinker {
+        override fun getItemViewType(item: Any): Int {
+            ...
+        }
+
+        override fun getViewHolderWrapper(itemViewType: Int): ViewHolderWrapper<*> {
+            return when (itemViewType) {
+                ...
+            }
+        }
+    })
+```
+
 ## 其他
 
 `头部/底部`、`状态显示`、`加载更多`等，本质上都是一种`数据类型`，以及对应的`ViewHolderWrapper`。
@@ -110,20 +131,16 @@ multiTypeAdapter.register(firstWrapper, secondWrapper) {
 **注意：**调用`stateWrapper.show...()`时，会清空`MultiTypeAdapter`内部数据，并增加一条新数据`stateBean`，重新加载数据时记得先**clear()、clear()、clear()**!
 
 ```
-public class StateWrapper extends BaseStateWrapper {
+class StateWrapper : BaseStateWrapper(R.layout.item_state) {
 
-    @NonNull @Override
-    public RVHolder onCreateViewHolder(@NonNull ViewGroup parent) {
-        return RVHolder.create(parent, R.layout.item_state);
+    override fun onBindViewHolder(holder: ViewHolder, item: StateBean) {
+        when (item.state) {
+            STATE_DEFAULT -> { ... }
+        }
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull RVHolder holder, @NonNull StateBean item) {
-        switch (item.getState()) {
-            case StateBean.STATE_DEFAULT:
-                ......
-                break;
-        }
+    companion object {
+        const val STATE_DEFAULT = 0
     }
 }
 
@@ -136,28 +153,28 @@ stateWrapper.setState(StateWrapper.STATE_DEFAULT);
 **注意：** 要在列表数据末添加`加载更多（LoadMoreBean）`类型数据。
 
 ```
-public class LoadMoreWrapper extends BaseLoadMoreWrapper {
+class LoadMoreWrapper : BaseLoadMoreWrapper(R.layout.item_load_more) {
 
-    @NonNull @Override
-    public RVHolder onCreateViewHolder(@NonNull ViewGroup parent) {
-        return RVHolder.create(parent, R.layout.item_load_more);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull RVHolder holder, @NonNull LoadMoreBean item) {
-        switch (item.getLoadState()) {
-            case LoadMoreBean.STATUS_LOADING:
-                ......
-                break;
-            case LoadMoreBean.STATUS_COMPLETED:
-                ......
-                break;
-            case LoadMoreBean.STATUS_NO_MORE:
-                ......
-                break;
-            case LoadMoreBean.STATUS_FAILURE:
-                ......
-                break;
+    override fun onBindViewHolder(holder: ViewHolder, item: LoadMoreBean) {
+        val textView = holder.findView<TextView>(R.id.tv_text)
+        val progressBar = holder.findView<ProgressBar>(R.id.pb_bar)
+        when (item.loadState) {
+            LoadMoreBean.STATUS_LOADING -> {
+                textView?.setText(R.string.loading)
+                progressBar?.visibility = View.VISIBLE
+            }
+            LoadMoreBean.STATUS_COMPLETED -> {
+                textView?.setText(R.string.completed)
+                progressBar?.visibility = View.GONE
+            }
+            LoadMoreBean.STATUS_NO_MORE -> {
+                textView?.setText(R.string.no_more)
+                progressBar?.visibility = View.GONE
+            }
+            LoadMoreBean.STATUS_FAILURE -> {
+                textView?.setText(R.string.failure)
+                progressBar?.visibility = View.GONE
+            }
         }
     }
 }
