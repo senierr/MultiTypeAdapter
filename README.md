@@ -27,15 +27,11 @@
 #### Gradle
 
 ```
-// 正式版本
-mavenCentral()
-
-// 快照版本
-maven { url = "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
+maven { url "https://www.jitpack.io" }
 ```
 
 ```
-implementation 'io.github.senierr:multitype:2.4.0'
+implementation 'com.github.senierr:MultiTypeAdapter:2.4.0'
 ```
 
 **注意：`MultiTypeAdapter`内部依赖了:**
